@@ -201,63 +201,63 @@
         }
     });
 
-// ========== FUNGSI LOAD EQUIPMENT ==========
-async function loadEquipmentData() {
-    try {
-        console.log('5. Mencoba akses path: /equipment');
-        const equipmentRef = database.ref('equipment');
-        
-        equipmentRef.once('value', (snapshot) => {
-            console.log('6. Snapshot received');
-            console.log('7. Snapshot exists:', snapshot.exists());
-            console.log('8. Snapshot value:', snapshot.val());
+    // ========== FUNGSI LOAD EQUIPMENT ==========
+    async function loadEquipmentData() {
+        try {
+            console.log('5. Mencoba akses path: /equipment');
+            const equipmentRef = database.ref('equipment');
             
-            if (!snapshot.exists()) {
-                alert('Path "equipment" tidak ditemukan di database!');
-                return;
-            }
-            
-            let found = false;
-            let count = 0;
-            
-            snapshot.forEach((childSnapshot) => {
-                count++;
-                const key = childSnapshot.key;
-                const data = childSnapshot.val();
-                console.log(`   Child ${count}: key=${key}, data=`, data);
+            equipmentRef.once('value', (snapshot) => {
+                console.log('6. Snapshot received');
+                console.log('7. Snapshot exists:', snapshot.exists());
+                console.log('8. Snapshot value:', snapshot.val());
                 
-                if (data.equip_id === equipId) {
-                    console.log('   ✅ MATCH ditemukan!');
-                    currentEquipment = data;
-                    currentEquipmentKey = key;
-                    found = true;
+                if (!snapshot.exists()) {
+                    alert('Path "equipment" tidak ditemukan di database!');
+                    return;
                 }
+                
+                let found = false;
+                let count = 0;
+                
+                snapshot.forEach((childSnapshot) => {
+                    count++;
+                    const key = childSnapshot.key;
+                    const data = childSnapshot.val();
+                    console.log(`   Child ${count}: key=${key}, data=`, data);
+                    
+                    if (data.equip_id === equipId) {
+                        console.log('   ✅ MATCH ditemukan!');
+                        currentEquipment = data;
+                        currentEquipmentKey = key;
+                        found = true;
+                    }
+                });
+                
+                console.log(`9. Total child di path equipment: ${count}`);
+                
+                if (!found) {
+                    console.log('10. TIDAK ADA match untuk equip_id:', equipId);
+                    alert(`Data tidak ditemukan untuk equip_id: ${equipId} (dari ${count} data)`);
+                    window.location.href = 'dashboard.html';
+                    return;
+                }
+                
+                console.log('11. Equipment ditemukan:', currentEquipment);
+                
+                // Load master PSI
+                loadMasterData();
+                
+            }).catch((error) => {
+                console.error('12. Error membaca database:', error);
+                alert('Error database: ' + error.message);
             });
             
-            console.log(`9. Total child di path equipment: ${count}`);
-            
-            if (!found) {
-                console.log('10. TIDAK ADA match untuk equip_id:', equipId);
-                alert(`Data tidak ditemukan untuk equip_id: ${equipId} (dari ${count} data)`);
-                window.location.href = 'dashboard.html';
-                return;
-            }
-            
-            console.log('11. Equipment ditemukan:', currentEquipment);
-            
-            // Load master PSI
-            loadMasterData();
-            
-        }).catch((error) => {
-            console.error('12. Error membaca database:', error);
-            alert('Error database: ' + error.message);
-        });
-        
-    } catch (error) {
-        console.error('13. Catch error:', error);
-        alert('Gagal memuat data: ' + error.message);
+        } catch (error) {
+            console.error('13. Catch error:', error);
+            alert('Gagal memuat data: ' + error.message);
+        }
     }
-}
 
     // ========== FUNGSI LOAD MASTER PSI ==========
     async function loadMasterData() {
