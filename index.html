@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSI Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #0b5394, #073763); height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .login-card { background: white; border-radius: 15px; padding: 40px; width: 100%; max-width: 400px; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <h3 class="text-center mb-4">PSI Management System</h3>
+        
+        <div id="errorMsg" class="alert alert-danger d-none"></div>
+        
+        <form id="loginForm">
+            <div class="mb-3">
+                <label>Email</label>
+                <input type="email" class="form-control" id="email" required>
+            </div>
+            <div class="mb-3">
+                <label>Password</label>
+                <input type="password" class="form-control" id="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+        
+        <hr>
+        <p class="text-center text-muted small">Hubungi admin untuk akses</p>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // 🔥 GANTI DENGAN KONFIGURASI FIREBASE ANDA!
+const firebaseConfig = {
+  apiKey: "AIzaSyA1_SggH_uh1ZVbtoLD3u5-w6pqKgrgITk",
+  authDomain: "psi-management-system.firebaseapp.com",
+  projectId: "psi-management-system",
+  storageBucket: "psi-management-system.firebasestorage.app",
+  messagingSenderId: "1053490628908",
+  appId: "1:1053490628908:web:6b272409217851f8ebc489"
+};
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Login handler
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    window.location.href = 'dashboard.html';
+                })
+                .catch((error) => {
+                    const errorDiv = document.getElementById('errorMsg');
+                    errorDiv.classList.remove('d-none');
+                    errorDiv.textContent = 'Email atau password salah';
+                });
+        });
+
+        // Cek jika sudah login
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+    </script>
+</body>
+</html>
