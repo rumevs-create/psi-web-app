@@ -155,246 +155,269 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        // 🔥 KONFIGURASI FIREBASE (SAMA)
-        const firebaseConfig = {
-            apiKey: "AIzaSyA1_SggH_uh1ZVbtoLD3u5-w6pqKgrgITk",
-            authDomain: "psi-management-system.firebaseapp.com",
-            databaseURL: "https://psi-management-system-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "psi-management-system",
-            storageBucket: "psi-management-system.firebasestorage.app",
-            messagingSenderId: "1053490628908",
-            appId: "1:1053490628908:web:6b272409217851f8ebc489"
-        };
+ 
+<script>
+    // 🔥 KONFIGURASI FIREBASE
+    const firebaseConfig = {
+        apiKey: "AIzaSyA1_SggH_uh1ZVbtoLD3u5-w6pqKgrgITk",
+        authDomain: "psi-management-system.firebaseapp.com",
+        databaseURL: "https://psi-management-system-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "psi-management-system",
+        storageBucket: "psi-management-system.firebasestorage.app",
+        messagingSenderId: "1053490628908",
+        appId: "1:1053490628908:web:6b272409217851f8ebc489"
+    };
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const database = firebase.database();
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
 
-        // Ambil ID dari URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const docId = urlParams.get('id');
-        
-        // Variabel global
-        let currentEquipment = null;
-        let psiMaster = null;
-        let psiData = {};
-        let currentItemKey = null;
-        let currentSection = null;
+    // Ambil equip_id dari URL (misal: ?id=V-1101)
+    const urlParams = new URLSearchParams(window.location.search);
+    const equipId = urlParams.get('id');
+    
+    // Variabel global
+    let currentEquipment = null;
+    let currentEquipmentKey = null;
+    let psiMaster = null;
+    let psiData = {};
+    let currentItemKey = null;
+    let currentSection = null;
 
-        auth.onAuthStateChanged((user) => {
-            if (!user) {
-                window.location.href = 'index.html';
-            } else if (docId) {
-                loadData();
-            } else {
-                alert('ID equipment tidak ditemukan');
-                window.location.href = 'dashboard.html';
-            }
-        });
+    auth.onAuthStateChanged((user) => {
+        if (!user) {
+            window.location.href = 'index.html';
+        } else if (equipId) {
+            loadEquipmentData();
+        } else {
+            alert('ID equipment tidak ditemukan');
+            window.location.href = 'dashboard.html';
+        }
+    });
 
-        async function loadData() {
-            try {
-                // Load equipment dari Realtime Database (collection 'text')
-                const equipSnapshot = await database.ref('text/' + docId).once('value');
-                currentEquipment = equipSnapshot.val();
+    async function loadEquipmentData() {
+        try {
+            // Cari equipment berdasarkan equip_id di path 'text'
+            const textRef = database.ref('text');
+            textRef.once('value', (snapshot) => {
+                let found = false;
                 
-                if (!currentEquipment) {
-                    alert('Data tidak ditemukan');
+                snapshot.forEach((childSnapshot) => {
+                    const data = childSnapshot.val();
+                    if (data.equip_id === equipId) {
+                        currentEquipment = data;
+                        currentEquipmentKey = childSnapshot.key;
+                        found = true;
+                    }
+                });
+                
+                if (!found) {
+                    alert('Data tidak ditemukan untuk equip_id: ' + equipId);
                     window.location.href = 'dashboard.html';
                     return;
                 }
-
-                // Tentukan tipe equipment
-                const tipe = currentEquipment.tipe || 'pressure_vessel';
                 
-                // Load master PSI dari Realtime Database
-                const masterSnapshot = await database.ref('pressure_vessel').once('value');
-                psiMaster = masterSnapshot.val();
-
-                // Load PSI data untuk equipment ini
-                const psiSnapshot = await database.ref('psi_data/' + currentEquipment.equip_id).once('value');
-                psiData = psiSnapshot.val() || {};
-
-                // Tampilkan data
-                displayEquipment();
-                displayPsiSections();
-
-                // Sembunyikan loading
-                document.getElementById('loadingDiv').style.display = 'none';
-                document.getElementById('contentDiv').style.display = 'block';
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Gagal memuat data: ' + error.message);
-            }
+                // Load master PSI
+                loadMasterData();
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Gagal memuat data: ' + error.message);
         }
+    }
 
-        function displayEquipment() {
-            const data = currentEquipment;
+    async function loadMasterData() {
+        try {
+            // Tentukan tipe equipment (default: pressure_vessel)
+            const tipe = currentEquipment.tipe || 'pressure_vessel';
             
-            document.getElementById('equipTitle').textContent = `${data.equip_id} - ${data.nama}`;
-            document.getElementById('formBadge').textContent = psiMaster?.nama_form || 'PSI Form';
-            document.getElementById('detailEquipId').textContent = data.equip_id;
-            document.getElementById('detailArea').textContent = data.area;
-            
-            let kategoriText = 'Kategori ' + data.kategori;
-            if (data.kategori === 1) kategoriText += ' (Critical)';
-            document.getElementById('detailKategori').innerHTML = `<span class="badge bg-${data.kategori === 1 ? 'danger' : 'secondary'}">${kategoriText}</span>`;
-            
-            document.getElementById('detailKustodian').textContent = data.kustodian;
-            document.getElementById('detailLokasi').textContent = data.lokasi_fisik || '-';
-            document.getElementById('detailTipe').textContent = data.tipe || 'pressure_vessel';
+            // Load master PSI dari Realtime Database
+            const masterSnapshot = await database.ref(tipe).once('value');
+            psiMaster = masterSnapshot.val();
+
+            // Load PSI data untuk equipment ini
+            const psiSnapshot = await database.ref('psi_data/' + currentEquipment.equip_id).once('value');
+            psiData = psiSnapshot.val() || {};
+
+            // Tampilkan data
+            displayEquipment();
+            displayPsiSections();
+
+            // Sembunyikan loading
+            document.getElementById('loadingDiv').style.display = 'none';
+            document.getElementById('contentDiv').style.display = 'block';
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Gagal memuat master data: ' + error.message);
         }
+    }
 
-        function displayPsiSections() {
-            const container = document.getElementById('psiSections');
-            container.innerHTML = '';
+    function displayEquipment() {
+        const data = currentEquipment;
+        
+        document.getElementById('equipTitle').textContent = `${data.equip_id} - ${data.nama}`;
+        document.getElementById('formBadge').textContent = psiMaster?.nama_form || 'PSI Form';
+        document.getElementById('detailEquipId').textContent = data.equip_id;
+        document.getElementById('detailArea').textContent = data.area;
+        
+        let kategoriText = 'Kategori ' + data.kategori;
+        if (data.kategori === 1) kategoriText += ' (Critical)';
+        document.getElementById('detailKategori').innerHTML = `<span class="badge bg-${data.kategori === 1 ? 'danger' : 'secondary'}">${kategoriText}</span>`;
+        
+        document.getElementById('detailKustodian').textContent = data.kustodian;
+        document.getElementById('detailLokasi').textContent = data.lokasi_fisik || '-';
+        document.getElementById('detailTipe').textContent = data.tipe || 'pressure_vessel';
+    }
+
+    function displayPsiSections() {
+        const container = document.getElementById('psiSections');
+        container.innerHTML = '';
+        
+        if (!psiMaster || !psiMaster.sections) return;
+
+        let totalItems = 0;
+        let adaItems = 0;
+
+        // Loop setiap section (drawings, specs, calculations)
+        Object.keys(psiMaster.sections).forEach(sectionKey => {
+            const section = psiMaster.sections[sectionKey];
             
-            if (!psiMaster || !psiMaster.sections) return;
-
-            let totalItems = 0;
-            let adaItems = 0;
-
-            // Loop setiap section (drawings, specs, calculations)
-            Object.keys(psiMaster.sections).forEach(sectionKey => {
-                const section = psiMaster.sections[sectionKey];
+            const sectionDiv = document.createElement('div');
+            sectionDiv.className = 'card mb-3';
+            
+            let itemsHtml = '';
+            
+            // Loop setiap item di section
+            Object.keys(section.items).forEach(itemKey => {
+                const item = section.items[itemKey];
                 
-                const sectionDiv = document.createElement('div');
-                sectionDiv.className = 'card mb-3';
-                
-                let itemsHtml = '';
-                
-                // Loop setiap item di section
-                Object.keys(section.items).forEach(itemKey => {
-                    const item = section.items[itemKey];
-                    const kodeAsli = item.kode; // "1.1", "2.1", dll
-                    
-                    // Cari data di psiData
-                    const psiItem = psiData[sectionKey]?.[itemKey] || {};
-                    const status = psiItem.status || 'Missing';
-                    const value = psiItem.value || '';
-                    const catatan = psiItem.catatan || '';
+                // Cari data di psiData
+                const psiItem = psiData[sectionKey]?.[itemKey] || {};
+                const status = psiItem.status || 'Missing';
+                const value = psiItem.value || '';
+                const catatan = psiItem.catatan || '';
 
-                    if (status === 'Ada') adaItems++;
-                    totalItems++;
+                if (status === 'Ada') adaItems++;
+                totalItems++;
 
-                    // Tentukan badge warna
-                    let statusClass = 'status-missing';
-                    let statusText = '❌ Missing';
-                    if (status === 'Ada') {
-                        statusClass = 'status-ada';
-                        statusText = '✅ Ada';
-                    } else if (status === 'Update Needed') {
-                        statusClass = 'status-update';
-                        statusText = '⚠️ Update';
-                    }
+                // Tentukan badge warna
+                let statusClass = 'status-missing';
+                let statusText = '❌ Missing';
+                if (status === 'Ada') {
+                    statusClass = 'status-ada';
+                    statusText = '✅ Ada';
+                } else if (status === 'Update Needed') {
+                    statusClass = 'status-update';
+                    statusText = '⚠️ Update';
+                }
 
-                    itemsHtml += `
-                        <div class="item-row">
-                            <div class="row align-items-center">
-                                <div class="col-md-1"><small class="text-muted">${item.kode}</small></div>
-                                <div class="col-md-4">
-                                    ${item.nama}
-                                    ${item.wajib ? '<span class="text-danger">*</span>' : ''}
-                                    <span class="kategori-badge">Cat ${item.kategori}</span>
-                                </div>
-                                <div class="col-md-2">
-                                    <span class="status-badge ${statusClass}">${statusText}</span>
-                                </div>
-                                <div class="col-md-3">
-                                    ${value ? `<small class="text-muted">${value}</small>` : ''}
-                                    ${catatan ? `<small class="text-warning"><i class="fas fa-sticky-note"></i> ${catatan}</small>` : ''}
-                                </div>
-                                <div class="col-md-2 text-end">
-                                    <button class="btn btn-sm btn-outline-primary" onclick="showStatusModal('${sectionKey}', '${itemKey}', '${item.nama}', '${status}', '${value}', '${catatan}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                </div>
+                itemsHtml += `
+                    <div class="item-row">
+                        <div class="row align-items-center">
+                            <div class="col-md-1"><small class="text-muted">${item.kode}</small></div>
+                            <div class="col-md-4">
+                                ${item.nama}
+                                ${item.wajib ? '<span class="text-danger">*</span>' : ''}
+                                <span class="kategori-badge">Cat ${item.kategori}</span>
+                            </div>
+                            <div class="col-md-2">
+                                <span class="status-badge ${statusClass}">${statusText}</span>
+                            </div>
+                            <div class="col-md-3">
+                                ${value ? `<small class="text-muted">${value}</small>` : ''}
+                                ${catatan ? `<small class="text-warning"><i class="fas fa-sticky-note"></i> ${catatan}</small>` : ''}
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <button class="btn btn-sm btn-outline-primary" onclick="showStatusModal('${sectionKey}', '${itemKey}', '${item.nama}', '${status}', '${value}', '${catatan}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
                             </div>
                         </div>
-                    `;
-                });
-
-                sectionDiv.innerHTML = `
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="fas fa-${section.icon || 'folder'}"></i> ${section.judul}</h5>
-                    </div>
-                    <div class="card-body">
-                        ${itemsHtml || '<p class="text-muted">Tidak ada item</p>'}
                     </div>
                 `;
+            });
+
+            sectionDiv.innerHTML = `
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-${section.icon || 'folder'}"></i> ${section.judul}</h5>
+                </div>
+                <div class="card-body">
+                    ${itemsHtml || '<p class="text-muted">Tidak ada item</p>'}
+                </div>
+            `;
+            
+            container.appendChild(sectionDiv);
+        });
+
+        // Update progress
+        const percentage = totalItems > 0 ? Math.round((adaItems / totalItems) * 100) : 0;
+        document.getElementById('progressBar').style.width = percentage + '%';
+        document.getElementById('progressBar').textContent = percentage + '%';
+        document.getElementById('progressText').textContent = `${adaItems} dari ${totalItems} item lengkap`;
+    }
+
+    function showStatusModal(section, itemKey, itemNama, currentStatus, currentValue, currentCatatan) {
+        currentSection = section;
+        currentItemKey = itemKey;
+        
+        document.getElementById('statusItemInfo').textContent = `Update status untuk: ${itemNama}`;
+        document.getElementById('statusSelect').value = currentStatus || 'Missing';
+        document.getElementById('statusCatatan').value = currentCatatan || '';
+        document.getElementById('statusValue').value = currentValue || '';
+        
+        const modal = new bootstrap.Modal(document.getElementById('statusModal'));
+        modal.show();
+    }
+
+    function saveStatus() {
+        const newStatus = document.getElementById('statusSelect').value;
+        const newCatatan = document.getElementById('statusCatatan').value;
+        const newValue = document.getElementById('statusValue').value;
+        
+        // Simpan ke Realtime Database
+        const updates = {};
+        updates[`psi_data/${currentEquipment.equip_id}/${currentSection}/${currentItemKey}`] = {
+            status: newStatus,
+            catatan: newCatatan,
+            value: newValue,
+            updated_at: new Date().toISOString(),
+            updated_by: auth.currentUser.email
+        };
+        
+        database.ref().update(updates)
+            .then(() => {
+                // Update local data
+                if (!psiData[currentSection]) psiData[currentSection] = {};
+                psiData[currentSection][currentItemKey] = {
+                    status: newStatus,
+                    catatan: newCatatan,
+                    value: newValue,
+                    updated_at: new Date().toISOString(),
+                    updated_by: auth.currentUser.email
+                };
                 
-                container.appendChild(sectionDiv);
+                // Refresh tampilan
+                displayPsiSections();
+                
+                // Close modal
+                bootstrap.Modal.getInstance(document.getElementById('statusModal')).hide();
+            })
+            .catch(error => {
+                alert('Gagal menyimpan: ' + error.message);
             });
+    }
 
-            // Update progress
-            const percentage = totalItems > 0 ? Math.round((adaItems / totalItems) * 100) : 0;
-            document.getElementById('progressBar').style.width = percentage + '%';
-            document.getElementById('progressBar').textContent = percentage + '%';
-            document.getElementById('progressText').textContent = `${adaItems} dari ${totalItems} item lengkap`;
-        }
+    function editEquipment() {
+        window.location.href = `edit-equipment.html?id=${currentEquipmentKey}`;
+    }
 
-        function showStatusModal(section, itemKey, itemNama, currentStatus, currentValue, currentCatatan) {
-            currentSection = section;
-            currentItemKey = itemKey;
-            
-            document.getElementById('statusItemInfo').textContent = `Update status untuk: ${itemNama}`;
-            document.getElementById('statusSelect').value = currentStatus || 'Missing';
-            document.getElementById('statusCatatan').value = currentCatatan || '';
-            document.getElementById('statusValue').value = currentValue || '';
-            
-            const modal = new bootstrap.Modal(document.getElementById('statusModal'));
-            modal.show();
-        }
+    function logout() {
+        auth.signOut().then(() => {
+            window.location.href = 'index.html';
+        });
+    }
 
-        function saveStatus() {
-            const newStatus = document.getElementById('statusSelect').value;
-            const newCatatan = document.getElementById('statusCatatan').value;
-            const newValue = document.getElementById('statusValue').value;
-            
-            // Simpan ke Realtime Database
-            const updates = {};
-            updates[`psi_data/${currentEquipment.equip_id}/${currentSection}/${currentItemKey}`] = {
-                status: newStatus,
-                catatan: newCatatan,
-                value: newValue,
-                updated_at: new Date().toISOString(),
-                updated_by: auth.currentUser.email
-            };
-            
-            database.ref().update(updates)
-                .then(() => {
-                    // Update local data
-                    if (!psiData[currentSection]) psiData[currentSection] = {};
-                    psiData[currentSection][currentItemKey] = {
-                        status: newStatus,
-                        catatan: newCatatan,
-                        value: newValue,
-                        updated_at: new Date().toISOString(),
-                        updated_by: auth.currentUser.email
-                    };
-                    
-                    // Refresh tampilan
-                    displayPsiSections();
-                    
-                    // Close modal
-                    bootstrap.Modal.getInstance(document.getElementById('statusModal')).hide();
-                })
-                .catch(error => {
-                    alert('Gagal menyimpan: ' + error.message);
-                });
-        }
-
-        function editEquipment() {
-            window.location.href = `edit-equipment.html?id=${docId}`;
-        }
-
-        function logout() {
-            auth.signOut().then(() => {
-                window.location.href = 'index.html';
-            });
-        }
     </script>
 </body>
 </html>
