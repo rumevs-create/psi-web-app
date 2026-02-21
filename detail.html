@@ -207,13 +207,13 @@
             console.log('5. Mencoba akses path: /text');
             const equipmentRef = database.ref('equipment');
             
-            textRef.once('value', (snapshot) => {
+           equipmentRef.once('value', (snapshot) => {
                 console.log('6. Snapshot received');
                 console.log('7. Snapshot exists:', snapshot.exists());
                 console.log('8. Snapshot value:', snapshot.val());
                 
                 if (!snapshot.exists()) {
-                    alert('Path "text" tidak ditemukan di database!');
+                    alert('Path "equipment" tidak ditemukan di database!');
                     return;
                 }
                 
@@ -234,7 +234,7 @@
                     }
                 });
                 
-                console.log(`9. Total child di path text: ${count}`);
+                console.log(`9. Total child di path equipment: ${count}`);
                 
                 if (!found) {
                     console.log('10. TIDAK ADA match untuk equip_id:', equipId);
