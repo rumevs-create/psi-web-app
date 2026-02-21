@@ -136,10 +136,10 @@ const firebaseConfig = {
                             <td><span class="badge bg-${data.kategori === 1 ? 'danger' : 'secondary'}">Kat ${data.kategori}</span></td>
                             <td>${data.kustodian}</td>
                             <td>
-        <button class="btn btn-sm btn-info" onclick="viewDetail('${doc.id}')" title="Lihat Detail">
+        <button class="btn btn-sm btn-info" onclick="viewDetail('${data.equip_id}')" title="Lihat Detail">
             <i class="fas fa-eye"></i>
         </button>
-        <button class="btn btn-sm btn-warning" onclick="editEquipment('${doc.id}')" title="Edit">
+        <button class="btn btn-sm btn-warning" onclick="editEquipment('${data.equip_id}')" title="Edit">
             <i class="fas fa-edit"></i>
         </button>
                             </td>
@@ -166,6 +166,7 @@ const firebaseConfig = {
 </body>
 
 </html>
+
 
 
 
