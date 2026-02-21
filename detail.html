@@ -205,7 +205,7 @@
     async function loadEquipmentData() {
         try {
             console.log('5. Mencoba akses path: /text');
-            const textRef = database.ref('text');
+            const equipmentRef = database.ref('equipment');
             
             textRef.once('value', (snapshot) => {
                 console.log('6. Snapshot received');
