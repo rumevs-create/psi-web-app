@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Equipment - PSI System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-primary">
+        <div class="container-fluid">
+            <span class="navbar-brand">
+                <i class="fas fa-shield-alt"></i> PSI Management - Edit Equipment
+            </span>
+            <div>
+                <button class="btn btn-light me-2" onclick="window.location.href='dashboard.html'">
+                    <i class="fas fa-arrow-left"></i> Kembali
+                </button>
+                <button class="btn btn-light" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 form-container">
+        <div class="card">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0">Edit Equipment</h5>
+            </div>
+            <div class="card-body">
+                <div id="loadingDiv" class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Memuat data equipment...</p>
+                </div>
+                
+                <div id="alertMessage" class="alert d-none"></div>
+                
+                <form id="equipmentForm" style="display: none;">
+                    <!-- Hidden field untuk document ID -->
+                    <input type="hidden" id="docId">
+                    
+                    <!-- Equipment ID -->
+                    <div class="mb-3">
+                        <label class="form-label">Equipment ID <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="equip_id" required 
+                               placeholder="Contoh: V-1101">
+                    </div>
+
+                    <!-- Nama Equipment -->
+                    <div class="mb-3">
+                        <label class="form-label">Nama Equipment <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="nama" required 
+                               placeholder="Contoh: PTA Slurry Vessel">
+                    </div>
+
+                    <!-- Area -->
+                    <div class="mb-3">
+                        <label class="form-label">Area <span class="text-danger">*</span></label>
+                        <select class="form-control" id="area" required>
+                            <option value="">Pilih Area</option>
+                            <option value="CP-1100">CP-1100</option>
+                            <option value="CP-1200">CP-1200</option>
+                            <option value="CP-1300">CP-1300</option>
+                            <option value="CP-1400">CP-1400</option>
+                            <option value="Utility-5300">Utility-5300</option>
+                            <option value="Utility-6000">Utility-6000</option>
+                            <option value="Utility-6300">Utility-6300</option>
+                            <option value="SSP-1700">SSP-1700</option>
+                            <option value="SSP-1800">SSP-1800</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+
+                    <!-- Area Lainnya -->
+                    <div class="mb-3" id="areaLainnyaDiv" style="display: none;">
+                        <label class="form-label">Area (Lainnya)</label>
+                        <input type="text" class="form-control" id="area_lainnya" 
+                               placeholder="Masukkan nama area">
+                    </div>
+
+                    <!-- Kategori -->
+                    <div class="mb-3">
+                        <label class="form-label">Kategori <span class="text-danger">*</span></label>
+                        <select class="form-control" id="kategori" required>
+                            <option value="">Pilih Kategori</option>
+                            <option value="1">Kategori 1 (EHS Critical)</option>
+                            <option value="2">Kategori 2 (Non-Critical)</option>
+                            <option value="3">Kategori 3 (Valued)</option>
+                        </select>
+                    </div>
+
+                    <!-- Is Critical (otomatis) -->
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="is_critical" disabled>
+                        <label class="form-check-label">EHS Critical Equipment</label>
+                        <small class="text-muted d-block">(Otomatis Ya jika Kategori 1)</small>
+                    </div>
+
+                    <!-- Kustodian -->
+                    <div class="mb-3">
+                        <label class="form-label">Kustodian <span class="text-danger">*</span></label>
+                        <select class="form-control" id="kustodian" required>
+                            <option value="">Pilih Kustodian</option>
+                            <option value="Process Engineer">Process Engineer</option>
+                            <option value="Maintenance Engineer">Maintenance Engineer</option>
+                            <option value="Mechanical Engineer">Mechanical Engineer</option>
+                            <option value="EHS Engineer">EHS Engineer</option>
+                            <option value="Instrument Engineer">Instrument Engineer</option>
+                            <option value="Electrical Engineer">Electrical Engineer</option>
+                            <option value="Utility Supervisor">Utility Supervisor</option>
+                            <option value="Document Control">Document Control</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+
+                    <!-- Kustodian Lainnya -->
+                    <div class="mb-3" id="kustodianLainnyaDiv" style="display: none;">
+                        <label class="form-label">Kustodian (Lainnya)</label>
+                        <input type="text" class="form-control" id="kustodian_lainnya" 
+                               placeholder="Masukkan nama kustodian">
+                    </div>
+
+                    <!-- Tipe Equipment -->
+                    <div class="mb-3">
+                        <label class="form-label">Tipe Equipment</label>
+                        <select class="form-control" id="tipe">
+                            <option value="">Pilih Tipe (Opsional)</option>
+                            <option value="pressure_vessel">Pressure Vessel</option>
+                            <option value="rotating">Rotating Equipment</option>
+                            <option value="tank">Tank</option>
+                            <option value="piping">Piping</option>
+                            <option value="instrument">Instrument</option>
+                            <option value="electrical">Electrical</option>
+                            <option value="safety">Safety Device</option>
+                        </select>
+                    </div>
+
+                    <!-- Lokasi Fisik -->
+                    <div class="mb-3">
+                        <label class="form-label">Lokasi Fisik</label>
+                        <input type="text" class="form-control" id="lokasi_fisik" 
+                               placeholder="Contoh: Area CP Level 2">
+                    </div>
+
+                    <hr>
+                    
+                    <!-- Tombol Submit -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-warning" id="submitBtn">
+                            <i class="fas fa-save"></i> Update Equipment
+                        </button>
+                        <button type="button" class="btn btn-danger" id="deleteBtn">
+                            <i class="fas fa-trash"></i> Hapus Equipment
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='dashboard.html'">
+                            Batal
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // 🔥 KONFIGURASI FIREBASE (SESUAIKAN DENGAN ANDA!)
+        const firebaseConfig = {
+            apiKey: "AIzaSyA1_SggH_uh1ZVbtoLD3u5-w6pqKgrgITk",
+            authDomain: "psi-management-system.firebaseapp.com",
+            projectId: "psi-management-system",
+            storageBucket: "psi-management-system.firebasestorage.app",
+            messagingSenderId: "1053490628908",
+            appId: "1:1053490628908:web:6b272409217851f8ebc489"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Ambil document ID dari URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const docId = urlParams.get('id');
+
+        // Cek login
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                window.location.href = 'index.html';
+            } else if (docId) {
+                loadEquipmentData(docId);
+            } else {
+                alert('ID equipment tidak ditemukan');
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        // Load data equipment
+        async function loadEquipmentData(id) {
+            try {
+                const doc = await db.collection('equipment').doc(id).get();
+                
+                if (!doc.exists) {
+                    alert('Data tidak ditemukan');
+                    window.location.href = 'dashboard.html';
+                    return;
+                }
+
+                const data = doc.data();
+                
+                // Isi form dengan data yang ada
+                document.getElementById('docId').value = id;
+                document.getElementById('equip_id').value = data.equip_id || '';
+                document.getElementById('nama').value = data.nama || '';
+                
+                // Handle area
+                const areaSelect = document.getElementById('area');
+                if (data.area && !areaSelect.querySelector(`option[value="${data.area}"]`)) {
+                    document.getElementById('area_lainnya').value = data.area;
+                    document.getElementById('areaLainnyaDiv').style.display = 'block';
+                    areaSelect.value = 'Lainnya';
+                } else {
+                    areaSelect.value = data.area || '';
+                }
+                
+                document.getElementById('kategori').value = data.kategori || '';
+                document.getElementById('is_critical').checked = data.kategori === 1;
+                
+                // Handle kustodian
+                const kustodianSelect = document.getElementById('kustodian');
+                if (data.kustodian && !kustodianSelect.querySelector(`option[value="${data.kustodian}"]`)) {
+                    document.getElementById('kustodian_lainnya').value = data.kustodian;
+                    document.getElementById('kustodianLainnyaDiv').style.display = 'block';
+                    kustodianSelect.value = 'Lainnya';
+                } else {
+                    kustodianSelect.value = data.kustodian || '';
+                }
+                
+                document.getElementById('tipe').value = data.tipe || '';
+                document.getElementById('lokasi_fisik').value = data.lokasi_fisik || '';
+                
+                // Sembunyikan loading, tampilkan form
+                document.getElementById('loadingDiv').style.display = 'none';
+                document.getElementById('equipmentForm').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                alert('Gagal memuat data: ' + error.message);
+            }
+        }
+
+        // Toggle area lainnya
+        document.getElementById('area').addEventListener('change', function() {
+            const areaLainnyaDiv = document.getElementById('areaLainnyaDiv');
+            if (this.value === 'Lainnya') {
+                areaLainnyaDiv.style.display = 'block';
+            } else {
+                areaLainnyaDiv.style.display = 'none';
+                document.getElementById('area_lainnya').value = '';
+            }
+        });
+
+        // Toggle kustodian lainnya
+        document.getElementById('kustodian').addEventListener('change', function() {
+            const kustodianLainnyaDiv = document.getElementById('kustodianLainnyaDiv');
+            if (this.value === 'Lainnya') {
+                kustodianLainnyaDiv.style.display = 'block';
+            } else {
+                kustodianLainnyaDiv.style.display = 'none';
+                document.getElementById('kustodian_lainnya').value = '';
+            }
+        });
+
+        // Auto-set is_critical
+        document.getElementById('kategori').addEventListener('change', function() {
+            document.getElementById('is_critical').checked = (this.value === '1');
+        });
+
+        // Handle update
+        document.getElementById('equipmentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengupdate...';
+
+            // Ambil nilai form
+            let area = document.getElementById('area').value;
+            if (area === 'Lainnya') {
+                area = document.getElementById('area_lainnya').value;
+            }
+
+            let kustodian = document.getElementById('kustodian').value;
+            if (kustodian === 'Lainnya') {
+                kustodian = document.getElementById('kustodian_lainnya').value;
+            }
+
+            const equipmentData = {
+                equip_id: document.getElementById('equip_id').value,
+                nama: document.getElementById('nama').value,
+                area: area,
+                kategori: parseInt(document.getElementById('kategori').value),
+                is_critical: document.getElementById('kategori').value === '1',
+                kustodian: kustodian,
+                tipe: document.getElementById('tipe').value || '',
+                lokasi_fisik: document.getElementById('lokasi_fisik').value || '',
+                updated_at: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            try {
+                await db.collection('equipment').doc(docId).update(equipmentData);
+                
+                const alertDiv = document.getElementById('alertMessage');
+                alertDiv.classList.remove('d-none', 'alert-danger');
+                alertDiv.classList.add('alert-success');
+                alertDiv.innerHTML = '<i class="fas fa-check-circle"></i> Data berhasil diupdate!';
+                
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Error updating:', error);
+                
+                const alertDiv = document.getElementById('alertMessage');
+                alertDiv.classList.remove('d-none', 'alert-success');
+                alertDiv.classList.add('alert-danger');
+                alertDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Gagal mengupdate: ' + error.message;
+                
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Update Equipment';
+            }
+        });
+
+        // Handle delete
+        document.getElementById('deleteBtn').addEventListener('click', async () => {
+            if (!confirm('Yakin ingin menghapus equipment ini?')) {
+                return;
+            }
+            
+            try {
+                await db.collection('equipment').doc(docId).delete();
+                alert('Data berhasil dihapus');
+                window.location.href = 'dashboard.html';
+            } catch (error) {
+                alert('Gagal menghapus: ' + error.message);
+            }
+        });
+
+        // Logout function
+        function logout() {
+            auth.signOut().then(() => {
+                window.location.href = 'index.html';
+            });
+        }
+    </script>
+</body>
+</html>
