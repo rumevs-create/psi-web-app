@@ -110,7 +110,7 @@ const firebaseConfig = {
 
         function loadData() {
             // Load summary
-            db.collection('equipment').get().then((snapshot) => {
+            db.collection('text').get().then((snapshot) => {
                 const total = snapshot.size;
                 let kat1 = 0;
                 
@@ -158,4 +158,5 @@ const firebaseConfig = {
 </body>
 
 </html>
+
 
