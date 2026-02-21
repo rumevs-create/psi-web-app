@@ -7,20 +7,43 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .psi-section {
-            margin-bottom: 20px;
-            border-left: 4px solid #0b5394;
-            padding-left: 15px;
-        }
         .status-badge {
             padding: 5px 10px;
             border-radius: 15px;
             font-size: 12px;
             font-weight: bold;
+            display: inline-block;
         }
         .status-ada { background: #d4edda; color: #155724; }
         .status-missing { background: #f8d7da; color: #721c24; }
         .status-update { background: #fff3cd; color: #856404; }
+        
+        .psi-section {
+            margin-bottom: 25px;
+            border-left: 4px solid #0b5394;
+            padding-left: 15px;
+        }
+        
+        .progress {
+            height: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .item-row {
+            border-bottom: 1px solid #eee;
+            padding: 8px 0;
+        }
+        
+        .item-row:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .kategori-badge {
+            font-size: 10px;
+            padding: 2px 5px;
+            border-radius: 3px;
+            background: #e9ecef;
+        }
     </style>
 </head>
 <body>
@@ -41,6 +64,7 @@
     </nav>
 
     <div class="container mt-4">
+        <!-- Loading Spinner -->
         <div id="loadingDiv" class="text-center py-5">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
@@ -48,75 +72,78 @@
             <p class="mt-2">Memuat data equipment...</p>
         </div>
 
+        <!-- Main Content -->
         <div id="contentDiv" style="display: none;">
             <!-- Header Equipment -->
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h4 id="equipTitle" class="mb-0"></h4>
+                    <span id="formBadge" class="badge bg-light text-dark"></span>
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-8">
                             <table class="table table-sm">
-                                <tr><th style="width: 150px;">Equipment ID</th><td id="detailEquipId"></td></tr>
+                                <tr><th style="width: 200px;">Equipment ID</th><td id="detailEquipId"></td></tr>
                                 <tr><th>Area</th><td id="detailArea"></td></tr>
                                 <tr><th>Kategori</th><td id="detailKategori"></td></tr>
                                 <tr><th>Kustodian</th><td id="detailKustodian"></td></tr>
                                 <tr><th>Lokasi Fisik</th><td id="detailLokasi"></td></tr>
+                                <tr><th>Tipe Equipment</th><td id="detailTipe"></td></tr>
                             </table>
                         </div>
-                        <div class="col-md-6">
-                            <button class="btn btn-warning" onclick="editEquipment()">
-                                <i class="fas fa-edit"></i> Edit Equipment
-                            </button>
-                            <button class="btn btn-success" onclick="tambahDokumen()">
-                                <i class="fas fa-upload"></i> Upload Dokumen
-                            </button>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6>Progress Kelengkapan PSI</h6>
+                                    <div class="progress">
+                                        <div id="progressBar" class="progress-bar bg-success" role="progressbar" style="width: 0%">0%</div>
+                                    </div>
+                                    <p id="progressText" class="mb-0 small">0 dari 0 item</p>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <button class="btn btn-warning btn-sm w-100" onclick="editEquipment()">
+                                    <i class="fas fa-edit"></i> Edit Equipment
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- PSI Sections -->
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card mb-3">
-                        <div class="card-header bg-info text-white">
-                            <h5 class="mb-0"><i class="fas fa-draw-polygon"></i> Drawings</h5>
-                        </div>
-                        <div class="card-body" id="drawingsList">
-                            <p class="text-muted">Tidak ada data</p>
-                        </div>
-                    </div>
+            <!-- PSI Sections (akan diisi oleh JavaScript) -->
+            <div id="psiSections"></div>
+        </div>
+    </div>
 
-                    <div class="card mb-3">
-                        <div class="card-header bg-info text-white">
-                            <h5 class="mb-0"><i class="fas fa-calculator"></i> Calculations</h5>
-                        </div>
-                        <div class="card-body" id="calculationsList">
-                            <p class="text-muted">Tidak ada data</p>
-                        </div>
+    <!-- Modal Update Status -->
+    <div class="modal fade" id="statusModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="statusItemInfo"></p>
+                    <select class="form-control" id="statusSelect">
+                        <option value="Ada">✅ Ada</option>
+                        <option value="Missing">❌ Missing</option>
+                        <option value="Update Needed">⚠️ Update Needed</option>
+                    </select>
+                    <div class="mt-2">
+                        <label>Catatan</label>
+                        <input type="text" class="form-control" id="statusCatatan" placeholder="Contoh: Revisi 5, 2025">
+                    </div>
+                    <div class="mt-2">
+                        <label>Value (untuk text)</label>
+                        <input type="text" class="form-control" id="statusValue" placeholder="Contoh: ASME VIII Div.1">
                     </div>
                 </div>
-
-                <div class="col-md-6">
-                    <div class="card mb-3">
-                        <div class="card-header bg-info text-white">
-                            <h5 class="mb-0"><i class="fas fa-clipboard-list"></i> Design Specifications</h5>
-                        </div>
-                        <div class="card-body" id="specsList">
-                            <p class="text-muted">Tidak ada data</p>
-                        </div>
-                    </div>
-
-                    <div class="card mb-3">
-                        <div class="card-header bg-info text-white">
-                            <h5 class="mb-0"><i class="fas fa-history"></i> Inspection Records</h5>
-                        </div>
-                        <div class="card-body" id="inspectionList">
-                            <p class="text-muted">Tidak ada data</p>
-                        </div>
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" onclick="saveStatus()">Simpan</button>
                 </div>
             </div>
         </div>
@@ -125,13 +152,15 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // 🔥 KONFIGURASI FIREBASE (SESUAIKAN!)
+        // 🔥 KONFIGURASI FIREBASE (SAMA)
         const firebaseConfig = {
             apiKey: "AIzaSyA1_SggH_uh1ZVbtoLD3u5-w6pqKgrgITk",
             authDomain: "psi-management-system.firebaseapp.com",
+            databaseURL: "https://psi-management-system-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "psi-management-system",
             storageBucket: "psi-management-system.firebasestorage.app",
             messagingSenderId: "1053490628908",
@@ -140,51 +169,58 @@
 
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        const db = firebase.firestore();
+        const database = firebase.database();
 
         // Ambil ID dari URL
         const urlParams = new URLSearchParams(window.location.search);
         const docId = urlParams.get('id');
+        
+        // Variabel global
+        let currentEquipment = null;
+        let psiMaster = null;
+        let psiData = {};
+        let currentItemKey = null;
+        let currentSection = null;
 
         auth.onAuthStateChanged((user) => {
             if (!user) {
                 window.location.href = 'index.html';
             } else if (docId) {
-                loadEquipmentDetail(docId);
+                loadData();
             } else {
                 alert('ID equipment tidak ditemukan');
                 window.location.href = 'dashboard.html';
             }
         });
 
-        async function loadEquipmentDetail(id) {
+        async function loadData() {
             try {
-                const doc = await db.collection('text').doc(id).get();
+                // Load equipment dari Realtime Database (collection 'text')
+                const equipSnapshot = await database.ref('text/' + docId).once('value');
+                currentEquipment = equipSnapshot.val();
                 
-                if (!doc.exists) {
+                if (!currentEquipment) {
                     alert('Data tidak ditemukan');
                     window.location.href = 'dashboard.html';
                     return;
                 }
 
-                const data = doc.data();
+                // Tentukan tipe equipment
+                const tipe = currentEquipment.tipe || 'pressure_vessel';
                 
-                // Tampilkan header equipment
-                document.getElementById('equipTitle').textContent = `${data.equip_id} - ${data.nama}`;
-                document.getElementById('detailEquipId').textContent = data.equip_id;
-                document.getElementById('detailArea').textContent = data.area;
-                
-                let kategoriText = 'Kategori ' + data.kategori;
-                if (data.kategori === 1) kategoriText += ' (Critical)';
-                document.getElementById('detailKategori').innerHTML = `<span class="badge bg-${data.kategori === 1 ? 'danger' : 'secondary'}">${kategoriText}</span>`;
-                
-                document.getElementById('detailKustodian').textContent = data.kustodian;
-                document.getElementById('detailLokasi').textContent = data.lokasi_fisik || '-';
+                // Load master PSI dari Realtime Database
+                const masterSnapshot = await database.ref('pressure_vessel').once('value');
+                psiMaster = masterSnapshot.val();
 
-                // Simulasi data PSI (nanti bisa diisi dari sub-collection)
-                loadPsiData();
+                // Load PSI data untuk equipment ini
+                const psiSnapshot = await database.ref('psi_data/' + currentEquipment.equip_id).once('value');
+                psiData = psiSnapshot.val() || {};
 
-                // Sembunyikan loading, tampilkan konten
+                // Tampilkan data
+                displayEquipment();
+                displayPsiSections();
+
+                // Sembunyikan loading
                 document.getElementById('loadingDiv').style.display = 'none';
                 document.getElementById('contentDiv').style.display = 'block';
 
@@ -194,89 +230,164 @@
             }
         }
 
-        function loadPsiData() {
-            // Contoh data PSI (nanti diganti dengan data real dari database)
-            const drawings = [
-                { kode: '1.1', nama: 'P&ID', status: 'Ada', file: 'pid_v1101.pdf' },
-                { kode: '1.2', nama: 'Shop Drawing', status: 'Missing' }
-            ];
-
-            const specs = [
-                { kode: '2.1', nama: 'Design Code', status: 'Ada', value: 'ASME VIII Div.1' },
-                { kode: '2.5', nama: 'Design Pressure', status: 'Ada', value: '10 barg @ 150°C' },
-                { kode: '2.6', nama: 'Materials', status: 'Ada', value: 'SS 316L' },
-                { kode: '2.14', nama: 'Nameplate Data', status: 'Ada', file: 'nameplate.jpg' }
-            ];
-
-            const calculations = [
-                { kode: '3.1', nama: 'Wall Thickness', status: 'Missing', note: 'Perlu dicari' }
-            ];
-
-            const inspections = [
-                { kode: '4.1', nama: 'Last Inspection', status: 'Ada', value: '2025-06-15' },
-                { kode: '4.2', nama: 'Next Inspection', status: 'Ada', value: '2026-06-15' }
-            ];
-
-            renderPsiList('drawingsList', drawings);
-            renderPsiList('specsList', specs);
-            renderPsiList('calculationsList', calculations);
-            renderPsiList('inspectionList', inspections);
+        function displayEquipment() {
+            const data = currentEquipment;
+            
+            document.getElementById('equipTitle').textContent = `${data.equip_id} - ${data.nama}`;
+            document.getElementById('formBadge').textContent = psiMaster?.nama_form || 'PSI Form';
+            document.getElementById('detailEquipId').textContent = data.equip_id;
+            document.getElementById('detailArea').textContent = data.area;
+            
+            let kategoriText = 'Kategori ' + data.kategori;
+            if (data.kategori === 1) kategoriText += ' (Critical)';
+            document.getElementById('detailKategori').innerHTML = `<span class="badge bg-${data.kategori === 1 ? 'danger' : 'secondary'}">${kategoriText}</span>`;
+            
+            document.getElementById('detailKustodian').textContent = data.kustodian;
+            document.getElementById('detailLokasi').textContent = data.lokasi_fisik || '-';
+            document.getElementById('detailTipe').textContent = data.tipe || 'pressure_vessel';
         }
 
-        function renderPsiList(elementId, items) {
-            const container = document.getElementById(elementId);
+        function displayPsiSections() {
+            const container = document.getElementById('psiSections');
+            container.innerHTML = '';
             
-            if (!items || items.length === 0) {
-                container.innerHTML = '<p class="text-muted">Tidak ada data</p>';
-                return;
-            }
+            if (!psiMaster || !psiMaster.sections) return;
 
-            let html = '<table class="table table-sm">';
-            items.forEach(item => {
-                let statusClass = '';
-                let statusText = '';
+            let totalItems = 0;
+            let adaItems = 0;
+
+            // Loop setiap section (drawings, specs, calculations)
+            Object.keys(psiMaster.sections).forEach(sectionKey => {
+                const section = psiMaster.sections[sectionKey];
                 
-                if (item.status === 'Ada') {
-                    statusClass = 'status-ada';
-                    statusText = '✅ Ada';
-                } else if (item.status === 'Missing') {
-                    statusClass = 'status-missing';
-                    statusText = '❌ Missing';
-                } else {
-                    statusClass = 'status-update';
-                    statusText = '⚠️ Update Needed';
-                }
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'card mb-3';
+                
+                let itemsHtml = '';
+                
+                // Loop setiap item di section
+                Object.keys(section.items).forEach(itemKey => {
+                    const item = section.items[itemKey];
+                    const kodeAsli = item.kode; // "1.1", "2.1", dll
+                    
+                    // Cari data di psiData
+                    const psiItem = psiData[sectionKey]?.[itemKey] || {};
+                    const status = psiItem.status || 'Missing';
+                    const value = psiItem.value || '';
+                    const catatan = psiItem.catatan || '';
 
-                html += '<tr>';
-                html += `<td><small>${item.kode}</small></td>`;
-                html += `<td>${item.nama}</td>`;
-                html += `<td><span class="status-badge ${statusClass}">${statusText}</span></td>`;
-                html += '<td>';
-                if (item.file) {
-                    html += `<button class="btn btn-sm btn-outline-primary" onclick="viewFile('${item.file}')"><i class="fas fa-file"></i> Lihat</button>`;
-                } else if (item.value) {
-                    html += `<small class="text-muted">${item.value}</small>`;
-                } else if (item.note) {
-                    html += `<small class="text-warning">📝 ${item.note}</small>`;
-                }
-                html += '</td>';
-                html += '</tr>';
+                    if (status === 'Ada') adaItems++;
+                    totalItems++;
+
+                    // Tentukan badge warna
+                    let statusClass = 'status-missing';
+                    let statusText = '❌ Missing';
+                    if (status === 'Ada') {
+                        statusClass = 'status-ada';
+                        statusText = '✅ Ada';
+                    } else if (status === 'Update Needed') {
+                        statusClass = 'status-update';
+                        statusText = '⚠️ Update';
+                    }
+
+                    itemsHtml += `
+                        <div class="item-row">
+                            <div class="row align-items-center">
+                                <div class="col-md-1"><small class="text-muted">${item.kode}</small></div>
+                                <div class="col-md-4">
+                                    ${item.nama}
+                                    ${item.wajib ? '<span class="text-danger">*</span>' : ''}
+                                    <span class="kategori-badge">Cat ${item.kategori}</span>
+                                </div>
+                                <div class="col-md-2">
+                                    <span class="status-badge ${statusClass}">${statusText}</span>
+                                </div>
+                                <div class="col-md-3">
+                                    ${value ? `<small class="text-muted">${value}</small>` : ''}
+                                    ${catatan ? `<small class="text-warning"><i class="fas fa-sticky-note"></i> ${catatan}</small>` : ''}
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="showStatusModal('${sectionKey}', '${itemKey}', '${item.nama}', '${status}', '${value}', '${catatan}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                sectionDiv.innerHTML = `
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-${section.icon || 'folder'}"></i> ${section.judul}</h5>
+                    </div>
+                    <div class="card-body">
+                        ${itemsHtml || '<p class="text-muted">Tidak ada item</p>'}
+                    </div>
+                `;
+                
+                container.appendChild(sectionDiv);
             });
-            html += '</table>';
+
+            // Update progress
+            const percentage = totalItems > 0 ? Math.round((adaItems / totalItems) * 100) : 0;
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressBar').textContent = percentage + '%';
+            document.getElementById('progressText').textContent = `${adaItems} dari ${totalItems} item lengkap`;
+        }
+
+        function showStatusModal(section, itemKey, itemNama, currentStatus, currentValue, currentCatatan) {
+            currentSection = section;
+            currentItemKey = itemKey;
             
-            container.innerHTML = html;
+            document.getElementById('statusItemInfo').textContent = `Update status untuk: ${itemNama}`;
+            document.getElementById('statusSelect').value = currentStatus || 'Missing';
+            document.getElementById('statusCatatan').value = currentCatatan || '';
+            document.getElementById('statusValue').value = currentValue || '';
+            
+            const modal = new bootstrap.Modal(document.getElementById('statusModal'));
+            modal.show();
+        }
+
+        function saveStatus() {
+            const newStatus = document.getElementById('statusSelect').value;
+            const newCatatan = document.getElementById('statusCatatan').value;
+            const newValue = document.getElementById('statusValue').value;
+            
+            // Simpan ke Realtime Database
+            const updates = {};
+            updates[`psi_data/${currentEquipment.equip_id}/${currentSection}/${currentItemKey}`] = {
+                status: newStatus,
+                catatan: newCatatan,
+                value: newValue,
+                updated_at: new Date().toISOString(),
+                updated_by: auth.currentUser.email
+            };
+            
+            database.ref().update(updates)
+                .then(() => {
+                    // Update local data
+                    if (!psiData[currentSection]) psiData[currentSection] = {};
+                    psiData[currentSection][currentItemKey] = {
+                        status: newStatus,
+                        catatan: newCatatan,
+                        value: newValue,
+                        updated_at: new Date().toISOString(),
+                        updated_by: auth.currentUser.email
+                    };
+                    
+                    // Refresh tampilan
+                    displayPsiSections();
+                    
+                    // Close modal
+                    bootstrap.Modal.getInstance(document.getElementById('statusModal')).hide();
+                })
+                .catch(error => {
+                    alert('Gagal menyimpan: ' + error.message);
+                });
         }
 
         function editEquipment() {
             window.location.href = `edit-equipment.html?id=${docId}`;
-        }
-
-        function tambahDokumen() {
-            alert('Fitur upload dokumen akan segera tersedia');
-        }
-
-        function viewFile(filename) {
-            alert('Membuka file: ' + filename);
         }
 
         function logout() {
