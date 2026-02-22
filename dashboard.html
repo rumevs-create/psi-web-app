@@ -1,10 +1,29 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <title>Dashboard - PSI System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .summary-card {
+            transition: transform 0.2s;
+        }
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-dark bg-primary">
@@ -12,68 +31,109 @@
             <span class="navbar-brand">
                 <i class="fas fa-shield-alt"></i> PSI Management
             </span>
-            <button class="btn btn-light" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
+            <div>
+                <button class="btn btn-success me-2" onclick="window.location.href='tambah-equipment.html'">
+                    <i class="fas fa-plus"></i> Tambah Equipment
+                </button>
+                <button class="btn btn-light" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
         </div>
     </nav>
 
     <div class="container-fluid mt-4">
-        <div class="row" id="summaryCards">
-            <div class="col-md-3">
-                <div class="card bg-primary text-white">
+        <!-- Summary Cards -->
+        <div class="row mb-4" id="summaryCards">
+            <div class="col-md-3 mb-3">
+                <div class="card bg-primary text-white summary-card">
                     <div class="card-body">
-                        <h5>Total Equipment</h5>
-                        <h2 id="totalEquip">0</h2>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Total Equipment</h6>
+                                <h2 id="totalEquip">0</h2>
+                            </div>
+                            <i class="fas fa-cubes fa-2x opacity-50"></i>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card bg-danger text-white">
+            <div class="col-md-3 mb-3">
+                <div class="card bg-danger text-white summary-card">
                     <div class="card-body">
-                        <h5>Kategori 1</h5>
-                        <h2 id="kategori1">0</h2>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Kategori 1 (Critical)</h6>
+                                <h2 id="kategori1">0</h2>
+                            </div>
+                            <i class="fas fa-exclamation-triangle fa-2x opacity-50"></i>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card bg-success text-white">
+            <div class="col-md-3 mb-3">
+                <div class="card bg-success text-white summary-card">
                     <div class="card-body">
-                        <h5>PSI Complete</h5>
-                        <h2 id="psiComplete">0%</h2>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">PSI Complete</h6>
+                                <h2 id="psiComplete">0%</h2>
+                            </div>
+                            <i class="fas fa-check-circle fa-2x opacity-50"></i>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card bg-warning text-white">
+            <div class="col-md-3 mb-3">
+                <div class="card bg-warning text-white summary-card">
                     <div class="card-body">
-                        <h5>Need Update</h5>
-                        <h2 id="needUpdate">0</h2>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Need Update</h6>
+                                <h2 id="needUpdate">0</h2>
+                            </div>
+                            <i class="fas fa-clock fa-2x opacity-50"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="card mt-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-    <h5 class="mb-0">Daftar Equipment</h5>
-    <button class="btn btn-success btn-sm" onclick="window.location.href='tambah-equipment.html'">
-        <i class="fas fa-plus"></i> Tambah Equipment
-    </button>
-</div>
-            <table class="table table-striped" id="equipmentTable">
-                    <thead>
+        <!-- Equipment Table -->
+        <div class="table-container">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">
+                    <i class="fas fa-list"></i> Daftar Equipment
+                </h5>
+                <div class="input-group" style="width: 300px;">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" class="form-control" id="searchInput" 
+                           placeholder="Cari equipment..." onkeyup="searchEquipment()">
+                </div>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-hover" id="equipmentTable">
+                    <thead class="table-dark">
                         <tr>
-                            <th>ID</th>
+                            <th>Equipment ID</th>
                             <th>Nama</th>
                             <th>Area</th>
                             <th>Kategori</th>
                             <th>Kustodian</th>
+                            <th>Progress PSI</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="equipmentList">
-                        <tr><td colspan="6" class="text-center">Loading...</td></tr>
+                        <tr>
+                            <td colspan="7" class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2 text-muted">Memuat data equipment...</p>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -83,75 +143,185 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     
     <script>
-        // 🔥 KONFIGURASI FIREBASE - PASTE ASLI DARI FIREBASE ANDA!
-const firebaseConfig = {
-    apiKey: "AIzaSyA1_SggH_uh1ZVbtoLD3u5-w6pqKgrgITk",
-    authDomain: "psi-management-system.firebaseapp.com",
-    projectId: "psi-management-system",
-    storageBucket: "psi-management-system.firebasestorage.app",
-    messagingSenderId: "1053490628908",
-    appId: "1:1053490628908:web:6b272409217851f8ebc489"
-};
+        // 🔥 KONFIGURASI FIREBASE - RTDB
+        const firebaseConfig = {
+            apiKey: "AIzaSyA1_SggH_uh1ZVbtoLD3u5-w6pqKgrgITk",
+            authDomain: "psi-management-system.firebaseapp.com",
+            databaseURL: "https://psi-management-system-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "psi-management-system",
+            storageBucket: "psi-management-system.firebasestorage.app",
+            messagingSenderId: "1053490628908",
+            appId: "1:1053490628908:web:6b272409217851f8ebc489"
+        };
 
-        // Initialize Firebase (CUKUP SEKALI!)
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        const db = firebase.firestore();
+        const database = firebase.database();
+
+        // Global variables
+        let allEquipment = [];
+        let psiMaster = null;
 
         // Cek login
         auth.onAuthStateChanged((user) => {
             if (!user) {
                 window.location.href = 'index.html';
             } else {
+                console.log('User logged in:', user.email);
                 loadData();
             }
         });
 
-        function loadData() {
-            // Load summary
-            db.collection('text').get().then((snapshot) => {
-                const total = snapshot.size;
-                let kat1 = 0;
+        async function loadData() {
+            try {
+                // Load master PSI data untuk hitung progress
+                const masterSnapshot = await database.ref('pressure_vessel').once('value');
+                psiMaster = masterSnapshot.val();
                 
-                snapshot.forEach(doc => {
-                    if (doc.data().kategori === 1) kat1++;
-                });
-                
-                document.getElementById('totalEquip').textContent = total;
-                document.getElementById('kategori1').textContent = kat1;
-                document.getElementById('psiComplete').textContent = '75%'; // Sementara
-                
-                // Load table
-                let html = '';
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    html += `
+                // Load equipment data - FIXED: pakai RTDB syntax
+                const equipmentRef = database.ref('equipment');
+                equipmentRef.on('value', (snapshot) => {
+                    const equipmentData = snapshot.val() || {};
+                    
+                    // Convert object to array dengan key
+                    allEquipment = Object.keys(equipmentData).map(key => ({
+                        key: key,
+                        ...equipmentData[key]
+                    }));
+                    
+                    renderTable(allEquipment);
+                    updateSummary(allEquipment);
+                }, (error) => {
+                    console.error('Error loading equipment:', error);
+                    document.getElementById('equipmentList').innerHTML = `
                         <tr>
-                            <td>${data.equip_id}</td>
-                            <td>${data.nama}</td>
-                            <td>${data.area}</td>
-                            <td><span class="badge bg-${data.kategori === 1 ? 'danger' : 'secondary'}">Kat ${data.kategori}</span></td>
-                            <td>${data.kustodian}</td>
-                            <td>
-        <button class="btn btn-sm btn-info" onclick="viewDetail('${data.equip_id}')" title="Lihat Detail">
-            <i class="fas fa-eye"></i>
-        </button>
-        <button class="btn btn-sm btn-warning" onclick="editEquipment('${data.equip_id}')" title="Edit">
-            <i class="fas fa-edit"></i>
-        </button>
+                            <td colspan="7" class="text-center text-danger">
+                                <i class="fas fa-exclamation-circle"></i> 
+                                Gagal memuat data: ${error.message}
                             </td>
                         </tr>
                     `;
                 });
-                document.getElementById('equipmentList').innerHTML = html;
-            });
+                
+            } catch (error) {
+                console.error('Error:', error);
+            }
         }
 
-        function viewDetail(id) {
-            window.location.href = `detail.html?id=${id}`;
+        function renderTable(equipmentList) {
+            const tbody = document.getElementById('equipmentList');
+            
+            if (equipmentList.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">
+                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                            <p>Tidak ada equipment</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let html = '';
+            equipmentList.forEach((data) => {
+                const kategoriBadge = data.kategori === 1 
+                    ? '<span class="badge bg-danger">Critical</span>'
+                    : `<span class="badge bg-secondary">Kat ${data.kategori}</span>`;
+                
+                // Hitung progress PSI (simulasi - nanti ambil dari psi_data)
+                const progress = data.psi_progress || 0;
+                const progressBar = `
+                    <div class="progress" style="height: 20px;">
+                        <div class="progress-bar bg-success" role="progressbar" 
+                             style="width: ${progress}%">${progress}%</div>
+                    </div>
+                `;
+                
+                html += `
+                    <tr>
+                        <td><strong>${data.equip_id}</strong></td>
+                        <td>${data.nama}</td>
+                        <td><span class="badge bg-info">${data.area}</span></td>
+                        <td>${kategoriBadge}</td>
+                        <td>${data.kustodian}</td>
+                        <td style="width: 150px;">${progressBar}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info" onclick="viewDetail('${data.equip_id}')" 
+                                    title="Lihat Detail">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-warning" onclick="editEquipment('${data.key}')" 
+                                    title="Edit Equipment">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteEquipment('${data.key}', '${data.equip_id}')" 
+                                    title="Hapus">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+
+        function updateSummary(equipmentList) {
+            const total = equipmentList.length;
+            const kat1 = equipmentList.filter(e => e.kategori === 1).length;
+            
+            // Hitung PSI complete rata-rata
+            let totalProgress = 0;
+            equipmentList.forEach(e => {
+                totalProgress += (e.psi_progress || 0);
+            });
+            const avgProgress = total > 0 ? Math.round(totalProgress / total) : 0;
+            
+            // Hitung need update (progress < 100%)
+            const needUpdate = equipmentList.filter(e => (e.psi_progress || 0) < 100).length;
+            
+            document.getElementById('totalEquip').textContent = total;
+            document.getElementById('kategori1').textContent = kat1;
+            document.getElementById('psiComplete').textContent = avgProgress + '%';
+            document.getElementById('needUpdate').textContent = needUpdate;
+        }
+
+        function searchEquipment() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allEquipment.filter(e => 
+                e.equip_id.toLowerCase().includes(searchTerm) ||
+                e.nama.toLowerCase().includes(searchTerm) ||
+                e.area.toLowerCase().includes(searchTerm) ||
+                e.kustodian.toLowerCase().includes(searchTerm)
+            );
+            renderTable(filtered);
+        }
+
+        function viewDetail(equipId) {
+            window.location.href = `detail.html?id=${equipId}`;
+        }
+
+        function editEquipment(key) {
+            window.location.href = `edit-equipment.html?id=${key}`;
+        }
+
+        function deleteEquipment(key, equipId) {
+            if (!confirm(`Yakin ingin menghapus equipment ${equipId}?`)) {
+                return;
+            }
+            
+            database.ref('equipment/' + key).remove()
+                .then(() => {
+                    alert('Equipment berhasil dihapus');
+                })
+                .catch((error) => {
+                    alert('Gagal menghapus: ' + error.message);
+                });
         }
 
         function logout() {
@@ -159,18 +329,6 @@ const firebaseConfig = {
                 window.location.href = 'index.html';
             });
         }
-             function editEquipment(id) {
-            window.location.href = `edit-equipment.html?id=${id}`;
-        }
     </script>
 </body>
-
 </html>
-
-
-
-
-
-
-
-
