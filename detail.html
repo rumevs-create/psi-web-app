@@ -7,6 +7,23 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        :root {
+            --color-olive: #666547;
+            --color-red: #fb2e01;
+            --color-mint: #6fcb9f;
+            --color-yellow: #ffe28a;
+            --color-cream: #fffeb3;
+        }
+
+        body {
+            background: #fffeb3;
+        }
+
+        .navbar {
+            background-color: #666547 !important;
+            box-shadow: 0 2px 10px rgba(102, 101, 71, 0.3);
+        }
+
         .status-badge {
             padding: 5px 10px;
             border-radius: 15px;
@@ -15,51 +32,170 @@
             display: inline-block;
             cursor: pointer;
         }
-        .status-ada { background: #d4edda; color: #155724; }
-        .status-missing { background: #f8d7da; color: #721c24; }
-        .status-update { background: #fff3cd; color: #856404; }
+        .status-ada { background: #6fcb9f; color: #fff; }
+        .status-missing { background: #fb2e01; color: #fff; }
+        .status-update { background: #ffe28a; color: #666547; }
+        .status-na { background: #666547; color: #fffeb3; }
         
         .psi-section {
             margin-bottom: 25px;
-            border-left: 4px solid #0b5394;
+            border-left: 4px solid #666547;
             padding-left: 15px;
         }
         
         .progress {
             height: 25px;
             margin-bottom: 20px;
+            background-color: #fffeb3;
         }
         
         .item-row {
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #ffe28a;
             padding: 12px 0;
             transition: background-color 0.2s;
         }
         
         .item-row:hover {
-            background-color: #f8f9fa;
+            background-color: #fffeb3;
         }
         
         .kategori-badge {
             font-size: 10px;
             padding: 2px 5px;
             border-radius: 3px;
-            background: #e9ecef;
+            background: #ffe28a;
+            color: #666547;
             margin-left: 5px;
         }
         
         .file-link {
-            color: #0b5394;
+            color: #666547;
             text-decoration: none;
+            font-weight: 500;
         }
         
         .file-link:hover {
+            color: #fb2e01;
             text-decoration: underline;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(102, 101, 71, 0.15);
+        }
+
+        .card-header.bg-primary {
+            background-color: #666547 !important;
+        }
+
+        .card-header.bg-info {
+            background-color: #6fcb9f !important;
+        }
+
+        .btn-warning {
+            background-color: #ffe28a;
+            border: none;
+            color: #666547;
+        }
+
+        .btn-warning:hover {
+            background-color: #fb2e01;
+            color: #fff;
+        }
+
+        .btn-info {
+            background-color: #6fcb9f;
+            border: none;
+            color: #fff;
+        }
+
+        .btn-info:hover {
+            background-color: #5db88d;
+            color: #fff;
+        }
+
+        .btn-outline-primary {
+            color: #666547;
+            border-color: #666547;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #666547;
+            border-color: #666547;
+            color: #fffeb3;
+        }
+
+        .modal-header.bg-primary {
+            background-color: #666547 !important;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #6fcb9f;
+            box-shadow: 0 0 0 0.2rem rgba(111, 203, 159, 0.25);
+        }
+
+        .alert-info {
+            background-color: #ffe28a;
+            color: #666547;
+            border: none;
+        }
+
+        .text-primary {
+            color: #666547 !important;
+        }
+
+        .text-muted {
+            color: #666547 !important;
+            opacity: 0.7;
+        }
+
+        .bg-light {
+            background-color: #fffeb3 !important;
+        }
+
+        .table-danger {
+            background-color: rgba(251, 46, 1, 0.1) !important;
+        }
+
+        .font-monospace {
+            color: #666547;
+        }
+
+        .spinner-border.text-primary {
+            color: #666547 !important;
+        }
+
+        .badge.bg-secondary {
+            background-color: #ffe28a !important;
+            color: #666547;
+        }
+
+        .badge.bg-danger {
+            background-color: #fb2e01 !important;
+        }
+
+        .badge.bg-info {
+            background-color: #6fcb9f !important;
+        }
+
+        .badge.bg-success {
+            background-color: #6fcb9f !important;
+        }
+
+        .badge.bg-light {
+            background-color: #fffeb3 !important;
+            color: #666547;
+        }
+
+        .btn-close-white {
+            filter: none;
+            opacity: 1;
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-primary">
+    <nav class="navbar navbar-dark">
         <div class="container-fluid">
             <span class="navbar-brand">
                 <i class="fas fa-shield-alt"></i> PSI Management - Detail Equipment
@@ -81,7 +217,7 @@
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
-            <p class="mt-2">Memuat data equipment...</p>
+            <p class="mt-2 text-muted">Memuat data equipment...</p>
         </div>
 
         <!-- Main Content -->
@@ -90,28 +226,28 @@
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h4 id="equipTitle" class="mb-0"></h4>
-                    <span id="formBadge" class="badge bg-light text-dark"></span>
+                    <span id="formBadge" class="badge bg-light"></span>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-8">
                             <table class="table table-sm">
-                                <tr><th style="width: 200px;">Equipment ID</th><td id="detailEquipId"></td></tr>
-                                <tr><th>Area</th><td id="detailArea"></td></tr>
-                                <tr><th>Kategori</th><td id="detailKategori"></td></tr>
-                                <tr><th>Kustodian</th><td id="detailKustodian"></td></tr>
-                                <tr><th>Lokasi Fisik</th><td id="detailLokasi"></td></tr>
-                                <tr><th>Tipe Equipment</th><td id="detailTipe"></td></tr>
+                                <tr><th style="width: 200px; color: #666547;">Equipment ID</th><td id="detailEquipId"></td></tr>
+                                <tr><th style="color: #666547;">Area</th><td id="detailArea"></td></tr>
+                                <tr><th style="color: #666547;">Kategori</th><td id="detailKategori"></td></tr>
+                                <tr><th style="color: #666547;">Kustodian</th><td id="detailKustodian"></td></tr>
+                                <tr><th style="color: #666547;">Lokasi Fisik</th><td id="detailLokasi"></td></tr>
+                                <tr><th style="color: #666547;">Tipe Equipment</th><td id="detailTipe"></td></tr>
                             </table>
                         </div>
                         <div class="col-md-4">
                             <div class="card bg-light">
                                 <div class="card-body">
-                                    <h6>Progress Kelengkapan PSI</h6>
+                                    <h6 style="color: #666547;">Progress Kelengkapan PSI</h6>
                                     <div class="progress">
-                                        <div id="progressBar" class="progress-bar bg-success" role="progressbar" style="width: 0%">0%</div>
+                                        <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%; background-color: #6fcb9f;">0%</div>
                                     </div>
-                                    <p id="progressText" class="mb-0 small">0 dari 0 item</p>
+                                    <p id="progressText" class="mb-0 small" style="color: #666547;">0 dari 0 item</p>
                                 </div>
                             </div>
                             <div class="mt-2 d-grid gap-2">
@@ -148,7 +284,7 @@
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Status <span class="text-danger">*</span></label>
+                            <label class="form-label" style="color: #666547;">Status <span class="text-danger">*</span></label>
                             <select class="form-select" id="statusSelect" required>
                                 <option value="Ada">✅ Ada (Lengkap)</option>
                                 <option value="Missing">❌ Missing (Tidak Ada)</option>
@@ -158,38 +294,38 @@
                         </div>
                         
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Input Type</label>
-                            <input type="text" class="form-control" id="inputTypeDisplay" readonly>
+                            <label class="form-label" style="color: #666547;">Input Type</label>
+                            <input type="text" class="form-control" id="inputTypeDisplay" readonly style="background-color: #fffeb3;">
                         </div>
                     </div>
 
                     <!-- Dynamic Input Container -->
                     <div id="valueInputContainer" class="mb-3">
-                        <label class="form-label" id="valueLabel">Nilai/Spesifikasi</label>
+                        <label class="form-label" id="valueLabel" style="color: #666547;">Nilai/Spesifikasi</label>
                         <!-- Input akan di-generate oleh JS berdasarkan input_type -->
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Catatan / Keterangan</label>
+                        <label class="form-label" style="color: #666547;">Catatan / Keterangan</label>
                         <textarea class="form-control" id="statusCatatan" rows="2" 
                                   placeholder="Contoh: Revisi 5, 2025, Halaman 3 rusak"></textarea>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">File Referensi</label>
+                        <label class="form-label" style="color: #666547;">File Referensi</label>
                         <div class="input-group">
                             <input type="file" class="form-control" id="statusFileInput">
-                            <button class="btn btn-outline-secondary" type="button" onclick="document.getElementById('statusFileInput').value=''">
+                            <button class="btn btn-outline-secondary" type="button" onclick="document.getElementById('statusFileInput').value=''" style="border-color: #ffe28a; color: #666547;">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
-                        <div class="form-text">Upload file baru atau biarkan kosong</div>
+                        <div class="form-text" style="color: #666547;">Upload file baru atau biarkan kosong</div>
                         <div id="currentFileDisplay" class="small mt-1"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary" onclick="saveStatus()">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: #666547; border: none;">Batal</button>
+                    <button type="button" class="btn btn-primary" onclick="saveStatus()" style="background-color: #6fcb9f; border: none;">
                         <i class="fas fa-save"></i> Simpan Perubahan
                     </button>
                 </div>
@@ -226,7 +362,7 @@
     let psiData = {};
     let currentItemKey = null;
     let currentSectionKey = null;
-    let currentItemData = null; // Simpan data item yang sedang di-edit
+    let currentItemData = null;
 
     // Ambil equip_id dari URL (misal: ?id=V-1101)
     const urlParams = new URLSearchParams(window.location.search);
@@ -251,7 +387,6 @@
         try {
             console.log('Loading equipment data for:', equipId);
             
-            // Cari equipment by equip_id (bukan by key)
             const equipmentRef = database.ref('equipment');
             const snapshot = await equipmentRef.orderByChild('equip_id').equalTo(equipId).once('value');
             
@@ -261,15 +396,13 @@
                 return;
             }
             
-            // Ambil data pertama yang match
             snapshot.forEach((childSnapshot) => {
                 currentEquipmentKey = childSnapshot.key;
                 currentEquipment = childSnapshot.val();
                 console.log('Found equipment:', currentEquipmentKey, currentEquipment);
-                return true; // Stop iterasi
+                return true;
             });
             
-            // Load master PSI dan PSI data
             await loadMasterAndPsiData();
             
         } catch (error) {
@@ -284,7 +417,6 @@
             const tipe = currentEquipment.tipe || 'pressure_vessel';
             console.log('Loading master PSI for type:', tipe);
             
-            // Load master data
             const masterSnapshot = await database.ref(tipe).once('value');
             if (!masterSnapshot.exists()) {
                 console.warn(`Master data untuk tipe "${tipe}" tidak ditemukan`);
@@ -294,16 +426,13 @@
                 console.log('Master data loaded:', psiMaster);
             }
 
-            // Load PSI data untuk equipment ini
             const psiSnapshot = await database.ref('psi_data/' + equipId).once('value');
             psiData = psiSnapshot.val() || {};
             console.log('PSI data loaded:', psiData);
             
-            // Tampilkan semua data
             displayEquipment();
             displayPsiSections();
             
-            // Sembunyikan loading
             document.getElementById('loadingDiv').style.display = 'none';
             document.getElementById('contentDiv').style.display = 'block';
             
@@ -329,23 +458,23 @@
         
         document.getElementById('detailKustodian').textContent = data.kustodian || '-';
         document.getElementById('detailLokasi').textContent = data.lokasi_fisik || '-';
-        document.getElementById('detailTipe').textContent = data.tipe || 'pressure_vessel';
+        document.getElementById('detailTipe').textContent = getTipeLabel(data.tipe) || 'pressure_vessel';
     }
 
-    // ========== FUNGSI DISPLAY PSI SECTIONS (UPDATED) ==========
+    // ========== FUNGSI DISPLAY PSI SECTIONS ==========
     function displayPsiSections() {
         const container = document.getElementById('psiSections');
         container.innerHTML = '';
         
         if (!psiMaster || !psiMaster.sections) {
             container.innerHTML = `
-                <div class="alert alert-warning">
+                <div class="alert" style="background: #ffe28a; color: #666547;">
                     <i class="fas fa-exclamation-triangle"></i> 
                     Master data PSI untuk tipe "${currentEquipment.tipe || 'pressure_vessel'}" tidak ditemukan.<br>
                     <small>Silakan upload master data terlebih dahulu atau pilih tipe equipment yang sesuai.</small>
                 </div>
                 <div class="mt-3">
-                    <button class="btn btn-primary" onclick="window.location.href='upload-master.html'">
+                    <button class="btn" onclick="window.location.href='upload-master.html'" style="background: #6fcb9f; color: #fff;">
                         <i class="fas fa-upload"></i> Upload Master Data
                     </button>
                 </div>
@@ -358,7 +487,6 @@
         let wajibItems = 0;
         let wajibAdaItems = 0;
 
-        // Iterasi sections dari master data
         Object.keys(psiMaster.sections).forEach(sectionKey => {
             const section = psiMaster.sections[sectionKey];
             
@@ -372,7 +500,6 @@
                 Object.keys(section.items).forEach(itemKey => {
                     const item = section.items[itemKey];
                     
-                    // Ambil data PSI dari psi_data
                     const psiItem = psiData[sectionKey]?.[itemKey] || {};
                     const status = psiItem.status || 'Missing';
                     const value = psiItem.value || '';
@@ -380,7 +507,6 @@
                     const file = psiItem.file || '';
                     const updatedAt = psiItem.updated_at ? new Date(psiItem.updated_at).toLocaleString('id-ID') : '';
 
-                    // Hitung statistik
                     totalItems++;
                     if (item.wajib) {
                         wajibItems++;
@@ -388,7 +514,6 @@
                     }
                     if (status === 'Ada') adaItems++;
 
-                    // Styling berdasarkan kategori dan status
                     let statusClass = 'status-missing';
                     let statusText = '❌ Missing';
                     let rowClass = '';
@@ -400,16 +525,14 @@
                         statusClass = 'status-update';
                         statusText = '⚠️ Update';
                     } else if (status === 'Not Applicable') {
-                        statusClass = 'bg-secondary text-white';
+                        statusClass = 'status-na';
                         statusText = '➖ N/A';
                     }
 
-                    // Highlight jika wajib tapi missing
                     if (item.wajib && status !== 'Ada' && status !== 'Not Applicable') {
                         rowClass = 'table-danger';
                     }
 
-                    // Icon berdasarkan input_type
                     let inputIcon = 'file-alt';
                     if (item.input_type === 'text') inputIcon = 'keyboard';
                     else if (item.input_type === 'number') inputIcon = 'hashtag';
@@ -425,11 +548,11 @@
                                 <div class="col-md-4">
                                     <div class="d-flex align-items-center">
                                         <i class="fas fa-${inputIcon} text-muted me-2 small"></i>
-                                        <span class="fw-semibold">${item.nama}</span>
+                                        <span class="fw-semibold" style="color: #666547;">${item.nama}</span>
                                         ${item.wajib ? '<span class="badge bg-danger ms-2" title="Wajib">W</span>' : ''}
                                     </div>
-                                    <span class="badge bg-secondary kategori-badge">Kategori ${item.kategori}</span>
-                                    ${item.input_type ? `<span class="badge bg-light text-dark kategori-badge">${item.input_type}</span>` : ''}
+                                    <span class="kategori-badge">Kategori ${item.kategori}</span>
+                                    ${item.input_type ? `<span class="kategori-badge">${item.input_type}</span>` : ''}
                                 </div>
                                 <div class="col-md-2 text-center">
                                     <span class="status-badge ${statusClass}" 
@@ -439,8 +562,8 @@
                                     </span>
                                 </div>
                                 <div class="col-md-3">
-                                    ${value ? `<div class="small text-primary fw-bold">${escapeHtml(value)}</div>` : ''}
-                                    ${catatan ? `<div class="small text-warning"><i class="fas fa-sticky-note"></i> ${escapeHtml(catatan)}</div>` : ''}
+                                    ${value ? `<div class="small fw-bold" style="color: #666547;">${escapeHtml(value)}</div>` : ''}
+                                    ${catatan ? `<div class="small" style="color: #fb2e01;"><i class="fas fa-sticky-note"></i> ${escapeHtml(catatan)}</div>` : ''}
                                     ${file ? `<div class="small"><a href="#" class="file-link" onclick="viewFile('${escapeHtml(file)}'); return false;"><i class="fas fa-paperclip"></i> ${escapeHtml(file)}</a></div>` : ''}
                                     ${updatedAt ? `<div class="small text-muted mt-1"><i class="fas fa-clock"></i> ${updatedAt}</div>` : ''}
                                 </div>
@@ -457,7 +580,6 @@
                 });
             }
 
-            // Progress per section
             const sectionTotal = Object.keys(section.items || {}).length;
             const sectionAda = Object.keys(section.items || {}).reduce((acc, key) => {
                 return acc + (psiData[sectionKey]?.[key]?.status === 'Ada' ? 1 : 0);
@@ -484,27 +606,32 @@
             container.appendChild(sectionDiv);
         });
 
-        // Update progress bar keseluruhan
         const percentage = totalItems > 0 ? Math.round((adaItems / totalItems) * 100) : 0;
         const wajibPercentage = wajibItems > 0 ? Math.round((wajibAdaItems / wajibItems) * 100) : 0;
         
         const progressBar = document.getElementById('progressBar');
         progressBar.style.width = percentage + '%';
         progressBar.textContent = percentage + '%';
-        progressBar.className = `progress-bar ${
-            percentage >= 90 ? 'bg-success' : 
-            percentage >= 70 ? 'bg-info' : 
-            percentage >= 50 ? 'bg-warning' : 'bg-danger'
-        }`;
+        
+        // Warna progress bar berdasarkan percentage
+        if (percentage >= 90) {
+            progressBar.style.backgroundColor = '#6fcb9f';
+        } else if (percentage >= 70) {
+            progressBar.style.backgroundColor = '#ffe28a';
+            progressBar.style.color = '#666547';
+        } else if (percentage >= 50) {
+            progressBar.style.backgroundColor = '#fb2e01';
+        } else {
+            progressBar.style.backgroundColor = '#666547';
+        }
         
         document.getElementById('progressText').innerHTML = `
             <strong>${adaItems}</strong> dari <strong>${totalItems}</strong> item lengkap (${percentage}%)<br>
-            <small class="${wajibPercentage < 100 ? 'text-danger' : 'text-success'}">
+            <small style="${wajibPercentage < 100 ? 'color: #fb2e01;' : 'color: #6fcb9f;'}">
                 Wajib: ${wajibAdaItems}/${wajibItems} (${wajibPercentage}%)
             </small>
         `;
         
-        // Update progress di equipment data
         if (currentEquipmentKey) {
             database.ref('equipment/' + currentEquipmentKey).update({
                 psi_progress: percentage,
@@ -514,7 +641,7 @@
         }
     }
 
-    // ========== FUNGSI SHOW STATUS MODAL (UPDATED) ==========
+    // ========== FUNGSI SHOW STATUS MODAL ==========
     function showStatusModal(sectionKey, itemKey, itemNama) {
         currentSectionKey = sectionKey;
         currentItemKey = itemKey;
@@ -526,20 +653,18 @@
         document.getElementById('itemKategori').innerHTML = `
             Kategori: <span class="badge bg-secondary">${currentItemData.kategori}</span>
             ${currentItemData.wajib ? ' <span class="badge bg-danger">WAJIB</span>' : ''}
-            ${currentItemData.input_type ? ` <span class="badge bg-info text-dark">${currentItemData.input_type}</span>` : ''}
+            ${currentItemData.input_type ? ` <span class="badge bg-info">${currentItemData.input_type}</span>` : ''}
         `;
         
         document.getElementById('statusSelect').value = psiItem.status || 'Missing';
         document.getElementById('inputTypeDisplay').value = currentItemData.input_type || 'text';
         document.getElementById('statusCatatan').value = psiItem.catatan || '';
         
-        // Generate dynamic input berdasarkan input_type
         generateValueInput(currentItemData.input_type, psiItem.value || '');
         
-        // Display current file if exists
         const fileDisplay = document.getElementById('currentFileDisplay');
         if (psiItem.file) {
-            fileDisplay.innerHTML = `<span class="badge bg-success"><i class="fas fa-check"></i> File: ${psiItem.file}</span>`;
+            fileDisplay.innerHTML = `<span class="badge" style="background: #6fcb9f; color: #fff;"><i class="fas fa-check"></i> File: ${psiItem.file}</span>`;
         } else {
             fileDisplay.innerHTML = '<span class="text-muted">Belum ada file</span>';
         }
@@ -562,7 +687,7 @@
             input.className = 'form-control';
             input.id = 'statusValue';
             input.value = currentValue;
-            input.placeholder = 'Contoh: PID_V1101_Rev5.pdf, Sertifikat_Kalibrasi_2024.pdf';
+            input.placeholder = 'Contoh: PID_V1101_Rev5.pdf';
             container.appendChild(input);
         } else if (inputType === 'date') {
             label.textContent = 'Tanggal';
@@ -582,7 +707,6 @@
             input.placeholder = 'Contoh: 10.5, 150, 2024';
             container.appendChild(input);
         } else {
-            // Default text
             label.textContent = 'Nilai / Spesifikasi / Keterangan';
             const input = document.createElement('input');
             input.type = 'text';
@@ -594,13 +718,12 @@
         }
     }
 
-    // ========== FUNGSI SAVE STATUS (UPDATED) ==========
+    // ========== FUNGSI SAVE STATUS ==========
     function saveStatus() {
         const newStatus = document.getElementById('statusSelect').value;
         const newValue = document.getElementById('statusValue')?.value.trim() || '';
         const newCatatan = document.getElementById('statusCatatan').value.trim();
         
-        // Build update object
         const updatePath = `psi_data/${equipId}/${currentSectionKey}/${currentItemKey}`;
         const updateData = {
             status: newStatus,
@@ -608,17 +731,13 @@
             updated_by: auth.currentUser.email
         };
         
-        // Hanya tambahkan field jika ada nilai
         if (newValue) updateData.value = newValue;
         if (newCatatan) updateData.catatan = newCatatan;
         
-        // Handle file upload (simulasi - simpan nama file saja)
         const fileInput = document.getElementById('statusFileInput');
         if (fileInput.files.length > 0) {
             updateData.file = fileInput.files[0].name;
-            // TODO: Upload ke Firebase Storage jika diperlukan
         } else if (psiData[currentSectionKey]?.[currentItemKey]?.file) {
-            // Keep existing file if not uploading new one
             updateData.file = psiData[currentSectionKey][currentItemKey].file;
         }
         
@@ -627,17 +746,13 @@
         
         database.ref(updatePath).update(updateData)
             .then(() => {
-                // Update local data
                 if (!psiData[currentSectionKey]) psiData[currentSectionKey] = {};
                 psiData[currentSectionKey][currentItemKey] = updateData;
                 
-                // Refresh tampilan
                 displayPsiSections();
                 
-                // Tutup modal
                 bootstrap.Modal.getInstance(document.getElementById('statusModal')).hide();
                 
-                // Show success alert
                 showAlert('Status berhasil diupdate!', 'success');
             })
             .catch(error => {
@@ -674,23 +789,52 @@
     }
 
     function viewFile(filename) {
-        // TODO: Implementasi view/download file dari Firebase Storage
         alert('View file: ' + filename + '\n(Implementasi Firebase Storage diperlukan)');
     }
 
     function showAlert(message, type) {
         const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        alertDiv.className = `alert alert-dismissible fade show position-fixed`;
         alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        
+        if (type === 'success') {
+            alertDiv.style.backgroundColor = '#6fcb9f';
+            alertDiv.style.color = '#fff';
+        } else {
+            alertDiv.style.backgroundColor = '#fb2e01';
+            alertDiv.style.color = '#fff';
+        }
+        
         alertDiv.innerHTML = `
             ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
         `;
         document.body.appendChild(alertDiv);
         
         setTimeout(() => {
             alertDiv.remove();
         }, 3000);
+    }
+
+    function getTipeLabel(tipe) {
+        const labels = {
+            'pressure_vessel': 'Pressure Vessel',
+            'heat_exchanger': 'Heat Exchanger',
+            'piping': 'Piping',
+            'rotating': 'Rotating',
+            'relief_systems': 'Relief System',
+            'storage_tank': 'Storage Tank',
+            'fired_heater': 'Fired Heater',
+            'electrical': 'Electrical',
+            'instrumentation': 'Instrumentation',
+            'reactors': 'Reactor',
+            'columns_towers': 'Column/Tower',
+            'compressors': 'Compressor',
+            'cooling_towers': 'Cooling Tower',
+            'utility_systems': 'Utility',
+            'safety_systems': 'Safety System'
+        };
+        return labels[tipe] || tipe || '-';
     }
     </script>
 </body>
