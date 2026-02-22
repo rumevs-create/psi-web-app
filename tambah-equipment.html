@@ -151,6 +151,34 @@
                                placeholder="Contoh: Area CP Level 2">
                     </div>
 
+                    <!-- TAMBAHAN: Tag Number / Serial Number -->
+                    <div class="mb-3">
+                        <label class="form-label">Tag Number / Serial Number</label>
+                        <input type="text" class="form-control" id="tag_number" 
+                               placeholder="Contoh: SN-2024-001">
+                    </div>
+
+                    <!-- TAMBAHAN: Manufacturer / Vendor -->
+                    <div class="mb-3">
+                        <label class="form-label">Manufacturer / Vendor</label>
+                        <input type="text" class="form-control" id="manufacturer" 
+                               placeholder="Contoh: PT. Indonesia Pressure Vessel">
+                    </div>
+
+                    <!-- TAMBAHAN: Tahun Installasi & Manufacture -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Tahun Installasi</label>
+                            <input type="number" class="form-control" id="tahun_installasi" 
+                                   min="1900" max="2099" placeholder="2020">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Tahun Manufacture</label>
+                            <input type="number" class="form-control" id="tahun_manufacture" 
+                                   min="1900" max="2099" placeholder="2019">
+                        </div>
+                    </div>
+
                     <hr>
                     
                     <!-- Tombol Submit -->
@@ -264,6 +292,13 @@
                 kustodian: kustodian,
                 tipe: document.getElementById('tipe').value || '',
                 lokasi_fisik: document.getElementById('lokasi_fisik').value || '',
+                
+                // TAMBAHAN FIELD BARU:
+                tag_number: document.getElementById('tag_number').value || '',
+                manufacturer: document.getElementById('manufacturer').value || '',
+                tahun_installasi: document.getElementById('tahun_installasi').value ? parseInt(document.getElementById('tahun_installasi').value) : null,
+                tahun_manufacture: document.getElementById('tahun_manufacture').value ? parseInt(document.getElementById('tahun_manufacture').value) : null,
+                
                 psi_progress: 0,
                 created_at: firebase.firestore.FieldValue.serverTimestamp()
             };
