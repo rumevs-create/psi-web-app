@@ -8,8 +8,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .form-container {
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
+        }
+        .required::after {
+            content: " *";
+            color: red;
         }
     </style>
 </head>
@@ -30,10 +34,10 @@
         </div>
     </nav>
 
-    <div class="container mt-5 form-container">
-        <div class="card">
-            <div class="card-header bg-warning text-white">
-                <h5 class="mb-0">Edit Equipment</h5>
+    <div class="container mt-4 form-container">
+        <div class="card shadow">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="fas fa-edit"></i> Edit Equipment</h5>
             </div>
             <div class="card-body">
                 <div id="loadingDiv" class="text-center py-4">
@@ -46,115 +50,110 @@
                 <div id="alertMessage" class="alert d-none"></div>
                 
                 <form id="equipmentForm" style="display: none;">
-                    <!-- Hidden field untuk document ID -->
-                    <input type="hidden" id="docId">
+                    <!-- Hidden field untuk RTDB key -->
+                    <input type="hidden" id="equipmentKey">
+                    <input type="hidden" id="originalEquipId">
                     
-                    <!-- Equipment ID -->
-                    <div class="mb-3">
-                        <label class="form-label">Equipment ID <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="equip_id" required 
-                               placeholder="Contoh: V-1101">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label required">Equipment ID</label>
+                            <input type="text" class="form-control" id="equip_id" required 
+                                   placeholder="Contoh: V-1101">
+                            <div class="form-text">ID unik equipment</div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label required">Nama Equipment</label>
+                            <input type="text" class="form-control" id="nama" required 
+                                   placeholder="Contoh: PTA Slurry Vessel">
+                        </div>
                     </div>
 
-                    <!-- Nama Equipment -->
-                    <div class="mb-3">
-                        <label class="form-label">Nama Equipment <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="nama" required 
-                               placeholder="Contoh: PTA Slurry Vessel">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label required">Area</label>
+                            <select class="form-select" id="area" required>
+                                <option value="">Pilih Area</option>
+                                <option value="CP-1100">CP-1100</option>
+                                <option value="CP-1200">CP-1200</option>
+                                <option value="CP-1300">CP-1300</option>
+                                <option value="CP-1400">CP-1400</option>
+                                <option value="Utility-5300">Utility-5300</option>
+                                <option value="Utility-6000">Utility-6000</option>
+                                <option value="Utility-6300">Utility-6300</option>
+                                <option value="SSP-1700">SSP-1700</option>
+                                <option value="SSP-1800">SSP-1800</option>
+                                <option value="Lainnya">Lainnya...</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3" id="areaLainnyaDiv" style="display: none;">
+                            <label class="form-label">Area (Lainnya)</label>
+                            <input type="text" class="form-control" id="area_lainnya">
+                        </div>
                     </div>
 
-                    <!-- Area -->
-                    <div class="mb-3">
-                        <label class="form-label">Area <span class="text-danger">*</span></label>
-                        <select class="form-control" id="area" required>
-                            <option value="">Pilih Area</option>
-                            <option value="CP-1100">CP-1100</option>
-                            <option value="CP-1200">CP-1200</option>
-                            <option value="CP-1300">CP-1300</option>
-                            <option value="CP-1400">CP-1400</option>
-                            <option value="Utility-5300">Utility-5300</option>
-                            <option value="Utility-6000">Utility-6000</option>
-                            <option value="Utility-6300">Utility-6300</option>
-                            <option value="SSP-1700">SSP-1700</option>
-                            <option value="SSP-1800">SSP-1800</option>
-                            <option value="Lainnya">Lainnya</option>
-                        </select>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label required">Kategori</label>
+                            <select class="form-select" id="kategori" required>
+                                <option value="">Pilih Kategori</option>
+                                <option value="1">Kategori 1 (EHS Critical)</option>
+                                <option value="2">Kategori 2 (Non-Critical)</option>
+                                <option value="3">Kategori 3 (Valued)</option>
+                            </select>
+                            <div class="form-check mt-2">
+                                <input type="checkbox" class="form-check-input" id="is_critical" disabled>
+                                <label class="form-check-label">EHS Critical Equipment</label>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label required">Kustodian</label>
+                            <select class="form-select" id="kustodian" required>
+                                <option value="">Pilih Kustodian</option>
+                                <option value="Process Engineer">Process Engineer</option>
+                                <option value="Maintenance Engineer">Maintenance Engineer</option>
+                                <option value="Mechanical Engineer">Mechanical Engineer</option>
+                                <option value="EHS Engineer">EHS Engineer</option>
+                                <option value="Instrument Engineer">Instrument Engineer</option>
+                                <option value="Electrical Engineer">Electrical Engineer</option>
+                                <option value="Utility Supervisor">Utility Supervisor</option>
+                                <option value="Document Control">Document Control</option>
+                                <option value="Lainnya">Lainnya...</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <!-- Area Lainnya -->
-                    <div class="mb-3" id="areaLainnyaDiv" style="display: none;">
-                        <label class="form-label">Area (Lainnya)</label>
-                        <input type="text" class="form-control" id="area_lainnya" 
-                               placeholder="Masukkan nama area">
-                    </div>
-
-                    <!-- Kategori -->
-                    <div class="mb-3">
-                        <label class="form-label">Kategori <span class="text-danger">*</span></label>
-                        <select class="form-control" id="kategori" required>
-                            <option value="">Pilih Kategori</option>
-                            <option value="1">Kategori 1 (EHS Critical)</option>
-                            <option value="2">Kategori 2 (Non-Critical)</option>
-                            <option value="3">Kategori 3 (Valued)</option>
-                        </select>
-                    </div>
-
-                    <!-- Is Critical (otomatis) -->
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="is_critical" disabled>
-                        <label class="form-check-label">EHS Critical Equipment</label>
-                        <small class="text-muted d-block">(Otomatis Ya jika Kategori 1)</small>
-                    </div>
-
-                    <!-- Kustodian -->
-                    <div class="mb-3">
-                        <label class="form-label">Kustodian <span class="text-danger">*</span></label>
-                        <select class="form-control" id="kustodian" required>
-                            <option value="">Pilih Kustodian</option>
-                            <option value="Process Engineer">Process Engineer</option>
-                            <option value="Maintenance Engineer">Maintenance Engineer</option>
-                            <option value="Mechanical Engineer">Mechanical Engineer</option>
-                            <option value="EHS Engineer">EHS Engineer</option>
-                            <option value="Instrument Engineer">Instrument Engineer</option>
-                            <option value="Electrical Engineer">Electrical Engineer</option>
-                            <option value="Utility Supervisor">Utility Supervisor</option>
-                            <option value="Document Control">Document Control</option>
-                            <option value="Lainnya">Lainnya</option>
-                        </select>
-                    </div>
-
-                    <!-- Kustodian Lainnya -->
                     <div class="mb-3" id="kustodianLainnyaDiv" style="display: none;">
                         <label class="form-label">Kustodian (Lainnya)</label>
-                        <input type="text" class="form-control" id="kustodian_lainnya" 
-                               placeholder="Masukkan nama kustodian">
+                        <input type="text" class="form-control" id="kustodian_lainnya">
                     </div>
 
-                    <!-- Tipe Equipment -->
-                    <div class="mb-3">
-                        <label class="form-label">Tipe Equipment</label>
-                        <select class="form-control" id="tipe">
-                            <option value="">Pilih Tipe (Opsional)</option>
-                            <option value="pressure_vessel">Pressure Vessel</option>
-                            <option value="rotating">Rotating Equipment</option>
-                            <option value="tank">Tank</option>
-                            <option value="piping">Piping</option>
-                            <option value="instrument">Instrument</option>
-                            <option value="electrical">Electrical</option>
-                            <option value="safety">Safety Device</option>
-                        </select>
-                    </div>
-
-                    <!-- Lokasi Fisik -->
-                    <div class="mb-3">
-                        <label class="form-label">Lokasi Fisik</label>
-                        <input type="text" class="form-control" id="lokasi_fisik" 
-                               placeholder="Contoh: Area CP Level 2">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Tipe Equipment</label>
+                            <select class="form-select" id="tipe">
+                                <option value="">Pilih Tipe</option>
+                                <option value="pressure_vessel">Pressure Vessel</option>
+                                <option value="rotating">Rotating Equipment</option>
+                                <option value="tank">Tank</option>
+                                <option value="piping">Piping</option>
+                                <option value="instrument">Instrument</option>
+                                <option value="electrical">Electrical</option>
+                                <option value="safety">Safety Device</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Lokasi Fisik</label>
+                            <input type="text" class="form-control" id="lokasi_fisik" 
+                                   placeholder="Contoh: Area CP Level 2">
+                        </div>
                     </div>
 
                     <hr>
                     
-                    <!-- Tombol Submit -->
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-warning" id="submitBtn">
                             <i class="fas fa-save"></i> Update Equipment
@@ -163,7 +162,7 @@
                             <i class="fas fa-trash"></i> Hapus Equipment
                         </button>
                         <button type="button" class="btn btn-secondary" onclick="window.location.href='dashboard.html'">
-                            Batal
+                            <i class="fas fa-times"></i> Batal
                         </button>
                     </div>
                 </form>
@@ -174,13 +173,14 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        // 🔥 KONFIGURASI FIREBASE (SESUAIKAN DENGAN ANDA!)
+        // 🔥 KONFIGURASI FIREBASE - RTDB
         const firebaseConfig = {
             apiKey: "AIzaSyA1_SggH_uh1ZVbtoLD3u5-w6pqKgrgITk",
             authDomain: "psi-management-system.firebaseapp.com",
+            databaseURL: "https://psi-management-system-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "psi-management-system",
             storageBucket: "psi-management-system.firebasestorage.app",
             messagingSenderId: "1053490628908",
@@ -190,45 +190,51 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        const db = firebase.firestore();
+        const database = firebase.database();
 
-        // Ambil document ID dari URL
+        // Ambil equipment key dari URL (bukan equip_id)
         const urlParams = new URLSearchParams(window.location.search);
-        const docId = urlParams.get('id');
+        const equipmentKey = urlParams.get('id');
 
         // Cek login
         auth.onAuthStateChanged((user) => {
             if (!user) {
                 window.location.href = 'index.html';
-            } else if (docId) {
-                loadEquipmentData(docId);
+            } else if (equipmentKey) {
+                loadEquipmentData(equipmentKey);
             } else {
                 alert('ID equipment tidak ditemukan');
                 window.location.href = 'dashboard.html';
             }
         });
 
-        // Load data equipment
-        async function loadEquipmentData(id) {
+        // Load data equipment - FIXED untuk RTDB
+        async function loadEquipmentData(key) {
             try {
-                const doc = await db.collection('equipment').doc(id).get();
+                console.log('Loading equipment with key:', key);
                 
-                if (!doc.exists) {
+                const snapshot = await database.ref('equipment/' + key).once('value');
+                
+                if (!snapshot.exists()) {
                     alert('Data tidak ditemukan');
                     window.location.href = 'dashboard.html';
                     return;
                 }
 
-                const data = doc.data();
+                const data = snapshot.val();
+                console.log('Equipment data:', data);
                 
                 // Isi form dengan data yang ada
-                document.getElementById('docId').value = id;
+                document.getElementById('equipmentKey').value = key;
+                document.getElementById('originalEquipId').value = data.equip_id;
                 document.getElementById('equip_id').value = data.equip_id || '';
                 document.getElementById('nama').value = data.nama || '';
                 
                 // Handle area
                 const areaSelect = document.getElementById('area');
-                if (data.area && !areaSelect.querySelector(`option[value="${data.area}"]`)) {
+                const predefinedAreas = Array.from(areaSelect.options).map(opt => opt.value);
+                
+                if (data.area && !predefinedAreas.includes(data.area)) {
                     document.getElementById('area_lainnya').value = data.area;
                     document.getElementById('areaLainnyaDiv').style.display = 'block';
                     areaSelect.value = 'Lainnya';
@@ -241,7 +247,9 @@
                 
                 // Handle kustodian
                 const kustodianSelect = document.getElementById('kustodian');
-                if (data.kustodian && !kustodianSelect.querySelector(`option[value="${data.kustodian}"]`)) {
+                const predefinedKustodians = Array.from(kustodianSelect.options).map(opt => opt.value);
+                
+                if (data.kustodian && !predefinedKustodians.includes(data.kustodian)) {
                     document.getElementById('kustodian_lainnya').value = data.kustodian;
                     document.getElementById('kustodianLainnyaDiv').style.display = 'block';
                     kustodianSelect.value = 'Lainnya';
@@ -258,7 +266,7 @@
                 
             } catch (error) {
                 console.error('Error loading data:', error);
-                alert('Gagal memuat data: ' + error.message);
+                showAlert('Gagal memuat data: ' + error.message, 'danger');
             }
         }
 
@@ -289,13 +297,17 @@
             document.getElementById('is_critical').checked = (this.value === '1');
         });
 
-        // Handle update
+        // Handle update - FIXED untuk RTDB
         document.getElementById('equipmentForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengupdate...';
+
+            const key = document.getElementById('equipmentKey').value;
+            const originalEquipId = document.getElementById('originalEquipId').value;
+            const newEquipId = document.getElementById('equip_id').value.trim();
 
             // Ambil nilai form
             let area = document.getElementById('area').value;
@@ -308,55 +320,85 @@
                 kustodian = document.getElementById('kustodian_lainnya').value;
             }
 
-            const equipmentData = {
-                equip_id: document.getElementById('equip_id').value,
-                nama: document.getElementById('nama').value,
-                area: area,
-                kategori: parseInt(document.getElementById('kategori').value),
-                is_critical: document.getElementById('kategori').value === '1',
-                kustodian: kustodian,
-                tipe: document.getElementById('tipe').value || '',
-                lokasi_fisik: document.getElementById('lokasi_fisik').value || '',
-                updated_at: firebase.firestore.FieldValue.serverTimestamp()
-            };
-
             try {
-                await db.collection('equipment').doc(docId).update(equipmentData);
+                // Cek jika equip_id berubah dan sudah ada yang pakai
+                if (newEquipId !== originalEquipId) {
+                    const existingSnapshot = await database.ref('equipment')
+                        .orderByChild('equip_id')
+                        .equalTo(newEquipId)
+                        .once('value');
+                    
+                    if (existingSnapshot.exists()) {
+                        showAlert('Equipment ID "' + newEquipId + '" sudah digunakan!', 'danger');
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fas fa-save"></i> Update Equipment';
+                        return;
+                    }
+                }
+
+                // Data update
+                const updateData = {
+                    equip_id: newEquipId,
+                    nama: document.getElementById('nama').value,
+                    area: area,
+                    kategori: parseInt(document.getElementById('kategori').value),
+                    is_critical: document.getElementById('kategori').value === '1',
+                    kustodian: kustodian,
+                    tipe: document.getElementById('tipe').value || '',
+                    lokasi_fisik: document.getElementById('lokasi_fisik').value || '',
+                    updated_at: new Date().toISOString(),
+                    updated_by: auth.currentUser.email
+                };
+
+                // Update ke RTDB - menggunakan update() untuk tidak overwrite field lain
+                await database.ref('equipment/' + key).update(updateData);
                 
-                const alertDiv = document.getElementById('alertMessage');
-                alertDiv.classList.remove('d-none', 'alert-danger');
-                alertDiv.classList.add('alert-success');
-                alertDiv.innerHTML = '<i class="fas fa-check-circle"></i> Data berhasil diupdate!';
+                // Jika equip_id berubah, update juga psi_data references
+                if (newEquipId !== originalEquipId) {
+                    // Pindahkan psi_data ke path baru
+                    const psiSnapshot = await database.ref('psi_data/' + originalEquipId).once('value');
+                    if (psiSnapshot.exists()) {
+                        await database.ref('psi_data/' + newEquipId).set(psiSnapshot.val());
+                        await database.ref('psi_data/' + originalEquipId).remove();
+                    }
+                }
+                
+                showAlert('Data berhasil diupdate!', 'success');
                 
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
-                }, 2000);
+                }, 1500);
                 
             } catch (error) {
                 console.error('Error updating:', error);
-                
-                const alertDiv = document.getElementById('alertMessage');
-                alertDiv.classList.remove('d-none', 'alert-success');
-                alertDiv.classList.add('alert-danger');
-                alertDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Gagal mengupdate: ' + error.message;
+                showAlert('Gagal mengupdate: ' + error.message, 'danger');
                 
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<i class="fas fa-save"></i> Update Equipment';
             }
         });
 
-        // Handle delete
+        // Handle delete - FIXED untuk RTDB
         document.getElementById('deleteBtn').addEventListener('click', async () => {
-            if (!confirm('Yakin ingin menghapus equipment ini?')) {
+            const key = document.getElementById('equipmentKey').value;
+            const equipId = document.getElementById('equip_id').value;
+            
+            if (!confirm(`Yakin ingin menghapus equipment ${equipId}?\n\nPERINGATAN: Semua data PSI untuk equipment ini juga akan dihapus!`)) {
                 return;
             }
             
             try {
-                await db.collection('equipment').doc(docId).delete();
-                alert('Data berhasil dihapus');
+                // Hapus equipment
+                await database.ref('equipment/' + key).remove();
+                
+                // Hapus juga psi_data untuk equipment ini
+                await database.ref('psi_data/' + equipId).remove();
+                
+                alert('Equipment dan data PSI berhasil dihapus');
                 window.location.href = 'dashboard.html';
             } catch (error) {
-                alert('Gagal menghapus: ' + error.message);
+                console.error('Error deleting:', error);
+                showAlert('Gagal menghapus: ' + error.message, 'danger');
             }
         });
 
@@ -365,6 +407,14 @@
             auth.signOut().then(() => {
                 window.location.href = 'index.html';
             });
+        }
+
+        // Helper function
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            alertDiv.classList.remove('d-none');
         }
     </script>
 </body>
