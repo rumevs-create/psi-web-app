@@ -134,42 +134,63 @@
 
     <!-- Modal Update Status -->
     <div class="modal fade" id="statusModal" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Update Status PSI</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fas fa-edit"></i> Update Status PSI</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p id="statusItemInfo" class="fw-bold"></p>
-                    <div class="mb-3">
-                        <label class="form-label">Status</label>
-                        <select class="form-select" id="statusSelect">
-                            <option value="Ada">✅ Ada (Lengkap)</option>
-                            <option value="Missing">❌ Missing (Tidak Ada)</option>
-                            <option value="Update Needed">⚠️ Update Needed (Perlu Update)</option>
-                        </select>
+                    <div class="alert alert-info">
+                        <strong id="statusItemInfo"></strong>
+                        <div id="itemKategori" class="small mt-1"></div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Nilai/Spesifikasi (opsional)</label>
-                        <input type="text" class="form-control" id="statusValue" 
-                               placeholder="Contoh: ASME VIII Div.1, 10 barg, SS316L">
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Status <span class="text-danger">*</span></label>
+                            <select class="form-select" id="statusSelect" required>
+                                <option value="Ada">✅ Ada (Lengkap)</option>
+                                <option value="Missing">❌ Missing (Tidak Ada)</option>
+                                <option value="Update Needed">⚠️ Update Needed (Perlu Update)</option>
+                                <option value="Not Applicable">➖ N/A (Tidak Berlaku)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Input Type</label>
+                            <input type="text" class="form-control" id="inputTypeDisplay" readonly>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Catatan</label>
-                        <input type="text" class="form-control" id="statusCatatan" 
-                               placeholder="Contoh: Revisi 5, 2025, Halaman 3 rusak">
+
+                    <!-- Dynamic Input Container -->
+                    <div id="valueInputContainer" class="mb-3">
+                        <label class="form-label" id="valueLabel">Nilai/Spesifikasi</label>
+                        <!-- Input akan di-generate oleh JS berdasarkan input_type -->
                     </div>
+
                     <div class="mb-3">
-                        <label class="form-label">File Referensi (opsional)</label>
-                        <input type="text" class="form-control" id="statusFile" 
-                               placeholder="Contoh: pid_v1101.pdf">
+                        <label class="form-label">Catatan / Keterangan</label>
+                        <textarea class="form-control" id="statusCatatan" rows="2" 
+                                  placeholder="Contoh: Revisi 5, 2025, Halaman 3 rusak"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">File Referensi</label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="statusFileInput">
+                            <button class="btn btn-outline-secondary" type="button" onclick="document.getElementById('statusFileInput').value=''">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="form-text">Upload file baru atau biarkan kosong</div>
+                        <div id="currentFileDisplay" class="small mt-1"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="button" class="btn btn-primary" onclick="saveStatus()">
-                        <i class="fas fa-save"></i> Simpan
+                        <i class="fas fa-save"></i> Simpan Perubahan
                     </button>
                 </div>
             </div>
@@ -205,6 +226,7 @@
     let psiData = {};
     let currentItemKey = null;
     let currentSectionKey = null;
+    let currentItemData = null; // Simpan data item yang sedang di-edit
 
     // Ambil equip_id dari URL (misal: ?id=V-1101)
     const urlParams = new URLSearchParams(window.location.search);
@@ -224,7 +246,7 @@
         }
     });
 
-    // ========== FUNGSI LOAD EQUIPMENT (FIXED - hanya 1 fungsi) ==========
+    // ========== FUNGSI LOAD EQUIPMENT ==========
     async function loadEquipmentData() {
         try {
             console.log('Loading equipment data for:', equipId);
@@ -256,7 +278,7 @@
         }
     }
 
-    // ========== FUNGSI LOAD MASTER & PSI DATA (Combined - tidak duplikat) ==========
+    // ========== FUNGSI LOAD MASTER & PSI DATA ==========
     async function loadMasterAndPsiData() {
         try {
             const tipe = currentEquipment.tipe || 'pressure_vessel';
@@ -310,7 +332,7 @@
         document.getElementById('detailTipe').textContent = data.tipe || 'pressure_vessel';
     }
 
-    // ========== FUNGSI DISPLAY PSI SECTIONS ==========
+    // ========== FUNGSI DISPLAY PSI SECTIONS (UPDATED) ==========
     function displayPsiSections() {
         const container = document.getElementById('psiSections');
         container.innerHTML = '';
@@ -319,7 +341,13 @@
             container.innerHTML = `
                 <div class="alert alert-warning">
                     <i class="fas fa-exclamation-triangle"></i> 
-                    Master data PSI tidak ditemukan. Pastikan data pressure_vessel sudah di-upload.
+                    Master data PSI untuk tipe "${currentEquipment.tipe || 'pressure_vessel'}" tidak ditemukan.<br>
+                    <small>Silakan upload master data terlebih dahulu atau pilih tipe equipment yang sesuai.</small>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-primary" onclick="window.location.href='upload-master.html'">
+                        <i class="fas fa-upload"></i> Upload Master Data
+                    </button>
                 </div>
             `;
             return;
@@ -327,12 +355,16 @@
 
         let totalItems = 0;
         let adaItems = 0;
+        let wajibItems = 0;
+        let wajibAdaItems = 0;
 
+        // Iterasi sections dari master data
         Object.keys(psiMaster.sections).forEach(sectionKey => {
             const section = psiMaster.sections[sectionKey];
             
             const sectionDiv = document.createElement('div');
-            sectionDiv.className = 'card mb-3';
+            sectionDiv.className = 'card mb-4 shadow-sm';
+            sectionDiv.id = `section-${sectionKey}`;
             
             let itemsHtml = '';
             
@@ -346,45 +378,75 @@
                     const value = psiItem.value || '';
                     const catatan = psiItem.catatan || '';
                     const file = psiItem.file || '';
+                    const updatedAt = psiItem.updated_at ? new Date(psiItem.updated_at).toLocaleString('id-ID') : '';
 
-                    if (status === 'Ada') adaItems++;
+                    // Hitung statistik
                     totalItems++;
+                    if (item.wajib) {
+                        wajibItems++;
+                        if (status === 'Ada') wajibAdaItems++;
+                    }
+                    if (status === 'Ada') adaItems++;
 
+                    // Styling berdasarkan kategori dan status
                     let statusClass = 'status-missing';
                     let statusText = '❌ Missing';
+                    let rowClass = '';
+                    
                     if (status === 'Ada') {
                         statusClass = 'status-ada';
                         statusText = '✅ Ada';
                     } else if (status === 'Update Needed') {
                         statusClass = 'status-update';
                         statusText = '⚠️ Update';
+                    } else if (status === 'Not Applicable') {
+                        statusClass = 'bg-secondary text-white';
+                        statusText = '➖ N/A';
                     }
 
+                    // Highlight jika wajib tapi missing
+                    if (item.wajib && status !== 'Ada' && status !== 'Not Applicable') {
+                        rowClass = 'table-danger';
+                    }
+
+                    // Icon berdasarkan input_type
+                    let inputIcon = 'file-alt';
+                    if (item.input_type === 'text') inputIcon = 'keyboard';
+                    else if (item.input_type === 'number') inputIcon = 'hashtag';
+                    else if (item.input_type === 'date') inputIcon = 'calendar';
+                    else if (item.input_type === 'file') inputIcon = 'file-upload';
+
                     itemsHtml += `
-                        <div class="item-row">
+                        <div class="item-row ${rowClass}" data-item-key="${itemKey}">
                             <div class="row align-items-center">
-                                <div class="col-md-1">
-                                    <small class="text-muted">${item.kode}</small>
+                                <div class="col-md-1 text-center">
+                                    <small class="text-muted font-monospace">${item.kode}</small>
                                 </div>
                                 <div class="col-md-4">
-                                    <span class="fw-semibold">${item.nama}</span>
-                                    ${item.wajib ? '<span class="text-danger" title="Wajib">*</span>' : ''}
-                                    <span class="kategori-badge">Cat ${item.kategori}</span>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-${inputIcon} text-muted me-2 small"></i>
+                                        <span class="fw-semibold">${item.nama}</span>
+                                        ${item.wajib ? '<span class="badge bg-danger ms-2" title="Wajib">W</span>' : ''}
+                                    </div>
+                                    <span class="badge bg-secondary kategori-badge">Kategori ${item.kategori}</span>
+                                    ${item.input_type ? `<span class="badge bg-light text-dark kategori-badge">${item.input_type}</span>` : ''}
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 text-center">
                                     <span class="status-badge ${statusClass}" 
-                                          onclick="showStatusModal('${sectionKey}', '${itemKey}', '${item.nama.replace(/'/g, "\\'")}')">
+                                          onclick="showStatusModal('${sectionKey}', '${itemKey}', '${escapeHtml(item.nama)}')"
+                                          style="cursor: pointer;">
                                         ${statusText}
                                     </span>
                                 </div>
                                 <div class="col-md-3">
-                                    ${value ? `<div class="small text-muted">${value}</div>` : ''}
-                                    ${catatan ? `<div class="small text-warning"><i class="fas fa-sticky-note"></i> ${catatan}</div>` : ''}
-                                    ${file ? `<div class="small"><a href="#" class="file-link"><i class="fas fa-file"></i> ${file}</a></div>` : ''}
+                                    ${value ? `<div class="small text-primary fw-bold">${escapeHtml(value)}</div>` : ''}
+                                    ${catatan ? `<div class="small text-warning"><i class="fas fa-sticky-note"></i> ${escapeHtml(catatan)}</div>` : ''}
+                                    ${file ? `<div class="small"><a href="#" class="file-link" onclick="viewFile('${escapeHtml(file)}'); return false;"><i class="fas fa-paperclip"></i> ${escapeHtml(file)}</a></div>` : ''}
+                                    ${updatedAt ? `<div class="small text-muted mt-1"><i class="fas fa-clock"></i> ${updatedAt}</div>` : ''}
                                 </div>
                                 <div class="col-md-2 text-end">
                                     <button class="btn btn-sm btn-outline-primary" 
-                                            onclick="showStatusModal('${sectionKey}', '${itemKey}', '${item.nama.replace(/'/g, "\\'")}')"
+                                            onclick="showStatusModal('${sectionKey}', '${itemKey}', '${escapeHtml(item.nama)}')"
                                             title="Update status">
                                         <i class="fas fa-edit"></i> Update
                                     </button>
@@ -395,61 +457,150 @@
                 });
             }
 
+            // Progress per section
+            const sectionTotal = Object.keys(section.items || {}).length;
+            const sectionAda = Object.keys(section.items || {}).reduce((acc, key) => {
+                return acc + (psiData[sectionKey]?.[key]?.status === 'Ada' ? 1 : 0);
+            }, 0);
+            const sectionProgress = sectionTotal > 0 ? Math.round((sectionAda / sectionTotal) * 100) : 0;
+
             sectionDiv.innerHTML = `
-                <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">
-                        <i class="fas fa-${section.icon || 'folder'}"></i> ${section.judul}
+                        <i class="fas fa-${section.icon || 'folder'} me-2"></i> ${section.judul}
                     </h5>
-                    <span class="badge bg-light text-dark">
-                        ${section.items ? Object.keys(section.items).length : 0} items
-                    </span>
+                    <div class="d-flex align-items-center">
+                        <div class="progress me-3" style="width: 100px; height: 8px; background: rgba(255,255,255,0.3);">
+                            <div class="progress-bar bg-light" style="width: ${sectionProgress}%"></div>
+                        </div>
+                        <span class="badge bg-light text-dark">${sectionAda}/${sectionTotal}</span>
+                    </div>
                 </div>
                 <div class="card-body p-0">
-                    ${itemsHtml || '<p class="text-muted p-3 mb-0">Tidak ada item</p>'}
+                    ${itemsHtml || '<div class="p-3 text-muted text-center">Tidak ada item dalam section ini</div>'}
                 </div>
             `;
             
             container.appendChild(sectionDiv);
         });
 
-        // Update progress bar
+        // Update progress bar keseluruhan
         const percentage = totalItems > 0 ? Math.round((adaItems / totalItems) * 100) : 0;
-        document.getElementById('progressBar').style.width = percentage + '%';
-        document.getElementById('progressBar').textContent = percentage + '%';
-        document.getElementById('progressBar').className = `progress-bar ${percentage >= 80 ? 'bg-success' : percentage >= 50 ? 'bg-warning' : 'bg-danger'}`;
-        document.getElementById('progressText').textContent = `${adaItems} dari ${totalItems} item lengkap (${percentage}%)`;
+        const wajibPercentage = wajibItems > 0 ? Math.round((wajibAdaItems / wajibItems) * 100) : 0;
         
-        // Update progress di equipment data (untuk dashboard)
+        const progressBar = document.getElementById('progressBar');
+        progressBar.style.width = percentage + '%';
+        progressBar.textContent = percentage + '%';
+        progressBar.className = `progress-bar ${
+            percentage >= 90 ? 'bg-success' : 
+            percentage >= 70 ? 'bg-info' : 
+            percentage >= 50 ? 'bg-warning' : 'bg-danger'
+        }`;
+        
+        document.getElementById('progressText').innerHTML = `
+            <strong>${adaItems}</strong> dari <strong>${totalItems}</strong> item lengkap (${percentage}%)<br>
+            <small class="${wajibPercentage < 100 ? 'text-danger' : 'text-success'}">
+                Wajib: ${wajibAdaItems}/${wajibItems} (${wajibPercentage}%)
+            </small>
+        `;
+        
+        // Update progress di equipment data
         if (currentEquipmentKey) {
-            database.ref('equipment/' + currentEquipmentKey + '/psi_progress').set(percentage);
+            database.ref('equipment/' + currentEquipmentKey).update({
+                psi_progress: percentage,
+                psi_wajib_progress: wajibPercentage,
+                psi_last_updated: new Date().toISOString()
+            });
         }
     }
 
-    // ========== FUNGSI SHOW STATUS MODAL ==========
+    // ========== FUNGSI SHOW STATUS MODAL (UPDATED) ==========
     function showStatusModal(sectionKey, itemKey, itemNama) {
         currentSectionKey = sectionKey;
         currentItemKey = itemKey;
+        currentItemData = psiMaster.sections[sectionKey].items[itemKey];
         
         const psiItem = psiData[sectionKey]?.[itemKey] || {};
         
         document.getElementById('statusItemInfo').textContent = `${itemNama} (${sectionKey})`;
+        document.getElementById('itemKategori').innerHTML = `
+            Kategori: <span class="badge bg-secondary">${currentItemData.kategori}</span>
+            ${currentItemData.wajib ? ' <span class="badge bg-danger">WAJIB</span>' : ''}
+            ${currentItemData.input_type ? ` <span class="badge bg-info text-dark">${currentItemData.input_type}</span>` : ''}
+        `;
+        
         document.getElementById('statusSelect').value = psiItem.status || 'Missing';
-        document.getElementById('statusValue').value = psiItem.value || '';
+        document.getElementById('inputTypeDisplay').value = currentItemData.input_type || 'text';
         document.getElementById('statusCatatan').value = psiItem.catatan || '';
-        document.getElementById('statusFile').value = psiItem.file || '';
+        
+        // Generate dynamic input berdasarkan input_type
+        generateValueInput(currentItemData.input_type, psiItem.value || '');
+        
+        // Display current file if exists
+        const fileDisplay = document.getElementById('currentFileDisplay');
+        if (psiItem.file) {
+            fileDisplay.innerHTML = `<span class="badge bg-success"><i class="fas fa-check"></i> File: ${psiItem.file}</span>`;
+        } else {
+            fileDisplay.innerHTML = '<span class="text-muted">Belum ada file</span>';
+        }
         
         const modal = new bootstrap.Modal(document.getElementById('statusModal'));
         modal.show();
     }
 
-    // ========== FUNGSI SAVE STATUS (FIXED - tidak overwrite) ==========
+    // ========== FUNGSI GENERATE DYNAMIC INPUT ==========
+    function generateValueInput(inputType, currentValue) {
+        const container = document.getElementById('valueInputContainer');
+        const label = document.getElementById('valueLabel');
+        
+        container.innerHTML = '';
+        
+        if (inputType === 'file') {
+            label.textContent = 'Nama File / Dokumen';
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'form-control';
+            input.id = 'statusValue';
+            input.value = currentValue;
+            input.placeholder = 'Contoh: PID_V1101_Rev5.pdf, Sertifikat_Kalibrasi_2024.pdf';
+            container.appendChild(input);
+        } else if (inputType === 'date') {
+            label.textContent = 'Tanggal';
+            const input = document.createElement('input');
+            input.type = 'date';
+            input.className = 'form-control';
+            input.id = 'statusValue';
+            input.value = currentValue;
+            container.appendChild(input);
+        } else if (inputType === 'number') {
+            label.textContent = 'Nilai Numerik';
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.className = 'form-control';
+            input.id = 'statusValue';
+            input.value = currentValue;
+            input.placeholder = 'Contoh: 10.5, 150, 2024';
+            container.appendChild(input);
+        } else {
+            // Default text
+            label.textContent = 'Nilai / Spesifikasi / Keterangan';
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'form-control';
+            input.id = 'statusValue';
+            input.value = currentValue;
+            input.placeholder = 'Contoh: ASME VIII Div.1, 10 barg, SS316L';
+            container.appendChild(input);
+        }
+    }
+
+    // ========== FUNGSI SAVE STATUS (UPDATED) ==========
     function saveStatus() {
         const newStatus = document.getElementById('statusSelect').value;
-        const newValue = document.getElementById('statusValue').value.trim();
+        const newValue = document.getElementById('statusValue')?.value.trim() || '';
         const newCatatan = document.getElementById('statusCatatan').value.trim();
-        const newFile = document.getElementById('statusFile').value.trim();
         
-        // Build update object - hanya update path spesifik, tidak overwrite seluruh psi_data
+        // Build update object
         const updatePath = `psi_data/${equipId}/${currentSectionKey}/${currentItemKey}`;
         const updateData = {
             status: newStatus,
@@ -460,12 +611,20 @@
         // Hanya tambahkan field jika ada nilai
         if (newValue) updateData.value = newValue;
         if (newCatatan) updateData.catatan = newCatatan;
-        if (newFile) updateData.file = newFile;
+        
+        // Handle file upload (simulasi - simpan nama file saja)
+        const fileInput = document.getElementById('statusFileInput');
+        if (fileInput.files.length > 0) {
+            updateData.file = fileInput.files[0].name;
+            // TODO: Upload ke Firebase Storage jika diperlukan
+        } else if (psiData[currentSectionKey]?.[currentItemKey]?.file) {
+            // Keep existing file if not uploading new one
+            updateData.file = psiData[currentSectionKey][currentItemKey].file;
+        }
         
         console.log('Saving to path:', updatePath);
         console.log('Data:', updateData);
         
-        // Gunakan update() untuk merge, bukan set() untuk replace
         database.ref(updatePath).update(updateData)
             .then(() => {
                 // Update local data
@@ -503,7 +662,22 @@
         });
     }
 
-    // ========== HELPER: Show Alert ==========
+    // ========== HELPER FUNCTIONS ==========
+    function escapeHtml(text) {
+        if (!text) return '';
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function viewFile(filename) {
+        // TODO: Implementasi view/download file dari Firebase Storage
+        alert('View file: ' + filename + '\n(Implementasi Firebase Storage diperlukan)');
+    }
+
     function showAlert(message, type) {
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
