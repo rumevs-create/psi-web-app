@@ -120,19 +120,28 @@
                                placeholder="Masukkan nama kustodian">
                     </div>
 
-                    <!-- Tipe Equipment -->
+                    <!-- Tipe Equipment - DIUPDATE -->
                     <div class="mb-3">
-                        <label class="form-label">Tipe Equipment</label>
-                        <select class="form-control" id="tipe">
-                            <option value="">Pilih Tipe (Opsional)</option>
-                            <option value="pressure_vessel">Pressure Vessel</option>
-                            <option value="rotating">Rotating Equipment</option>
-                            <option value="tank">Tank</option>
-                            <option value="piping">Piping</option>
-                            <option value="instrument">Instrument</option>
-                            <option value="electrical">Electrical</option>
-                            <option value="safety">Safety Device</option>
+                        <label class="form-label">Tipe Equipment <span class="text-danger">*</span></label>
+                        <select class="form-control" id="tipe" required>
+                            <option value="">Pilih Tipe Equipment</option>
+                            <option value="pressure_vessel">Pressure Vessels (EHSF-402-02)</option>
+                            <option value="heat_exchanger">Heat Exchangers (EHSF-402-03)</option>
+                            <option value="piping">Piping Systems (EHSF-402-04)</option>
+                            <option value="rotating">Rotating Equipment (EHSF-402-05)</option>
+                            <option value="relief_systems">Relief and Vent Systems (EHSF-402-06)</option>
+                            <option value="storage_tank">Storage Tanks (EHSF-402-07)</option>
+                            <option value="fired_heater">Fired Heaters/Boilers (EHSF-402-08)</option>
+                            <option value="electrical">Electrical Systems (EHSF-402-09)</option>
+                            <option value="instrumentation">Instrumentation and Control (EHSF-402-10)</option>
+                            <option value="reactors">Reactors (EHSF-402-11)</option>
+                            <option value="columns_towers">Columns/Towers (EHSF-402-12)</option>
+                            <option value="compressors">Compressors/Blowers (EHSF-402-13)</option>
+                            <option value="cooling_towers">Cooling Towers (EHSF-402-14)</option>
+                            <option value="utility_systems">Utility Systems (EHSF-402-15)</option>
+                            <option value="safety_systems">Safety Systems (EHSF-402-16)</option>
                         </select>
+                        <small class="text-muted">Tipe ini menentukan form PSI yang akan digunakan</small>
                     </div>
 
                     <!-- Lokasi Fisik -->
@@ -255,6 +264,7 @@
                 kustodian: kustodian,
                 tipe: document.getElementById('tipe').value || '',
                 lokasi_fisik: document.getElementById('lokasi_fisik').value || '',
+                psi_progress: 0,
                 created_at: firebase.firestore.FieldValue.serverTimestamp()
             };
 
