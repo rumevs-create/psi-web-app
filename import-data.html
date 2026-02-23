@@ -40,6 +40,18 @@
             color: white;
         }
 
+        .btn-light-custom {
+            background-color: white;
+            border: none;
+            color: var(--color-olive);
+            font-weight: 500;
+        }
+
+        .btn-light-custom:hover {
+            background-color: var(--color-yellow);
+            color: var(--color-olive);
+        }
+
         .import-container {
             max-width: 1200px;
             margin: 30px auto;
@@ -153,7 +165,26 @@
         .log-success { color: #28a745; }
         .log-error { color: #dc3545; }
         .log-info { color: #17a2b8; }
+        .log-warning { color: #ffc107; }
+
+        .validation-summary {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--color-red);
+        }
+
+        .error-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
     </style>
+<base target="_blank">
 </head>
 <body>
     <!-- Navbar -->
@@ -169,7 +200,7 @@
             </div>
             <div class="d-flex align-items-center gap-3">
                 <span class="text-light small" id="userEmail"></span>
-                <button class="btn btn-light btn-sm" onclick="logout()">
+                <button class="btn btn-light-custom btn-sm" onclick="logout()">
                     <i class="fas fa-sign-out-alt me-1"></i> Logout
                 </button>
             </div>
@@ -187,8 +218,8 @@
                 <i class="fas fa-file-excel me-2"></i>Download Template Excel
             </button>
             <div class="mt-3 small text-muted">
-                <strong>Kolom wajib:</strong> equip_id, nama, area, unit, type, tag_number, description, action_plan, periods<br>
-                <strong>Kolom opsional:</strong> kategori (1=EHS Critical, 2=Standard), kustodian, psi_progress (0-100)
+                <strong>Kolom wajib:</strong> equip_id, nama, area, unit, type, tag_number, description, action_plan<br>
+                <strong>Kolom opsional:</strong> periods, kategori (1=EHS Critical, 2=Standard), kustodian, psi_progress (0-100)
             </div>
         </div>
 
@@ -212,6 +243,18 @@
             </div>
             <div class="text-center">
                 <span id="progressText">Memproses data...</span>
+            </div>
+        </div>
+
+        <!-- Validation Errors -->
+        <div id="validationSection" class="validation-summary" style="display: none;">
+            <h5><i class="fas fa-exclamation-triangle me-2 text-danger"></i>Validasi Error</h5>
+            <div id="validationErrors" class="error-list"></div>
+            <div class="mt-3">
+                <button class="btn btn-warning btn-sm" onclick="forceImport()">
+                    <i class="fas fa-exclamation-circle me-1"></i>Import Tetap (Lewati Error)
+                </button>
+                <small class="text-muted ms-2">Gunakan ini jika Anda yakin data sudah benar</small>
             </div>
         </div>
 
@@ -284,22 +327,24 @@
         let parsedData = [];
         let headers = [];
         let fieldMapping = {};
+        let validationErrors = [];
+        let skipValidation = false;
 
-        // Required fields based on your data structure
-        const requiredFields = ['equip_id', 'nama', 'area', 'unit', 'type', 'tag_number', 'description', 'action_plan', 'periods'];
-        const optionalFields = ['kategori', 'kustodian', 'psi_progress', 'equipment', 'tipe'];
+        // Required fields - PERIODS REMOVED (now optional)
+        const requiredFields = ['equip_id', 'nama', 'area', 'unit', 'type', 'tag_number', 'description', 'action_plan'];
+        const optionalFields = ['periods', 'kategori', 'kustodian', 'psi_progress', 'equipment', 'tipe'];
 
         // Field labels for mapping
         const fieldLabels = {
-            'equip_id': 'Equipment ID',
-            'nama': 'Nama Equipment',
-            'area': 'Area',
-            'unit': 'Unit',
-            'type': 'Type',
-            'tag_number': 'Tag Number',
-            'description': 'Description',
-            'action_plan': 'Action Plan',
-            'periods': 'Periods',
+            'equip_id': 'Equipment ID *',
+            'nama': 'Nama Equipment *',
+            'area': 'Area *',
+            'unit': 'Unit *',
+            'type': 'Type *',
+            'tag_number': 'Tag Number *',
+            'description': 'Description *',
+            'action_plan': 'Action Plan *',
+            'periods': 'Periods (Optional)',
             'kategori': 'Kategori (1=Critical, 2=Standard)',
             'kustodian': 'Kustodian',
             'psi_progress': 'PSI Progress (%)',
@@ -332,15 +377,15 @@
                     'psi_progress': 0
                 },
                 {
-                    'equip_id': '11PVV016',
-                    'nama': 'V 1102',
+                    'equip_id': '12RV001',
+                    'nama': 'R 1201',
                     'area': 'CP',
-                    'unit': '1100',
+                    'unit': '1200',
                     'type': 'Pressure',
-                    'tag_number': '11PVV016',
-                    'description': 'Mechanical automatic poping',
-                    'action_plan': 'Calibration',
-                    'periods': 'T/A Shut-down',
+                    'tag_number': '12RV001',
+                    'description': 'Rupture disc',
+                    'action_plan': 'Replace',
+                    'periods': '',  // Empty example
                     'kategori': 2,
                     'kustodian': '',
                     'psi_progress': 0
@@ -355,7 +400,7 @@
 
         // Drag and drop handlers
         const uploadZone = document.getElementById('uploadZone');
-        
+
         uploadZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             uploadZone.classList.add('dragover');
@@ -383,14 +428,14 @@
 
         function processFile(file) {
             const reader = new FileReader();
-            
+
             reader.onload = function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
                     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
                     const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-                    
+
                     if (jsonData.length < 2) {
                         alert('File tidak memiliki data yang cukup (minimal 1 baris header dan 1 baris data)');
                         return;
@@ -398,35 +443,43 @@
 
                     headers = jsonData[0];
                     parsedData = jsonData.slice(1).filter(row => row.some(cell => cell !== undefined && cell !== ''));
-                    
+
+                    // Reset validation
+                    validationErrors = [];
+                    skipValidation = false;
+                    document.getElementById('validationSection').style.display = 'none';
+
                     showPreview();
                     generateMapping();
-                    
+
+                    // Auto validate
+                    validateData(true);
+
                 } catch (error) {
                     alert('Error membaca file: ' + error.message);
                 }
             };
-            
+
             reader.readAsArrayBuffer(file);
         }
 
         function showPreview() {
             document.getElementById('previewSection').style.display = 'block';
             document.getElementById('rowCount').textContent = `${parsedData.length} rows`;
-            
+
             const headerRow = document.getElementById('previewHeader');
             headerRow.innerHTML = '<th>#</th>' + headers.map(h => `<th>${h}</th>`).join('');
-            
+
             const tbody = document.getElementById('previewBody');
             tbody.innerHTML = '';
-            
+
             // Show first 10 rows
             parsedData.slice(0, 10).forEach((row, idx) => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${idx + 1}</td>` + row.map(cell => `<td>${cell || '-'}</td>`).join('');
+                tr.innerHTML = `<td>${idx + 1}</td>` + row.map(cell => `<td>${cell !== undefined && cell !== '' ? cell : '<em class="text-muted">(kosong)</em>'}</td>`).join('');
                 tbody.appendChild(tr);
             });
-            
+
             if (parsedData.length > 10) {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `<td colspan="${headers.length + 1}" class="text-center text-muted">... dan ${parsedData.length - 10} baris lainnya</td>`;
@@ -437,25 +490,27 @@
         function generateMapping() {
             const container = document.getElementById('mappingContainer');
             container.innerHTML = '';
-            
+
             const allFields = [...requiredFields, ...optionalFields];
-            
+
             allFields.forEach(field => {
                 const div = document.createElement('div');
                 div.className = 'mapping-row';
-                
+
                 // Try to auto-match
                 const matchedHeader = headers.find(h => 
                     h.toLowerCase().replace(/\s/g, '_') === field.toLowerCase() ||
                     h.toLowerCase() === field.toLowerCase() ||
                     h.toLowerCase().includes(field.toLowerCase())
                 );
-                
+
+                const isRequired = requiredFields.includes(field);
+
                 div.innerHTML = `
                     <div class="flex-grow-1">
-                        <label class="fw-bold ${requiredFields.includes(field) ? 'text-danger' : ''}">
+                        <label class="fw-bold ${isRequired ? 'text-danger' : 'text-muted'}">
                             ${fieldLabels[field] || field}
-                            ${requiredFields.includes(field) ? ' *' : ''}
+                            ${isRequired ? ' *' : ''}
                         </label>
                         <div class="small text-muted">${field}</div>
                     </div>
@@ -464,9 +519,9 @@
                         ${headers.map((h, i) => `<option value="${i}" ${h === matchedHeader ? 'selected' : ''}>${h}</option>`).join('')}
                     </select>
                 `;
-                
+
                 container.appendChild(div);
-                
+
                 if (matchedHeader) {
                     fieldMapping[field] = headers.indexOf(matchedHeader);
                 }
@@ -479,66 +534,143 @@
             } else {
                 fieldMapping[field] = parseInt(colIndex);
             }
+            // Re-validate when mapping changes
+            validateData(true);
         }
 
-        function validateData() {
-            const errors = [];
-            
-            // Check required fields
+        function validateData(silent = false) {
+            validationErrors = [];
+
+            // Check required fields mapping
             requiredFields.forEach(field => {
                 if (fieldMapping[field] === undefined) {
-                    errors.push(`Field "${fieldLabels[field]}" wajib di-mapping`);
+                    validationErrors.push(`Field "${fieldLabels[field]}" wajib di-mapping`);
                 }
             });
-            
-            // Check data rows
+
+            // Check data rows - only for required fields
             parsedData.forEach((row, idx) => {
                 requiredFields.forEach(field => {
                     if (fieldMapping[field] !== undefined) {
                         const value = row[fieldMapping[field]];
                         if (!value || value.toString().trim() === '') {
-                            errors.push(`Baris ${idx + 2}: ${fieldLabels[field]} kosong`);
+                            validationErrors.push(`Baris ${idx + 2}: ${fieldLabels[field]} kosong`);
                         }
                     }
                 });
+
+                // Check kategori value if mapped
+                if (fieldMapping['kategori'] !== undefined) {
+                    const kategoriVal = row[fieldMapping['kategori']];
+                    if (kategoriVal && kategoriVal !== '1' && kategoriVal !== '2' && kategoriVal !== 1 && kategoriVal !== 2) {
+                        validationErrors.push(`Baris ${idx + 2}: Kategori harus 1 (Critical) atau 2 (Standard)`);
+                    }
+                }
             });
-            
-            return errors;
+
+            if (!silent && validationErrors.length > 0) {
+                showValidationErrors();
+            }
+
+            return validationErrors;
+        }
+
+        function showValidationErrors() {
+            const section = document.getElementById('validationSection');
+            const list = document.getElementById('validationErrors');
+
+            // Group errors
+            const emptyFields = validationErrors.filter(e => e.includes('kosong'));
+            const mappingErrors = validationErrors.filter(e => e.includes('wajib di-mapping'));
+            const otherErrors = validationErrors.filter(e => !e.includes('kosong') && !e.includes('wajib di-mapping'));
+
+            let html = '';
+
+            if (mappingErrors.length > 0) {
+                html += `<div class="mb-2"><strong>Mapping Error:</strong></div>`;
+                html += mappingErrors.slice(0, 5).map(e => `<div class="text-danger">• ${e}</div>`).join('');
+                if (mappingErrors.length > 5) html += `<div class="text-muted">... dan ${mappingErrors.length - 5} error lainnya</div>`;
+            }
+
+            if (emptyFields.length > 0) {
+                html += `<div class="mt-3 mb-2"><strong>Data Kosong (${emptyFields.length} error):</strong></div>`;
+                html += `<div class="text-warning">Beberapa baris memiliki kolom wajib yang kosong. Periksa kembali data Anda.</div>`;
+                html += emptyFields.slice(0, 10).map(e => `<div class="small text-muted">• ${e}</div>`).join('');
+                if (emptyFields.length > 10) html += `<div class="small text-muted">... dan ${emptyFields.length - 10} error lainnya</div>`;
+            }
+
+            if (otherErrors.length > 0) {
+                html += `<div class="mt-3 mb-2"><strong>Error Lain:</strong></div>`;
+                html += otherErrors.map(e => `<div class="text-danger">• ${e}</div>`).join('');
+            }
+
+            list.innerHTML = html;
+            section.style.display = 'block';
+
+            // Scroll to error
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function forceImport() {
+            skipValidation = true;
+            document.getElementById('validationSection').style.display = 'none';
+            startImport();
         }
 
         async function startImport() {
-            const errors = validateData();
-            
-            if (errors.length > 0) {
-                alert('Validasi Error:\n\n' + errors.slice(0, 10).join('\n') + (errors.length > 10 ? `\n...dan ${errors.length - 10} error lainnya` : ''));
-                return;
+            // Validate unless skipped
+            if (!skipValidation) {
+                const errors = validateData();
+                if (errors.length > 0) {
+                    showValidationErrors();
+                    return;
+                }
             }
-            
+
             if (!confirm(`Anda yakin ingin mengimport ${parsedData.length} equipment ke database?`)) {
                 return;
             }
-            
+
             const importBtn = document.getElementById('importBtn');
             importBtn.disabled = true;
             importBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Importing...';
-            
+
             document.getElementById('progressSection').style.display = 'block';
             document.getElementById('logContainer').style.display = 'block';
             const logContent = document.getElementById('logContent');
             logContent.innerHTML = '';
-            
+
             let successCount = 0;
             let errorCount = 0;
+            let skipCount = 0;
             const equipmentRef = database.ref('equipment');
-            
+
             for (let i = 0; i < parsedData.length; i++) {
                 const row = parsedData[i];
                 const progress = Math.round(((i + 1) / parsedData.length) * 100);
-                
+
                 document.getElementById('progressBar').style.width = `${progress}%`;
                 document.getElementById('progressBar').textContent = `${progress}%`;
                 document.getElementById('progressText').textContent = `Memproses ${i + 1} dari ${parsedData.length}...`;
-                
+
+                // Check required fields for this row
+                let hasEmptyRequired = false;
+                for (const field of requiredFields) {
+                    if (fieldMapping[field] !== undefined) {
+                        const value = row[fieldMapping[field]];
+                        if (!value || value.toString().trim() === '') {
+                            hasEmptyRequired = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (hasEmptyRequired) {
+                    skipCount++;
+                    log(`[SKIP] Baris ${i + 2}: Data tidak lengkap (dilewati)`, 'warning');
+                    continue;
+                }
+
                 try {
                     const equipmentData = {
                         equip_id: row[fieldMapping['equip_id']]?.toString(),
@@ -549,17 +681,17 @@
                         tag_number: row[fieldMapping['tag_number']]?.toString(),
                         description: row[fieldMapping['description']]?.toString(),
                         action_plan: row[fieldMapping['action_plan']]?.toString(),
-                        periods: row[fieldMapping['periods']]?.toString(),
+                        periods: fieldMapping['periods'] !== undefined ? (row[fieldMapping['periods']]?.toString() || '') : '',
                         kategori: parseInt(row[fieldMapping['kategori']]) || 2,
-                        kustodian: row[fieldMapping['kustodian']]?.toString() || '',
+                        kustodian: fieldMapping['kustodian'] !== undefined ? (row[fieldMapping['kustodian']]?.toString() || '') : '',
                         psi_progress: parseInt(row[fieldMapping['psi_progress']]) || 0,
                         created_at: new Date().toISOString(),
                         created_by: auth.currentUser.email
                     };
-                    
+
                     // Check if equipment already exists
                     const snapshot = await equipmentRef.orderByChild('equip_id').equalTo(equipmentData.equip_id).once('value');
-                    
+
                     if (snapshot.exists()) {
                         // Update existing
                         const key = Object.keys(snapshot.val())[0];
@@ -570,29 +702,29 @@
                         await equipmentRef.push(equipmentData);
                         log(`[CREATE] ${equipmentData.equip_id} - ${equipmentData.nama}`, 'success');
                     }
-                    
+
                     successCount++;
-                    
+
                 } catch (error) {
                     errorCount++;
                     log(`[ERROR] Baris ${i + 2}: ${error.message}`, 'error');
                 }
-                
+
                 // Small delay to prevent Firebase rate limiting
                 if (i % 10 === 0) {
                     await new Promise(resolve => setTimeout(resolve, 100));
                 }
             }
-            
+
             document.getElementById('progressText').innerHTML = 
-                `<span class="text-success fw-bold">Import selesai!</span> Success: ${successCount}, Error: ${errorCount}`;
-            
+                `<span class="text-success fw-bold">Import selesai!</span> Success: ${successCount}, Skip: ${skipCount}, Error: ${errorCount}`;
+
             importBtn.disabled = false;
             importBtn.innerHTML = '<i class="fas fa-check me-2"></i>Import Selesai';
-            
+
             if (successCount > 0) {
                 setTimeout(() => {
-                    if (confirm('Import berhasil! Kembali ke dashboard?')) {
+                    if (confirm(`Import berhasil! ${successCount} equipment diimport. Kembali ke dashboard?`)) {
                         window.location.href = 'dashboard.html';
                     }
                 }, 500);
@@ -613,9 +745,12 @@
             document.getElementById('previewSection').style.display = 'none';
             document.getElementById('progressSection').style.display = 'none';
             document.getElementById('logContainer').style.display = 'none';
+            document.getElementById('validationSection').style.display = 'none';
             parsedData = [];
             headers = [];
             fieldMapping = {};
+            validationErrors = [];
+            skipValidation = false;
         }
 
         function logout() {
