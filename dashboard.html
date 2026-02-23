@@ -13,10 +13,10 @@
             --color-yellow: #ffe28a;
             --color-cream: #fffeb3;
             
-            --card-1: #666547; /* Olive */
-            --card-2: #fb2e01; /* Red */
-            --card-3: #6fcb9f; /* Mint */
-            --card-4: #ffe28a; /* Yellow */
+            --card-1: #666547;
+            --card-2: #fb2e01;
+            --card-3: #6fcb9f;
+            --card-4: #ffe28a;
         }
 
         body {
@@ -58,7 +58,6 @@
             box-shadow: 0 20px 40px rgba(102, 101, 71, 0.2);
         }
 
-        /* Custom backgrounds dari palet */
         .bg-card-1 { background-color: var(--card-1) !important; }
         .bg-card-2 { background-color: var(--card-2) !important; }
         .bg-card-3 { background-color: var(--card-3) !important; }
@@ -146,10 +145,6 @@
             border: 1px solid #ffe28a;
         }
 
-        .form-control:focus {
-            background-color: #fff;
-        }
-
         .btn-outline-primary {
             color: #666547;
             border-color: #666547;
@@ -159,17 +154,6 @@
             background-color: #666547;
             border-color: #666547;
             color: #fffeb3;
-        }
-
-        .btn-outline-warning {
-            color: #fb2e01;
-            border-color: #fb2e01;
-        }
-
-        .btn-outline-warning:hover {
-            background-color: #fb2e01;
-            border-color: #fb2e01;
-            color: #fff;
         }
 
         .btn-outline-danger {
@@ -183,10 +167,6 @@
             color: #fff;
         }
 
-        .spinner-border.text-primary {
-            color: #666547 !important;
-        }
-
         h5, h6 {
             font-weight: 600;
             color: #666547;
@@ -195,9 +175,80 @@
         .card-title {
             color: inherit;
         }
+
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,254,179,0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #6fcb9f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-box {
+            background: #fee2e2;
+            border: 1px solid #fb2e01;
+            color: #991b1b;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .retry-btn {
+            background: #fb2e01;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+
+        .retry-btn:hover {
+            background: #dc2626;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner mb-3"></div>
+        <p class="text-muted" id="loadingText">Menghubungkan ke database...</p>
+    </div>
+
+    <!-- Error Overlay (hidden by default) -->
+    <div id="errorOverlay" class="loading-overlay" style="display: none;">
+        <div class="error-box">
+            <i class="fas fa-exclamation-circle fa-3x mb-3"></i>
+            <h4>Terjadi Kesalahan</h4>
+            <p id="errorMessage">Gagal memuat data</p>
+            <button class="retry-btn" onclick="location.reload()">
+                <i class="fas fa-redo"></i> Coba Lagi
+            </button>
+        </div>
+    </div>
+
     <nav class="navbar navbar-dark">
         <div class="container-fluid">
             <span class="navbar-brand">
@@ -216,7 +267,7 @@
 
     <div class="container-fluid mt-4">
         <!-- Summary Cards -->
-        <div class="row mb-4" id="summaryCards">
+        <div class="row mb-4">
             <div class="col-md-3 mb-3">
                 <div class="card text-white summary-card bg-card-1">
                     <div class="card-body">
@@ -293,7 +344,7 @@
             </div>
             
             <div class="table-responsive">
-                <table class="table table-hover align-middle" id="equipmentTable">
+                <table class="table table-hover align-middle">
                     <thead class="table-dark">
                         <tr>
                             <th class="rounded-start">Equipment ID</th>
@@ -323,72 +374,118 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
     <script>
-        // 🔥 KONFIGURASI FIREBASE - RTDB
+        // KONFIGURASI FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyA1_SggH_uh1ZVbtoLD3u5-w6pqKgrgITk",
             authDomain: "psi-management-system.firebaseapp.com",
-            databaseURL: "https://psi-management-system-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "psi-management-system",
             storageBucket: "psi-management-system.firebasestorage.app",
             messagingSenderId: "1053490628908",
             appId: "1:1053490628908:web:6b272409217851f8ebc489"
         };
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const database = firebase.database();
-
         // Global variables
+        let db, auth;
         let allEquipment = [];
-        let psiMaster = null;
+        let unsubscribe = null;
 
-        // Cek login
-        auth.onAuthStateChanged((user) => {
-            if (!user) {
-                window.location.href = 'index.html';
-            } else {
-                console.log('User logged in:', user.email);
-                loadData();
-            }
-        });
-
-        async function loadData() {
+        // Initialize dengan error handling
+        function initializeApp() {
             try {
-                // Load master PSI data untuk hitung progress
-                const masterSnapshot = await database.ref('pressure_vessel').once('value');
-                psiMaster = masterSnapshot.val();
-                
-                // Load equipment data - FIXED: pakai RTDB syntax
-                const equipmentRef = database.ref('equipment');
-                equipmentRef.on('value', (snapshot) => {
-                    const equipmentData = snapshot.val() || {};
-                    
-                    // Convert object to array dengan key
-                    allEquipment = Object.keys(equipmentData).map(key => ({
-                        key: key,
-                        ...equipmentData[key]
-                    }));
-                    
-                    renderTable(allEquipment);
-                    updateSummary(allEquipment);
-                }, (error) => {
-                    console.error('Error loading equipment:', error);
-                    document.getElementById('equipmentList').innerHTML = `
-                        <tr>
-                            <td colspan="7" class="text-center text-danger">
-                                <i class="fas fa-exclamation-circle"></i> 
-                                Gagal memuat data: ${error.message}
-                            </td>
-                        </tr>
-                    `;
-                });
-                
+                // Cek apakah Firebase sudah di-load
+                if (typeof firebase === 'undefined') {
+                    throw new Error('Firebase SDK tidak ter-load. Periksa koneksi internet.');
+                }
+
+                // Initialize Firebase
+                firebase.initializeApp(firebaseConfig);
+                auth = firebase.auth();
+                db = firebase.firestore();
+
+                console.log('Firebase initialized successfully');
+
+                // Setup auth listener
+                setupAuthListener();
+
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Initialization error:', error);
+                showError('Gagal inisialisasi: ' + error.message);
+            }
+        }
+
+        function setupAuthListener() {
+            auth.onAuthStateChanged((user) => {
+                if (!user) {
+                    console.log('User not logged in, redirecting...');
+                    window.location.href = 'index.html';
+                    return;
+                }
+                
+                console.log('User logged in:', user.email);
+                // Tunggu sebentar untuk memastikan Firestore ready
+                setTimeout(() => {
+                    loadData();
+                }, 500);
+            }, (error) => {
+                console.error('Auth error:', error);
+                showError('Gagal autentikasi: ' + error.message);
+            });
+        }
+
+        function loadData() {
+            document.getElementById('loadingText').textContent = 'Mengambil data equipment...';
+
+            try {
+                // Cek apakah db tersedia
+                if (!db) {
+                    throw new Error('Database tidak tersedia');
+                }
+
+                // Setup real-time listener dengan error handling
+                unsubscribe = db.collection('equipment')
+                    .orderBy('created_at', 'desc')
+                    .onSnapshot(
+                        (snapshot) => {
+                            console.log('Data received:', snapshot.size, 'documents');
+                            
+                            allEquipment = [];
+                            snapshot.forEach((doc) => {
+                                const data = doc.data();
+                                allEquipment.push({
+                                    id: doc.id,
+                                    ...data
+                                });
+                            });
+                            
+                            renderTable(allEquipment);
+                            updateSummary(allEquipment);
+                            hideLoading();
+                        },
+                        (error) => {
+                            console.error('Firestore error:', error);
+                            
+                            // Cek tipe error
+                            if (error.code === 'permission-denied') {
+                                showError('Akses ditolak. Periksa Firebase Security Rules.');
+                            } else if (error.code === 'unauthenticated') {
+                                showError('Sesi habis. Silakan login kembali.');
+                                setTimeout(() => {
+                                    auth.signOut().then(() => {
+                                        window.location.href = 'index.html';
+                                    });
+                                }, 2000);
+                            } else {
+                                showError('Gagal memuat data: ' + error.message);
+                            }
+                        }
+                    );
+
+            } catch (error) {
+                console.error('Load data error:', error);
+                showError('Error: ' + error.message);
             }
         }
 
@@ -416,34 +513,27 @@
                     ? '<span class="badge bg-danger">Critical</span>'
                     : `<span class="badge bg-secondary">Kat ${data.kategori}</span>`;
                 
-                // UPDATED: Progress bar dengan wajib indicator
-                const progressBar = renderProgressBar(data.psi_progress, data.psi_wajib_progress);
-                
-                // UPDATED: Tampilkan tipe equipment di bawah nama
+                const progressBar = renderProgressBar(data.psi_progress);
                 const tipeLabel = getTipeLabel(data.tipe);
                 
                 html += `
                     <tr>
-                        <td><strong class="text-primary">${data.equip_id}</strong></td>
+                        <td><strong class="text-primary">${data.equip_id || '-'}</strong></td>
                         <td>
-                            <div class="fw-semibold">${data.nama}</div>
+                            <div class="fw-semibold">${data.nama || '-'}</div>
                             <small class="text-muted"><i class="fas fa-tag me-1"></i>${tipeLabel}</small>
                         </td>
-                        <td><span class="badge bg-info">${data.area}</span></td>
+                        <td><span class="badge bg-info">${data.area || '-'}</span></td>
                         <td>${kategoriBadge}</td>
-                        <td>${data.kustodian}</td>
+                        <td>${data.kustodian || '-'}</td>
                         <td style="width: 160px;">${progressBar}</td>
                         <td>
                             <div class="btn-group">
-                                <button class="btn btn-sm btn-outline-primary" onclick="viewDetail('${data.equip_id}')" 
-                                        title="Lihat Detail PSI">
+                                <button class="btn btn-sm btn-outline-primary" onclick="viewDetail('${data.id}')" 
+                                        title="Lihat Detail">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button class="btn btn-sm btn-outline-warning" onclick="editEquipment('${data.key}')" 
-                                        title="Edit Equipment">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="deleteEquipment('${data.key}', '${data.equip_id}')" 
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteEquipment('${data.id}', '${data.equip_id || ''}')" 
                                         title="Hapus">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -460,20 +550,13 @@
             const total = equipmentList.length;
             const kat1 = equipmentList.filter(e => e.kategori === 1).length;
             
-            // Hitung PSI complete rata-rata
             let totalProgress = 0;
-            let totalWajibProgress = 0;
             equipmentList.forEach(e => {
                 totalProgress += (e.psi_progress || 0);
-                totalWajibProgress += (e.psi_wajib_progress || 0);
             });
             const avgProgress = total > 0 ? Math.round(totalProgress / total) : 0;
-            const avgWajibProgress = total > 0 ? Math.round(totalWajibProgress / total) : 0;
             
-            // Hitung need update (progress < 100% atau wajib < 100%)
-            const needUpdate = equipmentList.filter(e => 
-                (e.psi_progress || 0) < 100 || (e.psi_wajib_progress || 0) < 100
-            ).length;
+            const needUpdate = equipmentList.filter(e => (e.psi_progress || 0) < 100).length;
             
             document.getElementById('totalEquip').textContent = total;
             document.getElementById('kategori1').textContent = kat1;
@@ -484,35 +567,27 @@
         function searchEquipment() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const filtered = allEquipment.filter(e => 
-                e.equip_id.toLowerCase().includes(searchTerm) ||
-                e.nama.toLowerCase().includes(searchTerm) ||
-                e.area.toLowerCase().includes(searchTerm) ||
-                e.kustodian.toLowerCase().includes(searchTerm) ||
-                getTipeLabel(e.tipe).toLowerCase().includes(searchTerm)
+                (e.equip_id || '').toLowerCase().includes(searchTerm) ||
+                (e.nama || '').toLowerCase().includes(searchTerm) ||
+                (e.area || '').toLowerCase().includes(searchTerm) ||
+                (e.kustodian || '').toLowerCase().includes(searchTerm)
             );
             renderTable(filtered);
         }
 
-        function viewDetail(equipId) {
-            window.location.href = `detail.html?id=${equipId}`;
-        }
-
-        function editEquipment(key) {
-            window.location.href = `edit-equipment.html?id=${key}`;
-        }
-
-        function deleteEquipment(key, equipId) {
-            if (!confirm(`Yakin ingin menghapus equipment ${equipId}?`)) {
-                return;
+        function viewDetail(id) {
+            const eq = allEquipment.find(e => e.id === id);
+            if (eq) {
+                alert(`Detail Equipment:\n\nID: ${eq.equip_id}\nNama: ${eq.nama}\nArea: ${eq.area}\nKustodian: ${eq.kustodian}\nProgress: ${eq.psi_progress || 0}%`);
             }
+        }
+
+        function deleteEquipment(id, equipId) {
+            if (!confirm(`Yakin ingin menghapus equipment ${equipId || id}?`)) return;
             
-            database.ref('equipment/' + key).remove()
+            db.collection('equipment').doc(id).delete()
                 .then(() => {
-                    // Hapus juga psi_data terkait
-                    return database.ref('psi_data/' + equipId).remove();
-                })
-                .then(() => {
-                    alert('Equipment berhasil dihapus');
+                    console.log('Equipment deleted:', id);
                 })
                 .catch((error) => {
                     alert('Gagal menghapus: ' + error.message);
@@ -520,12 +595,13 @@
         }
 
         function logout() {
+            if (unsubscribe) {
+                unsubscribe();
+            }
             auth.signOut().then(() => {
                 window.location.href = 'index.html';
             });
         }
-
-        // ========== HELPER FUNCTIONS (TAMBAHAN) ==========
 
         function getTipeLabel(tipe) {
             const labels = {
@@ -548,24 +624,13 @@
             return labels[tipe] || tipe || '-';
         }
 
-        function renderProgressBar(progress, wajibProgress) {
+        function renderProgressBar(progress) {
             const pct = progress || 0;
-            const wajibPct = wajibProgress || 0;
             
-            // Colors dari palet
-            let barColor = '#666547'; // default olive
-            if (pct >= 80) {
-                barColor = '#6fcb9f'; // mint
-            } else if (pct >= 50) {
-                barColor = '#ffe28a'; // yellow
-            } else if (pct >= 30) {
-                barColor = '#fb2e01'; // red
-            }
-            
-            let warningBadge = '';
-            if (wajibPct < 100) {
-                warningBadge = '<span class="badge bg-danger ms-1" title="Dokumen wajib belum lengkap"><i class="fas fa-exclamation"></i></span>';
-            }
+            let barColor = '#666547';
+            if (pct >= 80) barColor = '#6fcb9f';
+            else if (pct >= 50) barColor = '#ffe28a';
+            else if (pct >= 30) barColor = '#fb2e01';
             
             return `
                 <div class="d-flex align-items-center">
@@ -574,10 +639,22 @@
                              style="width: ${pct}%; border-radius: 5px; background-color: ${barColor};"></div>
                     </div>
                     <span class="ms-2 small fw-bold" style="color: #666547;">${pct}%</span>
-                    ${warningBadge}
                 </div>
             `;
         }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        function showError(message) {
+            document.getElementById('loadingOverlay').style.display = 'none';
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorOverlay').style.display = 'flex';
+        }
+
+        // Start
+        document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
 </body>
 </html>
