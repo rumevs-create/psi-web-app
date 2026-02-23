@@ -15,9 +15,16 @@
             --color-cream: #fffeb3;
         }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             background: var(--color-cream);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
         }
 
         .navbar {
@@ -55,15 +62,26 @@
             color: var(--color-olive);
         }
 
-        /* Summary Cards */
+        /* Summary Cards - FIXED */
+        .stats-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
         .stat-card {
+            flex: 1;
+            min-width: 220px;
             background: white;
             border-radius: 15px;
             padding: 25px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             transition: transform 0.3s ease;
-            height: 100%;
             border-left: 4px solid;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .stat-card:hover {
@@ -75,20 +93,25 @@
         .stat-card.progress { border-left-color: var(--color-yellow); }
         .stat-card.critical { border-left-color: var(--color-red); }
 
+        .stat-content {
+            flex: 1;
+        }
+
         .stat-number {
             font-size: 2.5rem;
             font-weight: 700;
             color: var(--color-olive);
             margin-bottom: 5px;
+            line-height: 1;
         }
 
         .stat-label {
             color: #888;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 500;
         }
 
-        .stat-icon {
+        .stat-icon-box {
             width: 50px;
             height: 50px;
             border-radius: 12px;
@@ -96,21 +119,21 @@
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
-            opacity: 0.8;
+            flex-shrink: 0;
+            margin-left: 15px;
         }
 
-        .stat-card.total .stat-icon { background: #e8f0fe; color: #6c9bcf; }
-        .stat-card.aktif .stat-icon { background: #d4edda; color: var(--color-mint); }
-        .stat-card.progress .stat-icon { background: #fff3cd; color: var(--color-yellow); }
-        .stat-card.critical .stat-icon { background: #f8d7da; color: var(--color-red); }
+        .stat-card.total .stat-icon-box { background: #e8f0fe; color: #6c9bcf; }
+        .stat-card.aktif .stat-icon-box { background: #d4edda; color: var(--color-mint); }
+        .stat-card.progress .stat-icon-box { background: #fff3cd; color: var(--color-yellow); }
+        .stat-card.critical .stat-icon-box { background: #f8d7da; color: var(--color-red); }
 
-        /* Equipment Cards */
+        /* Equipment Section */
         .equipment-section {
             background: white;
             border-radius: 20px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             overflow: hidden;
-            margin-top: 30px;
         }
 
         .section-header {
@@ -120,11 +143,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .section-header h5 {
             margin: 0;
             font-weight: 600;
+            font-size: 1.1rem;
         }
 
         .equipment-card {
@@ -147,6 +173,7 @@
             font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
+            display: inline-block;
         }
 
         .badge-standard {
@@ -202,7 +229,6 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-top: 15px;
         }
 
         .progress {
@@ -210,6 +236,7 @@
             height: 8px;
             background-color: #e9ecef;
             border-radius: 10px;
+            min-width: 80px;
         }
 
         .progress-bar {
@@ -252,9 +279,37 @@
             opacity: 0.3;
         }
 
+        /* Responsive */
+        @media (max-width: 992px) {
+            .stat-card {
+                min-width: calc(50% - 10px);
+                flex: 1 1 calc(50% - 10px);
+            }
+        }
+
         @media (max-width: 768px) {
+            .stats-row {
+                flex-direction: column;
+            }
+            
+            .stat-card {
+                min-width: 100%;
+                width: 100%;
+            }
+            
             .info-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .section-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .info-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -272,7 +327,7 @@
                 </a>
             </div>
             <div class="d-flex align-items-center gap-3">
-                <span class="text-light" id="userEmail"></span>
+                <span class="text-light small" id="userEmail"></span>
                 <button class="btn btn-light-custom btn-sm" onclick="logout()">
                     <i class="fas fa-sign-out-alt me-1"></i> Logout
                 </button>
@@ -281,58 +336,45 @@
     </nav>
 
     <div class="container-fluid px-4 py-4">
-        <!-- Summary Cards -->
-        <div class="row g-4 mb-4">
-            <div class="col-md-3 col-sm-6">
-                <div class="stat-card total">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <div class="stat-number" id="totalEquip">0</div>
-                            <div class="stat-label">Total Equipment</div>
-                        </div>
-                        <div class="stat-icon">
-                            <i class="fas fa-cubes"></i>
-                        </div>
-                    </div>
+        <!-- Summary Cards - FIXED LAYOUT -->
+        <div class="stats-row">
+            <div class="stat-card total">
+                <div class="stat-content">
+                    <div class="stat-number" id="totalEquip">0</div>
+                    <div class="stat-label">Total Equipment</div>
+                </div>
+                <div class="stat-icon-box">
+                    <i class="fas fa-cubes"></i>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="stat-card aktif">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <div class="stat-number" id="equipmentAktif">0</div>
-                            <div class="stat-label">Equipment Aktif</div>
-                        </div>
-                        <div class="stat-icon">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                    </div>
+            
+            <div class="stat-card aktif">
+                <div class="stat-content">
+                    <div class="stat-number" id="equipmentAktif">0</div>
+                    <div class="stat-label">Equipment Aktif</div>
+                </div>
+                <div class="stat-icon-box">
+                    <i class="fas fa-check-circle"></i>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="stat-card progress">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <div class="stat-number" id="dalamProgress">0</div>
-                            <div class="stat-label">Dalam Progres PSI</div>
-                        </div>
-                        <div class="stat-icon">
-                            <i class="fas fa-tasks"></i>
-                        </div>
-                    </div>
+            
+            <div class="stat-card progress">
+                <div class="stat-content">
+                    <div class="stat-number" id="dalamProgress">0</div>
+                    <div class="stat-label">Dalam Progres PSI</div>
+                </div>
+                <div class="stat-icon-box">
+                    <i class="fas fa-tasks"></i>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="stat-card critical">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <div class="stat-number" id="ehsCritical">0</div>
-                            <div class="stat-label">EHS Critical</div>
-                        </div>
-                        <div class="stat-icon">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
-                    </div>
+            
+            <div class="stat-card critical">
+                <div class="stat-content">
+                    <div class="stat-number" id="ehsCritical">0</div>
+                    <div class="stat-label">EHS Critical</div>
+                </div>
+                <div class="stat-icon-box">
+                    <i class="fas fa-exclamation-triangle"></i>
                 </div>
             </div>
         </div>
@@ -342,10 +384,10 @@
             <div class="section-header">
                 <h5><i class="fas fa-clock me-2"></i>Equipment Terbaru</h5>
                 <div class="d-flex gap-2">
-                    <button class="btn btn-light-custom btn-sm" onclick="window.location.href='tambah-equipment.html'">
+                    <button class="btn btn-light btn-sm" onclick="window.location.href='tambah-equipment.html'">
                         <i class="fas fa-plus me-1"></i> Tambah Equipment
                     </button>
-                    <button class="btn-view-all" onclick="viewAllEquipment()">
+                    <button class="btn-view-all btn-sm" onclick="viewAllEquipment()">
                         Lihat Semua <i class="fas fa-arrow-right ms-1"></i>
                     </button>
                 </div>
@@ -449,51 +491,52 @@
 
                 html += `
                     <div class="equipment-card">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
                                 <span class="badge-category ${badgeClass}">${badgeText}</span>
                                 <h4 class="equipment-title">${data.nama}</h4>
                                 <div class="equipment-id">${data.equip_id}</div>
+                                
+                                <div class="info-grid mt-3">
+                                    <div class="info-item">
+                                        <span class="info-label">Area</span>
+                                        <span class="info-value">${data.area || '-'}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Kategori</span>
+                                        <span class="info-value">Kategori ${data.kategori || '-'}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Kustodian</span>
+                                        <span class="info-value">${data.kustodian || '-'}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Tipe</span>
+                                        <span class="info-value">${getTipeLabel(data.tipe)}</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="text-end">
-                                <div class="mb-2" style="color: #888; font-size: 0.85rem;">PSI Progress</div>
-                                <div class="d-flex align-items-center gap-2">
-                                    <div style="width: 100px;">
-                                        <div class="progress">
-                                            <div class="progress-bar" style="width: ${progress}%"></div>
-                                        </div>
+                            
+                            <div class="col-md-4 mt-3 mt-md-0">
+                                <div class="text-muted small mb-2">PSI Progress</div>
+                                <div class="progress-section">
+                                    <div class="progress">
+                                        <div class="progress-bar" style="width: ${progress}%"></div>
                                     </div>
                                     <span class="progress-text">${progress}%</span>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <span class="info-label">Area</span>
-                                <span class="info-value">${data.area || '-'}</span>
+                            
+                            <div class="col-md-2 mt-3 mt-md-0 text-md-end">
+                                <div class="d-flex gap-2 justify-content-md-end">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewDetail('${data.equip_id}')" title="Detail">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-warning" onclick="editEquipment('${data.key}')" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="info-item">
-                                <span class="info-label">Kategori</span>
-                                <span class="info-value">Kategori ${data.kategori || '-'}</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Kustodian</span>
-                                <span class="info-value">${data.kustodian || '-'}</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Tipe</span>
-                                <span class="info-value">${getTipeLabel(data.tipe)}</span>
-                            </div>
-                        </div>
-
-                        <div class="mt-3 d-flex gap-2">
-                            <button class="btn btn-sm btn-outline-primary" onclick="viewDetail('${data.equip_id}')">
-                                <i class="fas fa-eye me-1"></i> Detail
-                            </button>
-                            <button class="btn btn-sm btn-outline-warning" onclick="editEquipment('${data.key}')">
-                                <i class="fas fa-edit me-1"></i> Edit
-                            </button>
                         </div>
                     </div>
                 `;
@@ -532,8 +575,8 @@
         }
 
         function viewAllEquipment() {
-            // Could expand to show all or navigate to full list
-            alert('Fitur lihat semua equipment - bisa ditambahkan tabel lengkap di sini');
+            // Expand to show all equipment or navigate to full list view
+            renderEquipmentList(allEquipment);
         }
 
         function logout() {
