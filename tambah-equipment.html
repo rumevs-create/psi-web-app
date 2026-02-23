@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Equipment - PSI System</title>
+    <title>Tambah Equipment - PSI Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -16,154 +16,220 @@
         }
 
         body {
-            background: linear-gradient(135deg, #666547 0%, #6fcb9f 100%);
+            background: var(--color-cream);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
             padding-bottom: 50px;
         }
 
-        .form-container {
-            max-width: 700px;
-            margin: 0 auto;
+        .navbar {
+            background-color: var(--color-olive) !important;
+            box-shadow: 0 2px 10px rgba(102, 101, 71, 0.3);
+            padding: 15px 0;
         }
 
-        .card {
-            background: #fffeb3;
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        .btn-mint {
+            background-color: var(--color-mint);
             border: none;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(102, 101, 71, 0.3);
+            color: white;
+            font-weight: 500;
         }
 
-        .card-header {
-            background-color: #666547 !important;
-            color: #fffeb3 !important;
-            border-radius: 20px 20px 0 0 !important;
-            padding: 20px;
+        .btn-mint:hover {
+            background-color: #5db88d;
+            color: white;
+        }
+
+        .btn-light-custom {
+            background-color: white;
+            border: none;
+            color: var(--color-olive);
+            font-weight: 500;
+        }
+
+        .btn-light-custom:hover {
+            background-color: var(--color-yellow);
+            color: var(--color-olive);
+        }
+
+        .form-container {
+            max-width: 800px;
+            margin: 30px auto;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .form-header {
+            background: var(--color-mint);
+            color: white;
+            padding: 25px 30px;
+        }
+
+        .form-header h5 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        .form-body {
+            padding: 30px;
         }
 
         .form-label {
-            color: #666547;
+            color: var(--color-olive);
             font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
         }
 
         .form-control, .form-select {
-            border: 2px solid #ffe28a;
+            border: 2px solid #e9ecef;
             border-radius: 10px;
-            padding: 12px;
-            background-color: #fff;
+            padding: 12px 15px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
         }
 
         .form-control:focus, .form-select:focus {
-            border-color: #6fcb9f;
+            border-color: var(--color-mint);
             box-shadow: 0 0 0 0.2rem rgba(111, 203, 159, 0.25);
-            background-color: #fff;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #6fcb9f 0%, #5db88d 100%);
+        .required::after {
+            content: " *";
+            color: var(--color-red);
+        }
+
+        .form-text {
+            color: #888;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        .btn-submit {
+            background: var(--color-mint);
             border: none;
+            color: white;
+            padding: 12px 30px;
             border-radius: 10px;
-            padding: 12px;
             font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
         }
 
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #5db88d 0%, #6fcb9f 100%);
+        .btn-submit:hover {
+            background: #5db88d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(111, 203, 159, 0.4);
         }
 
-        .btn-secondary {
-            background-color: #666547;
+        .btn-cancel {
+            background: #e9ecef;
             border: none;
+            color: #666;
+            padding: 12px 30px;
             border-radius: 10px;
-            padding: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
         }
 
-        .btn-secondary:hover {
-            background-color: #4a4933;
+        .btn-cancel:hover {
+            background: #dee2e6;
         }
 
         .alert-success {
-            background-color: #6fcb9f;
-            color: #fff;
+            background-color: var(--color-mint);
+            color: white;
             border: none;
             border-radius: 10px;
         }
 
         .alert-danger {
-            background-color: #fb2e01;
-            color: #fff;
+            background-color: var(--color-red);
+            color: white;
             border: none;
             border-radius: 10px;
         }
 
-        .navbar {
-            background-color: #666547 !important;
-            box-shadow: 0 2px 10px rgba(102, 101, 71, 0.3);
-        }
-
-        .btn-light {
-            background-color: #fffeb3;
-            border: none;
-            color: #666547;
-        }
-
-        .btn-light:hover {
-            background-color: #ffe28a;
-            color: #666547;
-        }
-
-        .required::after {
-            content: " *";
-            color: #fb2e01;
-        }
-
-        .form-text {
-            color: #666547;
-            opacity: 0.8;
+        .section-title {
+            color: var(--color-olive);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin: 25px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--color-yellow);
         }
 
         .form-check-input:checked {
-            background-color: #6fcb9f;
-            border-color: #6fcb9f;
+            background-color: var(--color-mint);
+            border-color: var(--color-mint);
         }
 
-        hr {
-            border-color: #ffe28a;
-            opacity: 1;
+        .input-group-text {
+            background-color: var(--color-cream);
+            border: 2px solid #e9ecef;
+            border-right: none;
+            color: var(--color-olive);
+        }
+
+        .input-group .form-control {
+            border-left: none;
+        }
+
+        .input-group .form-control:focus {
+            border-left: none;
         }
     </style>
 </head>
 <body>
+    <!-- Navbar -->
     <nav class="navbar navbar-dark">
-        <div class="container-fluid">
-            <span class="navbar-brand">
-                <i class="fas fa-shield-alt"></i> PSI Management - Tambah Equipment
-            </span>
-            <div>
-                <button class="btn btn-light me-2" onclick="window.location.href='dashboard.html'">
-                    <i class="fas fa-arrow-left"></i> Kembali
-                </button>
-                <button class="btn btn-light" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+        <div class="container-fluid px-4">
+            <div class="d-flex align-items-center">
+                <span class="navbar-brand me-4">
+                    <i class="fas fa-shield-alt me-2"></i>PSI Management System
+                </span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <a href="dashboard.html" class="btn btn-light-custom btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Kembali ke Dashboard
+                </a>
+                <button class="btn btn-light-custom btn-sm" onclick="logout()">
+                    <i class="fas fa-sign-out-alt me-1"></i> Logout
                 </button>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-4 form-container">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0"><i class="fas fa-plus-circle"></i> Tambah Equipment Baru</h5>
+    <div class="container form-container">
+        <div class="form-card">
+            <div class="form-header">
+                <h5><i class="fas fa-plus-circle me-2"></i>Tambah Equipment Baru</h5>
             </div>
-            <div class="card-body p-4">
+            
+            <div class="form-body">
                 <div id="alertMessage" class="alert d-none mb-4"></div>
                 
                 <form id="equipmentForm">
+                    <!-- Informasi Dasar -->
+                    <div class="section-title">Informasi Dasar</div>
+                    
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label required">Equipment ID</label>
                             <input type="text" class="form-control" id="equip_id" required 
                                    placeholder="Contoh: V-1101">
-                            <div class="form-text">ID unik equipment</div>
+                            <div class="form-text">Format: Huruf, angka, dan tanda hubung</div>
                         </div>
                         
                         <div class="col-md-6 mb-3">
@@ -208,7 +274,8 @@
                             </select>
                             <div class="form-check mt-2">
                                 <input type="checkbox" class="form-check-input" id="is_critical" disabled>
-                                <label class="form-check-label">EHS Critical Equipment</label>
+                                <label class="form-check-label text-muted">EHS Critical Equipment</label>
+                                <div class="form-text">Otomatis Ya jika Kategori 1</div>
                             </div>
                         </div>
                         
@@ -233,6 +300,9 @@
                         <label class="form-label">Kustodian (Lainnya)</label>
                         <input type="text" class="form-control" id="kustodian_lainnya">
                     </div>
+
+                    <!-- Informasi Teknis -->
+                    <div class="section-title">Informasi Teknis</div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
@@ -292,14 +362,12 @@
                         </div>
                     </div>
 
-                    <hr class="my-4">
-                    
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary" id="submitBtn">
-                            <i class="fas fa-save"></i> Simpan Equipment
+                    <div class="d-flex gap-3 mt-4 pt-3" style="border-top: 1px solid #e9ecef;">
+                        <button type="submit" class="btn btn-submit flex-fill" id="submitBtn">
+                            <i class="fas fa-save me-2"></i>Simpan Equipment
                         </button>
-                        <button type="button" class="btn btn-secondary" onclick="window.location.href='dashboard.html'">
-                            <i class="fas fa-times"></i> Batal
+                        <button type="button" class="btn btn-cancel" onclick="window.location.href='dashboard.html'">
+                            <i class="fas fa-times me-2"></i>Batal
                         </button>
                     </div>
                 </form>
@@ -307,13 +375,13 @@
         </div>
     </div>
 
-    <!-- Firebase SDK - RTDB VERSION -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <script>
-        // 🔥 KONFIGURASI FIREBASE - RTDB
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyA1_SggH_uh1ZVbtoLD3u5-w6pqKgrgITk",
             authDomain: "psi-management-system.firebaseapp.com",
@@ -324,19 +392,17 @@
             appId: "1:1053490628908:web:6b272409217851f8ebc489"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
 
-        // Cek login
+        // Check auth
         auth.onAuthStateChanged((user) => {
             if (!user) {
                 window.location.href = 'index.html';
             }
         });
 
-        // Logout function
         function logout() {
             auth.signOut().then(() => {
                 window.location.href = 'index.html';
@@ -367,23 +433,21 @@
             }
         });
 
-        // Auto-set is_critical berdasarkan kategori
+        // Auto-set is_critical
         document.getElementById('kategori').addEventListener('change', function() {
-            const isCritical = document.getElementById('is_critical');
-            isCritical.checked = (this.value === '1');
+            document.getElementById('is_critical').checked = (this.value === '1');
         });
 
-        // Handle form submit - FIXED untuk RTDB
+        // Form submit
         document.getElementById('equipmentForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Menyimpan...';
 
             const equipId = document.getElementById('equip_id').value.trim();
 
-            // Ambil nilai form
             let area = document.getElementById('area').value;
             if (area === 'Lainnya') {
                 area = document.getElementById('area_lainnya').value.trim();
@@ -395,7 +459,7 @@
             }
 
             try {
-                // Cek apakah equip_id sudah ada (RTDB tidak punya unique constraint)
+                // Check duplicate
                 const existingSnapshot = await database.ref('equipment')
                     .orderByChild('equip_id')
                     .equalTo(equipId)
@@ -404,7 +468,7 @@
                 if (existingSnapshot.exists()) {
                     showAlert('Equipment ID "' + equipId + '" sudah digunakan!', 'danger');
                     submitBtn.disabled = false;
-                    submitBtn.innerHTML = '<i class="fas fa-save"></i> Simpan Equipment';
+                    submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Simpan Equipment';
                     return;
                 }
 
@@ -427,38 +491,27 @@
                     created_by: auth.currentUser.email
                 };
 
-                // ✅ Simpan ke Realtime Database menggunakan push()
                 await database.ref('equipment').push(equipmentData);
                 
                 showAlert('Equipment berhasil disimpan! Mengalihkan ke dashboard...', 'success');
                 
-                // Redirect ke dashboard setelah 1.5 detik
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
                 }, 1500);
                 
             } catch (error) {
-                console.error('Error saving equipment:', error);
+                console.error('Error:', error);
                 showAlert('Gagal menyimpan: ' + error.message, 'danger');
-                
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-save"></i> Simpan Equipment';
+                submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Simpan Equipment';
             }
         });
 
-        // Helper function untuk show alert
         function showAlert(message, type) {
             const alertDiv = document.getElementById('alertMessage');
-            alertDiv.className = `alert alert-${type}`;
-            alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            alertDiv.className = `alert alert-${type} mb-4`;
+            alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>${message}`;
             alertDiv.classList.remove('d-none');
-            
-            // Auto hide setelah 5 detik jika success
-            if (type === 'success') {
-                setTimeout(() => {
-                    alertDiv.classList.add('d-none');
-                }, 5000);
-            }
         }
     </script>
 </body>
