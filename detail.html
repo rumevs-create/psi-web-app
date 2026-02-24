@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Equipment - PSI System</title>
+    <title>Detail Equipment - Reliable Update</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -16,322 +16,302 @@
         }
 
         body {
-            background: #fffeb3;
+            background: var(--color-cream);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .navbar {
-            background-color: #666547 !important;
-            box-shadow: 0 2px 10px rgba(102, 101, 71, 0.3);
+            background-color: var(--color-olive) !important;
         }
 
-        .status-badge {
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
+        /* Data Item Styling */
+        .data-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .data-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        }
+
+        .data-item.missing {
+            background: #fff5f5;
+            border-left-color: var(--color-red);
+        }
+
+        .data-item.filled {
+            background: #f0fff4;
+            border-left-color: var(--color-mint);
+        }
+
+        .data-item.warning {
+            background: #fffbeb;
+            border-left-color: var(--color-yellow);
+        }
+
+        .data-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .data-title {
+            font-weight: 600;
+            color: var(--color-olive);
+            font-size: 1.1rem;
+        }
+
+        .data-badges {
+            display: flex;
+            gap: 5px;
+        }
+
+        .badge-category {
+            background: var(--color-yellow);
+            color: var(--color-olive);
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+
+        .badge-type {
+            background: #e9ecef;
+            color: #666;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+
+        .badge-w {
+            background: var(--color-red);
+            color: white;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 10px;
             font-weight: bold;
-            display: inline-block;
-            cursor: pointer;
         }
-        .status-ada { background: #6fcb9f; color: #fff; }
-        .status-missing { background: #fb2e01; color: #fff; }
-        .status-update { background: #ffe28a; color: #666547; }
-        .status-na { background: #666547; color: #fffeb3; }
-        
-        .psi-section {
-            margin-bottom: 25px;
-            border-left: 4px solid #666547;
-            padding-left: 15px;
+
+        .data-value {
+            font-size: 1rem;
+            color: #333;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
         }
-        
-        .progress {
-            height: 25px;
-            margin-bottom: 20px;
-            background-color: #fffeb3;
+
+        .data-value.missing {
+            background: #fee;
+            color: var(--color-red);
+            font-style: italic;
         }
-        
-        .item-row {
-            border-bottom: 1px solid #ffe28a;
-            padding: 12px 0;
-            transition: background-color 0.2s;
-        }
-        
-        .item-row:hover {
-            background-color: #fffeb3;
-        }
-        
-        .kategori-badge {
-            font-size: 10px;
-            padding: 2px 5px;
-            border-radius: 3px;
-            background: #ffe28a;
-            color: #666547;
-            margin-left: 5px;
-        }
-        
-        .file-link {
-            color: #666547;
-            text-decoration: none;
+
+        .data-value.filled {
+            background: #e8f5e9;
+            color: #2e7d32;
             font-weight: 500;
         }
-        
-        .file-link:hover {
-            color: #fb2e01;
-            text-decoration: underline;
+
+        .btn-update {
+            background: white;
+            border: 2px solid var(--color-mint);
+            color: var(--color-mint);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s;
+            cursor: pointer;
         }
 
-        .card {
-            border: none;
+        .btn-update:hover {
+            background: var(--color-mint);
+            color: white;
+        }
+
+        .btn-update:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-update.loading {
+            background: var(--color-mint);
+            color: white;
+            pointer-events: none;
+        }
+
+        /* Modal Styling */
+        .modal-content {
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(102, 101, 71, 0.15);
-        }
-
-        .card-header.bg-primary {
-            background-color: #666547 !important;
-        }
-
-        .card-header.bg-info {
-            background-color: #6fcb9f !important;
-        }
-
-        .btn-warning {
-            background-color: #ffe28a;
-            border: none;
-            color: #666547;
-        }
-
-        .btn-warning:hover {
-            background-color: #fb2e01;
-            color: #fff;
-        }
-
-        .btn-info {
-            background-color: #6fcb9f;
-            border: none;
-            color: #fff;
-        }
-
-        .btn-info:hover {
-            background-color: #5db88d;
-            color: #fff;
-        }
-
-        .btn-outline-primary {
-            color: #666547;
-            border-color: #666547;
-        }
-
-        .btn-outline-primary:hover {
-            background-color: #666547;
-            border-color: #666547;
-            color: #fffeb3;
-        }
-
-        .modal-header.bg-primary {
-            background-color: #666547 !important;
-        }
-
-        .form-control:focus, .form-select:focus {
-            border-color: #6fcb9f;
-            box-shadow: 0 0 0 0.2rem rgba(111, 203, 159, 0.25);
-        }
-
-        .alert-info {
-            background-color: #ffe28a;
-            color: #666547;
             border: none;
         }
 
-        .text-primary {
-            color: #666547 !important;
+        .modal-header {
+            background: linear-gradient(135deg, var(--color-olive) 0%, var(--color-mint) 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
         }
 
-        .text-muted {
-            color: #666547 !important;
-            opacity: 0.7;
+        .modal-footer {
+            background: #f8f9fa;
+            border-radius: 0 0 15px 15px;
         }
 
-        .bg-light {
-            background-color: #fffeb3 !important;
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
         }
 
-        .table-danger {
-            background-color: rgba(251, 46, 1, 0.1) !important;
+        .toast {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-left: 4px solid var(--color-mint);
+            min-width: 300px;
         }
 
-        .font-monospace {
-            color: #666547;
+        .toast.success {
+            border-left-color: var(--color-mint);
         }
 
-        .spinner-border.text-primary {
-            color: #666547 !important;
+        .toast.error {
+            border-left-color: var(--color-red);
         }
 
-        .badge.bg-secondary {
-            background-color: #ffe28a !important;
-            color: #666547;
+        /* Progress Section */
+        .progress-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
-        .badge.bg-danger {
-            background-color: #fb2e01 !important;
+        .progress {
+            height: 25px;
+            border-radius: 15px;
+            background: #e9ecef;
         }
 
-        .badge.bg-info {
-            background-color: #6fcb9f !important;
+        .progress-bar {
+            background: linear-gradient(90deg, var(--color-mint) 0%, #5db88d 100%);
+            border-radius: 15px;
+            font-weight: 600;
+            line-height: 25px;
         }
 
-        .badge.bg-success {
-            background-color: #6fcb9f !important;
+        /* Status Badge */
+        .status-missing {
+            background: var(--color-red);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        .badge.bg-light {
-            background-color: #fffeb3 !important;
-            color: #666547;
-        }
-
-        .btn-close-white {
-            filter: none;
-            opacity: 1;
+        .status-filled {
+            background: var(--color-mint);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
     </style>
+<base target="_blank">
 </head>
 <body>
+    <!-- Navbar -->
     <nav class="navbar navbar-dark">
-        <div class="container-fluid">
-            <span class="navbar-brand">
-                <i class="fas fa-shield-alt"></i> PSI Management - Detail Equipment
-            </span>
-            <div>
-                <button class="btn btn-light me-2" onclick="window.location.href='dashboard.html'">
-                    <i class="fas fa-arrow-left"></i> Kembali
-                </button>
-                <button class="btn btn-light" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
+        <div class="container-fluid px-4">
+            <div class="d-flex align-items-center">
+                <span class="navbar-brand">
+                    <i class="fas fa-shield-alt me-2"></i>PSI Management System
+                </span>
             </div>
+            <a href="dashboard.html" class="btn btn-light btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Kembali
+            </a>
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <!-- Loading Spinner -->
-        <div id="loadingDiv" class="text-center py-5">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-            <p class="mt-2 text-muted">Memuat data equipment...</p>
-        </div>
-
-        <!-- Main Content -->
-        <div id="contentDiv" style="display: none;">
-            <!-- Header Equipment -->
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h4 id="equipTitle" class="mb-0"></h4>
-                    <span id="formBadge" class="badge bg-light"></span>
+    <div class="container py-4">
+        <!-- Equipment Header -->
+        <div class="progress-section">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h4 class="mb-1" id="equipmentName">Loading...</h4>
+                    <p class="text-muted mb-0" id="equipmentId">-</p>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <table class="table table-sm">
-                                <tr><th style="width: 200px; color: #666547;">Equipment ID</th><td id="detailEquipId"></td></tr>
-                                <tr><th style="color: #666547;">Area</th><td id="detailArea"></td></tr>
-                                <tr><th style="color: #666547;">Kategori</th><td id="detailKategori"></td></tr>
-                                <tr><th style="color: #666547;">Kustodian</th><td id="detailKustodian"></td></tr>
-                                <tr><th style="color: #666547;">Lokasi Fisik</th><td id="detailLokasi"></td></tr>
-                                <tr><th style="color: #666547;">Tipe Equipment</th><td id="detailTipe"></td></tr>
-                            </table>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    <h6 style="color: #666547;">Progress Kelengkapan PSI</h6>
-                                    <div class="progress">
-                                        <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%; background-color: #6fcb9f;">0%</div>
-                                    </div>
-                                    <p id="progressText" class="mb-0 small" style="color: #666547;">0 dari 0 item</p>
-                                </div>
-                            </div>
-                            <div class="mt-2 d-grid gap-2">
-                                <button class="btn btn-warning btn-sm" onclick="editEquipment()">
-                                    <i class="fas fa-edit"></i> Edit Equipment
-                                </button>
-                                <button class="btn btn-info btn-sm" onclick="window.location.href='dashboard.html'">
-                                    <i class="fas fa-list"></i> Lihat Daftar
-                                </button>
-                            </div>
-                        </div>
+                <div class="text-end">
+                    <div class="mb-2">
+                        <span class="badge bg-danger" id="categoryBadge">EHS Critical</span>
+                    </div>
+                    <div class="text-muted small">
+                        <span id="filledCount">0</span>/<span id="totalCount">0</span> Data Lengkap
                     </div>
                 </div>
             </div>
 
-            <!-- PSI Sections -->
-            <div id="psiSections"></div>
+            <div class="progress">
+                <div class="progress-bar" id="progressBar" style="width: 0%">0%</div>
+            </div>
+        </div>
+
+        <!-- Data Sections -->
+        <div id="dataContainer">
+            <!-- Data items will be generated here -->
         </div>
     </div>
 
-    <!-- Modal Update Status -->
-    <div class="modal fade" id="statusModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+    <!-- Update Modal -->
+    <div class="modal fade" id="updateModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title"><i class="fas fa-edit"></i> Update Status PSI</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Update Data</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="alert alert-info">
-                        <strong id="statusItemInfo"></strong>
-                        <div id="itemKategori" class="small mt-1"></div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label" style="color: #666547;">Status <span class="text-danger">*</span></label>
-                            <select class="form-select" id="statusSelect" required>
-                                <option value="Ada">✅ Ada (Lengkap)</option>
-                                <option value="Missing">❌ Missing (Tidak Ada)</option>
-                                <option value="Update Needed">⚠️ Update Needed (Perlu Update)</option>
-                                <option value="Not Applicable">➖ N/A (Tidak Berlaku)</option>
-                            </select>
+                    <form id="updateForm">
+                        <input type="hidden" id="fieldKey">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold" id="fieldLabel">Field Name</label>
+                            <input type="text" class="form-control form-control-lg" id="fieldValue" required>
+                            <div class="form-text text-muted" id="fieldHint">Masukkan nilai yang sesuai</div>
                         </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label" style="color: #666547;">Input Type</label>
-                            <input type="text" class="form-control" id="inputTypeDisplay" readonly style="background-color: #fffeb3;">
-                        </div>
-                    </div>
-
-                    <!-- Dynamic Input Container -->
-                    <div id="valueInputContainer" class="mb-3">
-                        <label class="form-label" id="valueLabel" style="color: #666547;">Nilai/Spesifikasi</label>
-                        <!-- Input akan di-generate oleh JS berdasarkan input_type -->
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label" style="color: #666547;">Catatan / Keterangan</label>
-                        <textarea class="form-control" id="statusCatatan" rows="2" 
-                                  placeholder="Contoh: Revisi 5, 2025, Halaman 3 rusak"></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label" style="color: #666547;">File Referensi</label>
-                        <div class="input-group">
-                            <input type="file" class="form-control" id="statusFileInput">
-                            <button class="btn btn-outline-secondary" type="button" onclick="document.getElementById('statusFileInput').value=''" style="border-color: #ffe28a; color: #666547;">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <div class="form-text" style="color: #666547;">Upload file baru atau biarkan kosong</div>
-                        <div id="currentFileDisplay" class="small mt-1"></div>
-                    </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: #666547; border: none;">Batal</button>
-                    <button type="button" class="btn btn-primary" onclick="saveStatus()" style="background-color: #6fcb9f; border: none;">
-                        <i class="fas fa-save"></i> Simpan Perubahan
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-success" id="saveBtn" onclick="saveData()">
+                        <i class="fas fa-save me-2"></i>Simpan
                     </button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -340,502 +320,350 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-    // 🔥 KONFIGURASI FIREBASE - RTDB
-    const firebaseConfig = {
-        apiKey: "AIzaSyA1_SggH_uh1ZVbtoLD3u5-w6pqKgrgITk",
-        authDomain: "psi-management-system.firebaseapp.com",
-        databaseURL: "https://psi-management-system-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "psi-management-system",
-        storageBucket: "psi-management-system.firebasestorage.app",
-        messagingSenderId: "1053490628908",
-        appId: "1:1053490628908:web:6b272409217851f8ebc489"
-    };
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyA1_SggH_uh1ZVbtoLD3u5-w6pqKgrgITk",
+            authDomain: "psi-management-system.firebaseapp.com",
+            databaseURL: "https://psi-management-system-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "psi-management-system",
+            storageBucket: "psi-management-system.firebasestorage.app",
+            messagingSenderId: "1053490628908",
+            appId: "1:1053490628908:web:6b272409217851f8ebc489"
+        };
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const database = firebase.database();
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const auth = firebase.auth();
 
-    // ========== VARIABEL GLOBAL ==========
-    let currentEquipment = null;
-    let currentEquipmentKey = null;
-    let psiMaster = null;
-    let psiData = {};
-    let currentItemKey = null;
-    let currentSectionKey = null;
-    let currentItemData = null;
+        // Global Variables
+        let currentEquipment = null;
+        let equipmentKey = null;
+        let updateModal = null;
 
-    // Ambil equip_id dari URL (misal: ?id=V-1101)
-    const urlParams = new URLSearchParams(window.location.search);
-    const equipId = urlParams.get('id');
-    console.log('Equip ID dari URL:', equipId);
+        // Data Structure Definition
+        const dataStructure = [
+            {
+                section: "C. Mechanical Data",
+                fields: [
+                    { key: "shell_material", label: "Shell Material", type: "text", category: "1", required: true },
+                    { key: "shell_thickness", label: "Shell Thickness (mm)", type: "number", category: "1", required: true },
+                    { key: "head_material", label: "Head Material", type: "text", category: "1", required: true },
+                    { key: "head_thickness", label: "Head Thickness (mm)", type: "number", category: "1", required: true },
+                    { key: "corrosion_allowance", label: "Corrosion Allowance (mm)", type: "number", category: "1", required: true },
+                    { key: "radiography", label: "Radiography", type: "text", category: "2", required: false },
+                    { key: "heat_treatment", label: "Heat Treatment", type: "text", category: "2", required: false }
+                ]
+            }
+        ];
 
-    // ========== AUTH STATE ==========
-    auth.onAuthStateChanged((user) => {
-        if (!user) {
-            window.location.href = 'index.html';
-        } else if (equipId) {
-            console.log('User logged in:', user.email);
-            loadEquipmentData();
-        } else {
-            alert('ID equipment tidak ditemukan di URL');
-            window.location.href = 'dashboard.html';
-        }
-    });
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Bootstrap Modal
+            updateModal = new bootstrap.Modal(document.getElementById('updateModal'));
 
-    // ========== FUNGSI LOAD EQUIPMENT ==========
-    async function loadEquipmentData() {
-        try {
-            console.log('Loading equipment data for:', equipId);
-            
-            const equipmentRef = database.ref('equipment');
-            const snapshot = await equipmentRef.orderByChild('equip_id').equalTo(equipId).once('value');
-            
-            if (!snapshot.exists()) {
-                alert(`Equipment dengan ID "${equipId}" tidak ditemukan`);
-                window.location.href = 'dashboard.html';
+            // Get equipment ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const equipId = urlParams.get('id');
+
+            if (!equipId) {
+                showToast('Equipment ID tidak ditemukan', 'error');
                 return;
             }
-            
-            snapshot.forEach((childSnapshot) => {
-                currentEquipmentKey = childSnapshot.key;
-                currentEquipment = childSnapshot.val();
-                console.log('Found equipment:', currentEquipmentKey, currentEquipment);
-                return true;
-            });
-            
-            await loadMasterAndPsiData();
-            
-        } catch (error) {
-            console.error('Error loading equipment:', error);
-            alert('Gagal memuat data: ' + error.message);
-        }
-    }
 
-    // ========== FUNGSI LOAD MASTER & PSI DATA ==========
-    async function loadMasterAndPsiData() {
-        try {
-            const tipe = currentEquipment.tipe || 'pressure_vessel';
-            console.log('Loading master PSI for type:', tipe);
-            
-            const masterSnapshot = await database.ref(tipe).once('value');
-            if (!masterSnapshot.exists()) {
-                console.warn(`Master data untuk tipe "${tipe}" tidak ditemukan`);
-                psiMaster = null;
+            loadEquipmentData(equipId);
+        });
+
+        // Load Equipment Data
+        function loadEquipmentData(equipId) {
+            const equipmentRef = database.ref('equipment');
+
+            equipmentRef.orderByChild('equip_id').equalTo(equipId).once('value')
+                .then((snapshot) => {
+                    if (!snapshot.exists()) {
+                        showToast('Equipment tidak ditemukan', 'error');
+                        return;
+                    }
+
+                    snapshot.forEach((childSnapshot) => {
+                        equipmentKey = childSnapshot.key;
+                        currentEquipment = childSnapshot.val();
+                    });
+
+                    renderEquipmentInfo();
+                    renderDataSections();
+                    updateProgress();
+                })
+                .catch((error) => {
+                    console.error('Error loading equipment:', error);
+                    showToast('Gagal memuat data: ' + error.message, 'error');
+                });
+        }
+
+        // Render Equipment Info
+        function renderEquipmentInfo() {
+            document.getElementById('equipmentName').textContent = currentEquipment.nama || '-';
+            document.getElementById('equipmentId').textContent = currentEquipment.equip_id || '-';
+
+            const catBadge = document.getElementById('categoryBadge');
+            if (currentEquipment.kategori === 1) {
+                catBadge.textContent = 'EHS Critical';
+                catBadge.className = 'badge bg-danger';
             } else {
-                psiMaster = masterSnapshot.val();
-                console.log('Master data loaded:', psiMaster);
+                catBadge.textContent = 'Standard';
+                catBadge.className = 'badge bg-success';
             }
-
-            const psiSnapshot = await database.ref('psi_data/' + equipId).once('value');
-            psiData = psiSnapshot.val() || {};
-            console.log('PSI data loaded:', psiData);
-            
-            displayEquipment();
-            displayPsiSections();
-            
-            document.getElementById('loadingDiv').style.display = 'none';
-            document.getElementById('contentDiv').style.display = 'block';
-            
-        } catch (error) {
-            console.error('Error loading master/PSI data:', error);
-            alert('Gagal memuat master data: ' + error.message);
-        }
-    }
-
-    // ========== FUNGSI DISPLAY EQUIPMENT ==========
-    function displayEquipment() {
-        const data = currentEquipment;
-        
-        document.getElementById('equipTitle').textContent = `${data.equip_id} - ${data.nama}`;
-        document.getElementById('formBadge').textContent = psiMaster?.nama_form || 'PSI Form';
-        document.getElementById('detailEquipId').textContent = data.equip_id;
-        document.getElementById('detailArea').textContent = data.area || '-';
-        
-        let kategoriText = 'Kategori ' + data.kategori;
-        if (data.kategori === 1) kategoriText += ' (Critical)';
-        document.getElementById('detailKategori').innerHTML = 
-            `<span class="badge bg-${data.kategori === 1 ? 'danger' : 'secondary'}">${kategoriText}</span>`;
-        
-        document.getElementById('detailKustodian').textContent = data.kustodian || '-';
-        document.getElementById('detailLokasi').textContent = data.lokasi_fisik || '-';
-        document.getElementById('detailTipe').textContent = getTipeLabel(data.tipe) || 'pressure_vessel';
-    }
-
-    // ========== FUNGSI DISPLAY PSI SECTIONS ==========
-    function displayPsiSections() {
-        const container = document.getElementById('psiSections');
-        container.innerHTML = '';
-        
-        if (!psiMaster || !psiMaster.sections) {
-            container.innerHTML = `
-                <div class="alert" style="background: #ffe28a; color: #666547;">
-                    <i class="fas fa-exclamation-triangle"></i> 
-                    Master data PSI untuk tipe "${currentEquipment.tipe || 'pressure_vessel'}" tidak ditemukan.<br>
-                    <small>Silakan upload master data terlebih dahulu atau pilih tipe equipment yang sesuai.</small>
-                </div>
-                <div class="mt-3">
-                    <button class="btn" onclick="window.location.href='upload-master.html'" style="background: #6fcb9f; color: #fff;">
-                        <i class="fas fa-upload"></i> Upload Master Data
-                    </button>
-                </div>
-            `;
-            return;
         }
 
-        let totalItems = 0;
-        let adaItems = 0;
-        let wajibItems = 0;
-        let wajibAdaItems = 0;
+        // Render Data Sections
+        function renderDataSections() {
+            const container = document.getElementById('dataContainer');
+            container.innerHTML = '';
 
-        Object.keys(psiMaster.sections).forEach(sectionKey => {
-            const section = psiMaster.sections[sectionKey];
-            
-            const sectionDiv = document.createElement('div');
-            sectionDiv.className = 'card mb-4 shadow-sm';
-            sectionDiv.id = `section-${sectionKey}`;
-            
-            let itemsHtml = '';
-            
-            if (section.items) {
-                Object.keys(section.items).forEach(itemKey => {
-                    const item = section.items[itemKey];
-                    
-                    const psiItem = psiData[sectionKey]?.[itemKey] || {};
-                    const status = psiItem.status || 'Missing';
-                    const value = psiItem.value || '';
-                    const catatan = psiItem.catatan || '';
-                    const file = psiItem.file || '';
-                    const updatedAt = psiItem.updated_at ? new Date(psiItem.updated_at).toLocaleString('id-ID') : '';
+            dataStructure.forEach((section, sectionIndex) => {
+                // Section Header
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'mb-4';
+                sectionDiv.innerHTML = `
+                    <h5 class="mb-3" style="color: var(--color-olive);">
+                        <i class="fas fa-folder-open me-2"></i>${section.section}
+                    </h5>
+                `;
 
-                    totalItems++;
-                    if (item.wajib) {
-                        wajibItems++;
-                        if (status === 'Ada') wajibAdaItems++;
-                    }
-                    if (status === 'Ada') adaItems++;
+                // Fields
+                section.fields.forEach((field, fieldIndex) => {
+                    const value = currentEquipment[field.key] || '';
+                    const isMissing = !value || value === '';
+                    const isWarning = field.category === '1' && isMissing;
 
-                    let statusClass = 'status-missing';
-                    let statusText = '❌ Missing';
-                    let rowClass = '';
-                    
-                    if (status === 'Ada') {
-                        statusClass = 'status-ada';
-                        statusText = '✅ Ada';
-                    } else if (status === 'Update Needed') {
-                        statusClass = 'status-update';
-                        statusText = '⚠️ Update';
-                    } else if (status === 'Not Applicable') {
-                        statusClass = 'status-na';
-                        statusText = '➖ N/A';
-                    }
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = `data-item ${isWarning ? 'missing' : (isMissing ? 'warning' : 'filled')}`;
+                    itemDiv.id = `item-${field.key}`;
 
-                    if (item.wajib && status !== 'Ada' && status !== 'Not Applicable') {
-                        rowClass = 'table-danger';
-                    }
-
-                    let inputIcon = 'file-alt';
-                    if (item.input_type === 'text') inputIcon = 'keyboard';
-                    else if (item.input_type === 'number') inputIcon = 'hashtag';
-                    else if (item.input_type === 'date') inputIcon = 'calendar';
-                    else if (item.input_type === 'file') inputIcon = 'file-upload';
-
-                    itemsHtml += `
-                        <div class="item-row ${rowClass}" data-item-key="${itemKey}">
-                            <div class="row align-items-center">
-                                <div class="col-md-1 text-center">
-                                    <small class="text-muted font-monospace">${item.kode}</small>
+                    itemDiv.innerHTML = `
+                        <div class="data-header">
+                            <div>
+                                <div class="data-title">
+                                    ${fieldIndex + 1}. ${field.label}
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="d-flex align-items-center">
-                                        <i class="fas fa-${inputIcon} text-muted me-2 small"></i>
-                                        <span class="fw-semibold" style="color: #666547;">${item.nama}</span>
-                                        ${item.wajib ? '<span class="badge bg-danger ms-2" title="Wajib">W</span>' : ''}
-                                    </div>
-                                    <span class="kategori-badge">Kategori ${item.kategori}</span>
-                                    ${item.input_type ? `<span class="kategori-badge">${item.input_type}</span>` : ''}
-                                </div>
-                                <div class="col-md-2 text-center">
-                                    <span class="status-badge ${statusClass}" 
-                                          onclick="showStatusModal('${sectionKey}', '${itemKey}', '${escapeHtml(item.nama)}')"
-                                          style="cursor: pointer;">
-                                        ${statusText}
-                                    </span>
-                                </div>
-                                <div class="col-md-3">
-                                    ${value ? `<div class="small fw-bold" style="color: #666547;">${escapeHtml(value)}</div>` : ''}
-                                    ${catatan ? `<div class="small" style="color: #fb2e01;"><i class="fas fa-sticky-note"></i> ${escapeHtml(catatan)}</div>` : ''}
-                                    ${file ? `<div class="small"><a href="#" class="file-link" onclick="viewFile('${escapeHtml(file)}'); return false;"><i class="fas fa-paperclip"></i> ${escapeHtml(file)}</a></div>` : ''}
-                                    ${updatedAt ? `<div class="small text-muted mt-1"><i class="fas fa-clock"></i> ${updatedAt}</div>` : ''}
-                                </div>
-                                <div class="col-md-2 text-end">
-                                    <button class="btn btn-sm btn-outline-primary" 
-                                            onclick="showStatusModal('${sectionKey}', '${itemKey}', '${escapeHtml(item.nama)}')"
-                                            title="Update status">
-                                        <i class="fas fa-edit"></i> Update
-                                    </button>
+                                <div class="data-badges mt-1">
+                                    <span class="badge-category">Kategori ${field.category}</span>
+                                    <span class="badge-type">${field.type}</span>
+                                    ${field.required ? '<span class="badge-w">W</span>' : ''}
                                 </div>
                             </div>
+                            <button class="btn-update" onclick="openUpdateModal('${field.key}', '${field.label}', '${field.type}')" data-key="${field.key}">
+                                <i class="fas fa-edit me-1"></i>Update
+                            </button>
+                        </div>
+                        <div class="data-value ${isMissing ? 'missing' : 'filled'}" id="value-${field.key}">
+                            ${isMissing ? '<i class="fas fa-exclamation-circle me-2"></i>Data belum diisi' : value}
                         </div>
                     `;
+
+                    sectionDiv.appendChild(itemDiv);
                 });
+
+                container.appendChild(sectionDiv);
+            });
+        }
+
+        // Open Update Modal
+        function openUpdateModal(key, label, type) {
+            const currentValue = currentEquipment[key] || '';
+
+            document.getElementById('fieldKey').value = key;
+            document.getElementById('fieldLabel').textContent = label;
+            document.getElementById('fieldValue').value = currentValue;
+            document.getElementById('fieldValue').type = type === 'number' ? 'number' : 'text';
+            document.getElementById('modalTitle').textContent = 'Update ' + label;
+
+            // Reset button state
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="fas fa-save me-2"></i>Simpan';
+
+            updateModal.show();
+
+            // Focus input after modal shown
+            setTimeout(() => {
+                document.getElementById('fieldValue').focus();
+                document.getElementById('fieldValue').select();
+            }, 100);
+        }
+
+        // Save Data - RELIABLE VERSION
+        function saveData() {
+            const key = document.getElementById('fieldKey').value;
+            const value = document.getElementById('fieldValue').value.trim();
+            const saveBtn = document.getElementById('saveBtn');
+
+            // Validation
+            if (!value) {
+                showToast('Nilai tidak boleh kosong', 'error');
+                document.getElementById('fieldValue').focus();
+                return;
             }
 
-            const sectionTotal = Object.keys(section.items || {}).length;
-            const sectionAda = Object.keys(section.items || {}).reduce((acc, key) => {
-                return acc + (psiData[sectionKey]?.[key]?.status === 'Ada' ? 1 : 0);
-            }, 0);
-            const sectionProgress = sectionTotal > 0 ? Math.round((sectionAda / sectionTotal) * 100) : 0;
+            // Disable button to prevent double-click
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Menyimpan...';
 
-            sectionDiv.innerHTML = `
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="fas fa-${section.icon || 'folder'} me-2"></i> ${section.judul}
-                    </h5>
-                    <div class="d-flex align-items-center">
-                        <div class="progress me-3" style="width: 100px; height: 8px; background: rgba(255,255,255,0.3);">
-                            <div class="progress-bar bg-light" style="width: ${sectionProgress}%"></div>
-                        </div>
-                        <span class="badge bg-light text-dark">${sectionAda}/${sectionTotal}</span>
+            // Prepare update data
+            const updateData = {};
+            updateData[key] = value;
+            updateData['updated_at'] = new Date().toISOString();
+            updateData['updated_by'] = auth.currentUser ? auth.currentUser.email : 'unknown';
+
+            // Update to Firebase
+            const equipmentRef = database.ref('equipment/' + equipmentKey);
+
+            equipmentRef.update(updateData)
+                .then(() => {
+                    // Update local data
+                    currentEquipment[key] = value;
+                    currentEquipment['updated_at'] = updateData['updated_at'];
+                    currentEquipment['updated_by'] = updateData['updated_by'];
+
+                    // Update UI immediately
+                    updateFieldUI(key, value);
+                    updateProgress();
+
+                    // Close modal
+                    updateModal.hide();
+
+                    // Show success message
+                    showToast('Data berhasil disimpan!', 'success');
+
+                    console.log('Update successful:', key, value);
+                })
+                .catch((error) => {
+                    console.error('Update failed:', error);
+                    showToast('Gagal menyimpan: ' + error.message, 'error');
+
+                    // Re-enable button
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = '<i class="fas fa-save me-2"></i>Simpan';
+                });
+        }
+
+        // Update Field UI Immediately
+        function updateFieldUI(key, value) {
+            const valueElement = document.getElementById(`value-${key}`);
+            const itemElement = document.getElementById(`item-${key}`);
+
+            if (valueElement && itemElement) {
+                // Update value display
+                valueElement.textContent = value;
+                valueElement.classList.remove('missing');
+                valueElement.classList.add('filled');
+
+                // Update item styling
+                itemElement.classList.remove('missing', 'warning');
+                itemElement.classList.add('filled');
+
+                // Add animation effect
+                itemElement.style.animation = 'highlightUpdate 1s ease';
+                setTimeout(() => {
+                    itemElement.style.animation = '';
+                }, 1000);
+            }
+        }
+
+        // Update Progress
+        function updateProgress() {
+            let totalRequired = 0;
+            let filledRequired = 0;
+            let totalAll = 0;
+            let filledAll = 0;
+
+            dataStructure.forEach(section => {
+                section.fields.forEach(field => {
+                    totalAll++;
+                    if (field.required) totalRequired++;
+
+                    const value = currentEquipment[field.key];
+                    if (value && value !== '') {
+                        filledAll++;
+                        if (field.required) filledRequired++;
+                    }
+                });
+            });
+
+            const percentage = totalRequired > 0 ? Math.round((filledRequired / totalRequired) * 100) : 0;
+
+            document.getElementById('filledCount').textContent = filledAll;
+            document.getElementById('totalCount').textContent = totalAll;
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressBar').textContent = percentage + '%';
+        }
+
+        // Show Toast Notification
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toastId = 'toast-' + Date.now();
+
+            const toastHtml = `
+                <div class="toast ${type}" id="${toastId}" role="alert">
+                    <div class="toast-header bg-transparent border-0">
+                        <i class="fas fa-${type === 'success' ? 'check-circle text-success' : 'exclamation-circle text-danger'} me-2"></i>
+                        <strong class="me-auto">${type === 'success' ? 'Sukses' : 'Error'}</strong>
+                        <button type="button" class="btn-close" onclick="removeToast('${toastId}')"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
                     </div>
                 </div>
-                <div class="card-body p-0">
-                    ${itemsHtml || '<div class="p-3 text-muted text-center">Tidak ada item dalam section ini</div>'}
-                </div>
             `;
-            
-            container.appendChild(sectionDiv);
+
+            container.insertAdjacentHTML('beforeend', toastHtml);
+
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                removeToast(toastId);
+            }, 3000);
+        }
+
+        // Remove Toast
+        function removeToast(toastId) {
+            const toast = document.getElementById(toastId);
+            if (toast) {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }
+        }
+
+        // Handle Enter key in modal
+        document.getElementById('fieldValue').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                saveData();
+            }
         });
 
-        const percentage = totalItems > 0 ? Math.round((adaItems / totalItems) * 100) : 0;
-        const wajibPercentage = wajibItems > 0 ? Math.round((wajibAdaItems / wajibItems) * 100) : 0;
-        
-        const progressBar = document.getElementById('progressBar');
-        progressBar.style.width = percentage + '%';
-        progressBar.textContent = percentage + '%';
-        
-        // Warna progress bar berdasarkan percentage
-        if (percentage >= 90) {
-            progressBar.style.backgroundColor = '#6fcb9f';
-        } else if (percentage >= 70) {
-            progressBar.style.backgroundColor = '#ffe28a';
-            progressBar.style.color = '#666547';
-        } else if (percentage >= 50) {
-            progressBar.style.backgroundColor = '#fb2e01';
-        } else {
-            progressBar.style.backgroundColor = '#666547';
-        }
-        
-        document.getElementById('progressText').innerHTML = `
-            <strong>${adaItems}</strong> dari <strong>${totalItems}</strong> item lengkap (${percentage}%)<br>
-            <small style="${wajibPercentage < 100 ? 'color: #fb2e01;' : 'color: #6fcb9f;'}">
-                Wajib: ${wajibAdaItems}/${wajibItems} (${wajibPercentage}%)
-            </small>
-        `;
-        
-        if (currentEquipmentKey) {
-            database.ref('equipment/' + currentEquipmentKey).update({
-                psi_progress: percentage,
-                psi_wajib_progress: wajibPercentage,
-                psi_last_updated: new Date().toISOString()
-            });
-        }
-    }
+        // Handle modal hidden event
+        document.getElementById('updateModal').addEventListener('hidden.bs.modal', function() {
+            // Reset form
+            document.getElementById('updateForm').reset();
 
-    // ========== FUNGSI SHOW STATUS MODAL ==========
-    function showStatusModal(sectionKey, itemKey, itemNama) {
-        currentSectionKey = sectionKey;
-        currentItemKey = itemKey;
-        currentItemData = psiMaster.sections[sectionKey].items[itemKey];
-        
-        const psiItem = psiData[sectionKey]?.[itemKey] || {};
-        
-        document.getElementById('statusItemInfo').textContent = `${itemNama} (${sectionKey})`;
-        document.getElementById('itemKategori').innerHTML = `
-            Kategori: <span class="badge bg-secondary">${currentItemData.kategori}</span>
-            ${currentItemData.wajib ? ' <span class="badge bg-danger">WAJIB</span>' : ''}
-            ${currentItemData.input_type ? ` <span class="badge bg-info">${currentItemData.input_type}</span>` : ''}
-        `;
-        
-        document.getElementById('statusSelect').value = psiItem.status || 'Missing';
-        document.getElementById('inputTypeDisplay').value = currentItemData.input_type || 'text';
-        document.getElementById('statusCatatan').value = psiItem.catatan || '';
-        
-        generateValueInput(currentItemData.input_type, psiItem.value || '');
-        
-        const fileDisplay = document.getElementById('currentFileDisplay');
-        if (psiItem.file) {
-            fileDisplay.innerHTML = `<span class="badge" style="background: #6fcb9f; color: #fff;"><i class="fas fa-check"></i> File: ${psiItem.file}</span>`;
-        } else {
-            fileDisplay.innerHTML = '<span class="text-muted">Belum ada file</span>';
-        }
-        
-        const modal = new bootstrap.Modal(document.getElementById('statusModal'));
-        modal.show();
-    }
-
-    // ========== FUNGSI GENERATE DYNAMIC INPUT ==========
-    function generateValueInput(inputType, currentValue) {
-        const container = document.getElementById('valueInputContainer');
-        const label = document.getElementById('valueLabel');
-        
-        container.innerHTML = '';
-        
-        if (inputType === 'file') {
-            label.textContent = 'Nama File / Dokumen';
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.className = 'form-control';
-            input.id = 'statusValue';
-            input.value = currentValue;
-            input.placeholder = 'Contoh: PID_V1101_Rev5.pdf';
-            container.appendChild(input);
-        } else if (inputType === 'date') {
-            label.textContent = 'Tanggal';
-            const input = document.createElement('input');
-            input.type = 'date';
-            input.className = 'form-control';
-            input.id = 'statusValue';
-            input.value = currentValue;
-            container.appendChild(input);
-        } else if (inputType === 'number') {
-            label.textContent = 'Nilai Numerik';
-            const input = document.createElement('input');
-            input.type = 'number';
-            input.className = 'form-control';
-            input.id = 'statusValue';
-            input.value = currentValue;
-            input.placeholder = 'Contoh: 10.5, 150, 2024';
-            container.appendChild(input);
-        } else {
-            label.textContent = 'Nilai / Spesifikasi / Keterangan';
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.className = 'form-control';
-            input.id = 'statusValue';
-            input.value = currentValue;
-            input.placeholder = 'Contoh: ASME VIII Div.1, 10 barg, SS316L';
-            container.appendChild(input);
-        }
-    }
-
-    // ========== FUNGSI SAVE STATUS ==========
-    function saveStatus() {
-        const newStatus = document.getElementById('statusSelect').value;
-        const newValue = document.getElementById('statusValue')?.value.trim() || '';
-        const newCatatan = document.getElementById('statusCatatan').value.trim();
-        
-        const updatePath = `psi_data/${equipId}/${currentSectionKey}/${currentItemKey}`;
-        const updateData = {
-            status: newStatus,
-            updated_at: new Date().toISOString(),
-            updated_by: auth.currentUser.email
-        };
-        
-        if (newValue) updateData.value = newValue;
-        if (newCatatan) updateData.catatan = newCatatan;
-        
-        const fileInput = document.getElementById('statusFileInput');
-        if (fileInput.files.length > 0) {
-            updateData.file = fileInput.files[0].name;
-        } else if (psiData[currentSectionKey]?.[currentItemKey]?.file) {
-            updateData.file = psiData[currentSectionKey][currentItemKey].file;
-        }
-        
-        console.log('Saving to path:', updatePath);
-        console.log('Data:', updateData);
-        
-        database.ref(updatePath).update(updateData)
-            .then(() => {
-                if (!psiData[currentSectionKey]) psiData[currentSectionKey] = {};
-                psiData[currentSectionKey][currentItemKey] = updateData;
-                
-                displayPsiSections();
-                
-                bootstrap.Modal.getInstance(document.getElementById('statusModal')).hide();
-                
-                showAlert('Status berhasil diupdate!', 'success');
-            })
-            .catch(error => {
-                console.error('Error saving:', error);
-                showAlert('Gagal menyimpan: ' + error.message, 'danger');
-            });
-    }
-
-    // ========== FUNGSI EDIT EQUIPMENT ==========
-    function editEquipment() {
-        if (currentEquipmentKey) {
-            window.location.href = `edit-equipment.html?id=${currentEquipmentKey}`;
-        } else {
-            alert('Equipment key tidak ditemukan');
-        }
-    }
-
-    // ========== FUNGSI LOGOUT ==========
-    function logout() {
-        auth.signOut().then(() => {
-            window.location.href = 'index.html';
+            // Reset button
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="fas fa-save me-2"></i>Simpan';
         });
-    }
 
-    // ========== HELPER FUNCTIONS ==========
-    function escapeHtml(text) {
-        if (!text) return '';
-        return text
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-
-    function viewFile(filename) {
-        alert('View file: ' + filename + '\n(Implementasi Firebase Storage diperlukan)');
-    }
-
-    function showAlert(message, type) {
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-dismissible fade show position-fixed`;
-        alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-        
-        if (type === 'success') {
-            alertDiv.style.backgroundColor = '#6fcb9f';
-            alertDiv.style.color = '#fff';
-        } else {
-            alertDiv.style.backgroundColor = '#fb2e01';
-            alertDiv.style.color = '#fff';
-        }
-        
-        alertDiv.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        // Add CSS animation for update highlight
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes highlightUpdate {
+                0% { background-color: #fff; }
+                50% { background-color: #d4edda; }
+                100% { background-color: #f0fff4; }
+            }
         `;
-        document.body.appendChild(alertDiv);
-        
-        setTimeout(() => {
-            alertDiv.remove();
-        }, 3000);
-    }
-
-    function getTipeLabel(tipe) {
-        const labels = {
-            'pressure_vessel': 'Pressure Vessel',
-            'heat_exchanger': 'Heat Exchanger',
-            'piping': 'Piping',
-            'rotating': 'Rotating',
-            'relief_systems': 'Relief System',
-            'storage_tank': 'Storage Tank',
-            'fired_heater': 'Fired Heater',
-            'electrical': 'Electrical',
-            'instrumentation': 'Instrumentation',
-            'reactors': 'Reactor',
-            'columns_towers': 'Column/Tower',
-            'compressors': 'Compressor',
-            'cooling_towers': 'Cooling Tower',
-            'utility_systems': 'Utility',
-            'safety_systems': 'Safety System'
-        };
-        return labels[tipe] || tipe || '-';
-    }
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
