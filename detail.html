@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Equipment - Reliable Update</title>
+    <title>Detail Equipment - PSI Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -22,22 +22,149 @@
 
         .navbar {
             background-color: var(--color-olive) !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        /* Data Item Styling */
-        .data-item {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
+        /* Equipment Info Header Card */
+        .equipment-header-card {
+            background: linear-gradient(135deg, var(--color-olive) 0%, #7a7955 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .equipment-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .equipment-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
             margin-bottom: 15px;
+        }
+
+        .equipment-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .meta-item {
+            background: rgba(255,255,255,0.15);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .meta-item i {
+            opacity: 0.8;
+        }
+
+        .badge-critical {
+            background: var(--color-red);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-standard {
+            background: var(--color-mint);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transition: all 0.3s;
+        }
+
+        .progress {
+            height: 30px;
+            border-radius: 15px;
+            background: #e9ecef;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, var(--color-mint) 0%, #5db88d 100%);
+            border-radius: 15px;
+            font-weight: 600;
+            line-height: 30px;
+        }
+
+        .progress-bar.low {
+            background: linear-gradient(90deg, var(--color-red) 0%, #ff6b35 100%);
+        }
+
+        .progress-bar.medium {
+            background: linear-gradient(90deg, var(--color-yellow) 0%, #ffc107 100%);
+            color: #333;
+        }
+
+        /* Section Styling */
+        .section-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--color-mint);
+        }
+
+        .section-header h5 {
+            margin: 0;
+            color: var(--color-olive);
+            font-weight: 600;
+        }
+
+        .section-icon {
+            width: 35px;
+            height: 35px;
+            background: var(--color-mint);
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Data Item */
+        .data-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
             border-left: 4px solid transparent;
+            transition: all 0.3s;
         }
 
         .data-item:hover {
             transform: translateX(5px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .data-item.missing {
@@ -50,27 +177,23 @@
             border-left-color: var(--color-mint);
         }
 
-        .data-item.warning {
-            background: #fffbeb;
-            border-left-color: var(--color-yellow);
-        }
-
         .data-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
+            align-items: flex-start;
+            margin-bottom: 8px;
         }
 
         .data-title {
             font-weight: 600;
-            color: var(--color-olive);
-            font-size: 1.1rem;
+            color: #333;
+            font-size: 1rem;
         }
 
         .data-badges {
             display: flex;
             gap: 5px;
+            flex-wrap: wrap;
         }
 
         .badge-category {
@@ -100,9 +223,8 @@
 
         .data-value {
             font-size: 1rem;
-            color: #333;
             padding: 10px;
-            background: #f8f9fa;
+            background: white;
             border-radius: 8px;
             min-height: 40px;
             display: flex;
@@ -110,13 +232,11 @@
         }
 
         .data-value.missing {
-            background: #fee;
             color: var(--color-red);
             font-style: italic;
         }
 
         .data-value.filled {
-            background: #e8f5e9;
             color: #2e7d32;
             font-weight: 500;
         }
@@ -125,11 +245,12 @@
             background: white;
             border: 2px solid var(--color-mint);
             color: var(--color-mint);
-            padding: 8px 20px;
+            padding: 6px 15px;
             border-radius: 20px;
+            font-size: 0.85rem;
             font-weight: 500;
-            transition: all 0.3s;
             cursor: pointer;
+            transition: all 0.3s;
         }
 
         .btn-update:hover {
@@ -137,18 +258,49 @@
             color: white;
         }
 
-        .btn-update:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+        /* Quick Actions */
+        .quick-actions {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
         }
 
-        .btn-update.loading {
-            background: var(--color-mint);
+        .fab-btn {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: none;
             color: white;
-            pointer-events: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* Modal Styling */
+        .fab-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .fab-btn.primary {
+            background: var(--color-mint);
+        }
+
+        .fab-btn.secondary {
+            background: var(--color-olive);
+        }
+
+        .fab-btn.danger {
+            background: var(--color-red);
+        }
+
+        /* Modal */
         .modal-content {
             border-radius: 15px;
             border: none;
@@ -160,80 +312,25 @@
             border-radius: 15px 15px 0 0;
         }
 
-        .modal-footer {
-            background: #f8f9fa;
-            border-radius: 0 0 15px 15px;
-        }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .equipment-title {
+                font-size: 1.4rem;
+            }
 
-        /* Toast Notification */
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-        }
+            .equipment-meta {
+                flex-direction: column;
+                gap: 8px;
+            }
 
-        .toast {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            border-left: 4px solid var(--color-mint);
-            min-width: 300px;
-        }
+            .meta-item {
+                width: 100%;
+            }
 
-        .toast.success {
-            border-left-color: var(--color-mint);
-        }
-
-        .toast.error {
-            border-left-color: var(--color-red);
-        }
-
-        /* Progress Section */
-        .progress-section {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .progress {
-            height: 25px;
-            border-radius: 15px;
-            background: #e9ecef;
-        }
-
-        .progress-bar {
-            background: linear-gradient(90deg, var(--color-mint) 0%, #5db88d 100%);
-            border-radius: 15px;
-            font-weight: 600;
-            line-height: 25px;
-        }
-
-        /* Status Badge */
-        .status-missing {
-            background: var(--color-red);
-            color: white;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .status-filled {
-            background: var(--color-mint);
-            color: white;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
+            .quick-actions {
+                bottom: 20px;
+                right: 20px;
+            }
         }
     </style>
 <base target="_blank">
@@ -247,39 +344,136 @@
                     <i class="fas fa-shield-alt me-2"></i>PSI Management System
                 </span>
             </div>
-            <a href="dashboard.html" class="btn btn-light btn-sm">
-                <i class="fas fa-arrow-left me-1"></i> Kembali
-            </a>
+            <div class="d-flex gap-2">
+                <a href="dashboard.html" class="btn btn-light btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Dashboard
+                </a>
+            </div>
         </div>
     </nav>
 
     <div class="container py-4">
-        <!-- Equipment Header -->
-        <div class="progress-section">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                    <h4 class="mb-1" id="equipmentName">Loading...</h4>
-                    <p class="text-muted mb-0" id="equipmentId">-</p>
-                </div>
-                <div class="text-end">
-                    <div class="mb-2">
-                        <span class="badge bg-danger" id="categoryBadge">EHS Critical</span>
+        <!-- Equipment Header Info -->
+        <div class="equipment-header-card">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="equipment-title" id="headerName">
+                        <i class="fas fa-cog fa-spin me-2" style="font-size: 1.2rem;"></i>Loading...
                     </div>
-                    <div class="text-muted small">
-                        <span id="filledCount">0</span>/<span id="totalCount">0</span> Data Lengkap
+                    <div class="equipment-subtitle" id="headerId">-</div>
+
+                    <div class="equipment-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="headerArea">-</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-hashtag"></i>
+                            Unit <span id="headerUnit">-</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-tag"></i>
+                            <span id="headerType">-</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-barcode"></i>
+                            <span id="headerTag">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    <div class="mb-2">
+                        <span id="headerCategory" class="badge-critical">EHS Critical</span>
+                    </div>
+                    <div class="text-white-50 small">
+                        <i class="fas fa-user me-1"></i>
+                        <span id="headerKustodian">-</span>
+                    </div>
+                    <div class="text-white-50 small mt-1">
+                        <i class="fas fa-clock me-1"></i>
+                        <span id="headerPeriods">-</span>
                     </div>
                 </div>
             </div>
+        </div>
 
+        <!-- Progress Section -->
+        <div class="progress-section">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Kelengkapan Data PSI</h6>
+                <span class="text-muted small">
+                    <span id="filledCount">0</span>/<span id="totalCount">0</span> field terisi
+                </span>
+            </div>
             <div class="progress">
                 <div class="progress-bar" id="progressBar" style="width: 0%">0%</div>
             </div>
+            <div class="mt-2 small text-muted" id="progressText">
+                Lengkapi data yang bertanda <span class="badge-w">W</span> (Warning) untuk compliance
+            </div>
         </div>
 
-        <!-- Data Sections -->
-        <div id="dataContainer">
-            <!-- Data items will be generated here -->
+        <!-- Section A: General Information -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <h5>A. General Information</h5>
+            </div>
+            <div id="sectionA">
+                <!-- Generated by JS -->
+            </div>
         </div>
+
+        <!-- Section B: Design Data -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-drafting-compass"></i>
+                </div>
+                <h5>B. Design Data</h5>
+            </div>
+            <div id="sectionB">
+                <!-- Generated by JS -->
+            </div>
+        </div>
+
+        <!-- Section C: Mechanical Data -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <h5>C. Mechanical Data</h5>
+            </div>
+            <div id="sectionC">
+                <!-- Generated by JS -->
+            </div>
+        </div>
+
+        <!-- Section D: Process Data -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-icon">
+                    <i class="fas fa-industry"></i>
+                </div>
+                <h5>D. Process Data</h5>
+            </div>
+            <div id="sectionD">
+                <!-- Generated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions FAB -->
+    <div class="quick-actions">
+        <button class="fab-btn secondary" onclick="window.location.href='edit-equipment.html?id=' + getEquipmentId()" title="Edit Equipment">
+            <i class="fas fa-edit"></i>
+        </button>
+        <button class="fab-btn primary" onclick="window.location.href='tambah-equipment.html'" title="Tambah Baru">
+            <i class="fas fa-plus"></i>
+        </button>
     </div>
 
     <!-- Update Modal -->
@@ -288,15 +482,16 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalTitle">Update Data</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="updateForm">
                         <input type="hidden" id="fieldKey">
+                        <input type="hidden" id="fieldSection">
                         <div class="mb-3">
                             <label class="form-label fw-bold" id="fieldLabel">Field Name</label>
                             <input type="text" class="form-control form-control-lg" id="fieldValue" required>
-                            <div class="form-text text-muted" id="fieldHint">Masukkan nilai yang sesuai</div>
+                            <div class="form-text text-muted" id="fieldHint"></div>
                         </div>
                     </form>
                 </div>
@@ -309,9 +504,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Toast Container -->
-    <div class="toast-container" id="toastContainer"></div>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -335,52 +527,86 @@
         const database = firebase.database();
         const auth = firebase.auth();
 
-        // Global Variables
         let currentEquipment = null;
         let equipmentKey = null;
         let updateModal = null;
+        let currentEquipmentId = null;
 
-        // Data Structure Definition
-        const dataStructure = [
-            {
-                section: "C. Mechanical Data",
+        // Data Structure
+        const dataStructure = {
+            'A': {
+                title: 'General Information',
+                icon: 'fa-info-circle',
                 fields: [
-                    { key: "shell_material", label: "Shell Material", type: "text", category: "1", required: true },
-                    { key: "shell_thickness", label: "Shell Thickness (mm)", type: "number", category: "1", required: true },
-                    { key: "head_material", label: "Head Material", type: "text", category: "1", required: true },
-                    { key: "head_thickness", label: "Head Thickness (mm)", type: "number", category: "1", required: true },
-                    { key: "corrosion_allowance", label: "Corrosion Allowance (mm)", type: "number", category: "1", required: true },
-                    { key: "radiography", label: "Radiography", type: "text", category: "2", required: false },
-                    { key: "heat_treatment", label: "Heat Treatment", type: "text", category: "2", required: false }
+                    { key: 'equip_id', label: 'Equipment ID', type: 'text', required: true },
+                    { key: 'nama', label: 'Equipment Name', type: 'text', required: true },
+                    { key: 'area', label: 'Area', type: 'text', required: true },
+                    { key: 'unit', label: 'Unit', type: 'text', required: true },
+                    { key: 'type', label: 'Type', type: 'text', required: true },
+                    { key: 'tag_number', label: 'Tag Number', type: 'text', required: true },
+                    { key: 'description', label: 'Description', type: 'text', required: true }
+                ]
+            },
+            'B': {
+                title: 'Design Data',
+                icon: 'fa-drafting-compass',
+                fields: [
+                    { key: 'design_pressure', label: 'Design Pressure (bar)', type: 'number', required: false },
+                    { key: 'design_temp', label: 'Design Temperature (°C)', type: 'number', required: false },
+                    { key: 'operating_pressure', label: 'Operating Pressure (bar)', type: 'number', required: false },
+                    { key: 'operating_temp', label: 'Operating Temperature (°C)', type: 'number', required: false }
+                ]
+            },
+            'C': {
+                title: 'Mechanical Data',
+                icon: 'fa-cogs',
+                fields: [
+                    { key: 'shell_material', label: 'Shell Material', type: 'text', category: '1', required: true },
+                    { key: 'shell_thickness', label: 'Shell Thickness (mm)', type: 'number', category: '1', required: true },
+                    { key: 'head_material', label: 'Head Material', type: 'text', category: '1', required: true },
+                    { key: 'head_thickness', label: 'Head Thickness (mm)', type: 'number', category: '1', required: true },
+                    { key: 'corrosion_allowance', label: 'Corrosion Allowance (mm)', type: 'number', category: '1', required: true },
+                    { key: 'radiography', label: 'Radiography', type: 'text', category: '2', required: false },
+                    { key: 'heat_treatment', label: 'Heat Treatment', type: 'text', category: '2', required: false }
+                ]
+            },
+            'D': {
+                title: 'Process Data',
+                icon: 'fa-industry',
+                fields: [
+                    { key: 'fluid_service', label: 'Fluid Service', type: 'text', required: false },
+                    { key: 'capacity', label: 'Capacity', type: 'text', required: false },
+                    { key: 'material_in', label: 'Material In', type: 'text', required: false },
+                    { key: 'material_out', label: 'Material Out', type: 'text', required: false }
                 ]
             }
-        ];
+        };
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Bootstrap Modal
             updateModal = new bootstrap.Modal(document.getElementById('updateModal'));
 
-            // Get equipment ID from URL
             const urlParams = new URLSearchParams(window.location.search);
-            const equipId = urlParams.get('id');
+            currentEquipmentId = urlParams.get('id');
 
-            if (!equipId) {
-                showToast('Equipment ID tidak ditemukan', 'error');
+            if (!currentEquipmentId) {
+                alert('Equipment ID tidak ditemukan');
                 return;
             }
 
-            loadEquipmentData(equipId);
+            loadEquipmentData(currentEquipmentId);
         });
 
-        // Load Equipment Data
+        function getEquipmentId() {
+            return currentEquipmentId || '';
+        }
+
         function loadEquipmentData(equipId) {
             const equipmentRef = database.ref('equipment');
 
             equipmentRef.orderByChild('equip_id').equalTo(equipId).once('value')
                 .then((snapshot) => {
                     if (!snapshot.exists()) {
-                        showToast('Equipment tidak ditemukan', 'error');
+                        alert('Equipment tidak ditemukan');
                         return;
                     }
 
@@ -389,194 +615,201 @@
                         currentEquipment = childSnapshot.val();
                     });
 
-                    renderEquipmentInfo();
-                    renderDataSections();
+                    renderHeaderInfo();
+                    renderAllSections();
                     updateProgress();
                 })
                 .catch((error) => {
-                    console.error('Error loading equipment:', error);
-                    showToast('Gagal memuat data: ' + error.message, 'error');
+                    console.error('Error:', error);
+                    alert('Gagal memuat data: ' + error.message);
                 });
         }
 
-        // Render Equipment Info
-        function renderEquipmentInfo() {
-            document.getElementById('equipmentName').textContent = currentEquipment.nama || '-';
-            document.getElementById('equipmentId').textContent = currentEquipment.equip_id || '-';
+        function renderHeaderInfo() {
+            // Main info
+            document.getElementById('headerName').innerHTML = `
+                <i class="fas fa-industry me-2"></i>${currentEquipment.nama || '-'}
+            `;
+            document.getElementById('headerId').textContent = currentEquipment.equip_id || '-';
 
-            const catBadge = document.getElementById('categoryBadge');
+            // Meta info
+            document.getElementById('headerArea').textContent = currentEquipment.area || '-';
+            document.getElementById('headerUnit').textContent = currentEquipment.unit || '-';
+            document.getElementById('headerType').textContent = currentEquipment.type || '-';
+            document.getElementById('headerTag').textContent = currentEquipment.tag_number || '-';
+
+            // Category badge
+            const catBadge = document.getElementById('headerCategory');
             if (currentEquipment.kategori === 1) {
                 catBadge.textContent = 'EHS Critical';
-                catBadge.className = 'badge bg-danger';
+                catBadge.className = 'badge-critical';
             } else {
                 catBadge.textContent = 'Standard';
-                catBadge.className = 'badge bg-success';
+                catBadge.className = 'badge-standard';
             }
+
+            // Additional info
+            document.getElementById('headerKustodian').textContent = 
+                currentEquipment.kustodian ? 'Kustodian: ' + currentEquipment.kustodian : 'Belum ada kustodian';
+            document.getElementById('headerPeriods').textContent = 
+                currentEquipment.periods ? 'Period: ' + currentEquipment.periods : 'Period tidak ditentukan';
         }
 
-        // Render Data Sections
-        function renderDataSections() {
-            const container = document.getElementById('dataContainer');
-            container.innerHTML = '';
+        function renderAllSections() {
+            Object.keys(dataStructure).forEach(sectionKey => {
+                const section = dataStructure[sectionKey];
+                const container = document.getElementById('section' + sectionKey);
 
-            dataStructure.forEach((section, sectionIndex) => {
-                // Section Header
-                const sectionDiv = document.createElement('div');
-                sectionDiv.className = 'mb-4';
-                sectionDiv.innerHTML = `
-                    <h5 class="mb-3" style="color: var(--color-olive);">
-                        <i class="fas fa-folder-open me-2"></i>${section.section}
-                    </h5>
-                `;
+                container.innerHTML = '';
 
-                // Fields
-                section.fields.forEach((field, fieldIndex) => {
+                section.fields.forEach((field, index) => {
                     const value = currentEquipment[field.key] || '';
                     const isMissing = !value || value === '';
                     const isWarning = field.category === '1' && isMissing;
 
                     const itemDiv = document.createElement('div');
-                    itemDiv.className = `data-item ${isWarning ? 'missing' : (isMissing ? 'warning' : 'filled')}`;
-                    itemDiv.id = `item-${field.key}`;
+                    itemDiv.className = `data-item ${isWarning ? 'missing' : (isMissing ? '' : 'filled')}`;
+
+                    let badgesHtml = '';
+                    if (field.category) {
+                        badgesHtml += `<span class="badge-category">Kategori ${field.category}</span>`;
+                    }
+                    badgesHtml += `<span class="badge-type">${field.type}</span>`;
+                    if (field.required) {
+                        badgesHtml += `<span class="badge-w">W</span>`;
+                    }
 
                     itemDiv.innerHTML = `
                         <div class="data-header">
                             <div>
-                                <div class="data-title">
-                                    ${fieldIndex + 1}. ${field.label}
-                                </div>
-                                <div class="data-badges mt-1">
-                                    <span class="badge-category">Kategori ${field.category}</span>
-                                    <span class="badge-type">${field.type}</span>
-                                    ${field.required ? '<span class="badge-w">W</span>' : ''}
-                                </div>
+                                <div class="data-title">${index + 1}. ${field.label}</div>
+                                <div class="data-badges mt-1">${badgesHtml}</div>
                             </div>
-                            <button class="btn-update" onclick="openUpdateModal('${field.key}', '${field.label}', '${field.type}')" data-key="${field.key}">
+                            <button class="btn-update" onclick="openUpdateModal('${field.key}', '${field.label}', '${field.type}', '${sectionKey}')">
                                 <i class="fas fa-edit me-1"></i>Update
                             </button>
                         </div>
-                        <div class="data-value ${isMissing ? 'missing' : 'filled'}" id="value-${field.key}">
+                        <div class="data-value ${isMissing ? 'missing' : 'filled'}">
                             ${isMissing ? '<i class="fas fa-exclamation-circle me-2"></i>Data belum diisi' : value}
                         </div>
                     `;
 
-                    sectionDiv.appendChild(itemDiv);
+                    container.appendChild(itemDiv);
                 });
-
-                container.appendChild(sectionDiv);
             });
         }
 
-        // Open Update Modal
-        function openUpdateModal(key, label, type) {
+        function openUpdateModal(key, label, type, section) {
             const currentValue = currentEquipment[key] || '';
 
             document.getElementById('fieldKey').value = key;
+            document.getElementById('fieldSection').value = section;
             document.getElementById('fieldLabel').textContent = label;
             document.getElementById('fieldValue').value = currentValue;
             document.getElementById('fieldValue').type = type === 'number' ? 'number' : 'text';
             document.getElementById('modalTitle').textContent = 'Update ' + label;
+            document.getElementById('fieldHint').textContent = 
+                `Section ${section}: ${dataStructure[section].title}`;
 
-            // Reset button state
-            const saveBtn = document.getElementById('saveBtn');
-            saveBtn.disabled = false;
-            saveBtn.innerHTML = '<i class="fas fa-save me-2"></i>Simpan';
+            document.getElementById('saveBtn').disabled = false;
+            document.getElementById('saveBtn').innerHTML = '<i class="fas fa-save me-2"></i>Simpan';
 
             updateModal.show();
 
-            // Focus input after modal shown
             setTimeout(() => {
                 document.getElementById('fieldValue').focus();
                 document.getElementById('fieldValue').select();
             }, 100);
         }
 
-        // Save Data - RELIABLE VERSION
         function saveData() {
             const key = document.getElementById('fieldKey').value;
+            const section = document.getElementById('fieldSection').value;
             const value = document.getElementById('fieldValue').value.trim();
             const saveBtn = document.getElementById('saveBtn');
 
-            // Validation
             if (!value) {
-                showToast('Nilai tidak boleh kosong', 'error');
-                document.getElementById('fieldValue').focus();
+                alert('Nilai tidak boleh kosong');
                 return;
             }
 
-            // Disable button to prevent double-click
             saveBtn.disabled = true;
             saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Menyimpan...';
 
-            // Prepare update data
             const updateData = {};
             updateData[key] = value;
             updateData['updated_at'] = new Date().toISOString();
             updateData['updated_by'] = auth.currentUser ? auth.currentUser.email : 'unknown';
 
-            // Update to Firebase
-            const equipmentRef = database.ref('equipment/' + equipmentKey);
-
-            equipmentRef.update(updateData)
+            database.ref('equipment/' + equipmentKey).update(updateData)
                 .then(() => {
-                    // Update local data
                     currentEquipment[key] = value;
-                    currentEquipment['updated_at'] = updateData['updated_at'];
-                    currentEquipment['updated_by'] = updateData['updated_by'];
 
-                    // Update UI immediately
-                    updateFieldUI(key, value);
+                    // Re-render only the specific section
+                    renderSection(section);
                     updateProgress();
 
-                    // Close modal
                     updateModal.hide();
 
-                    // Show success message
-                    showToast('Data berhasil disimpan!', 'success');
-
-                    console.log('Update successful:', key, value);
+                    // Show success animation
+                    showSuccessMessage('Data berhasil disimpan!');
                 })
                 .catch((error) => {
-                    console.error('Update failed:', error);
-                    showToast('Gagal menyimpan: ' + error.message, 'error');
-
-                    // Re-enable button
+                    alert('Gagal menyimpan: ' + error.message);
                     saveBtn.disabled = false;
                     saveBtn.innerHTML = '<i class="fas fa-save me-2"></i>Simpan';
                 });
         }
 
-        // Update Field UI Immediately
-        function updateFieldUI(key, value) {
-            const valueElement = document.getElementById(`value-${key}`);
-            const itemElement = document.getElementById(`item-${key}`);
+        function renderSection(sectionKey) {
+            const section = dataStructure[sectionKey];
+            const container = document.getElementById('section' + sectionKey);
 
-            if (valueElement && itemElement) {
-                // Update value display
-                valueElement.textContent = value;
-                valueElement.classList.remove('missing');
-                valueElement.classList.add('filled');
+            container.innerHTML = '';
 
-                // Update item styling
-                itemElement.classList.remove('missing', 'warning');
-                itemElement.classList.add('filled');
+            section.fields.forEach((field, index) => {
+                const value = currentEquipment[field.key] || '';
+                const isMissing = !value || value === '';
+                const isWarning = field.category === '1' && isMissing;
 
-                // Add animation effect
-                itemElement.style.animation = 'highlightUpdate 1s ease';
-                setTimeout(() => {
-                    itemElement.style.animation = '';
-                }, 1000);
-            }
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `data-item ${isWarning ? 'missing' : (isMissing ? '' : 'filled')}`;
+
+                let badgesHtml = '';
+                if (field.category) {
+                    badgesHtml += `<span class="badge-category">Kategori ${field.category}</span>`;
+                }
+                badgesHtml += `<span class="badge-type">${field.type}</span>`;
+                if (field.required) {
+                    badgesHtml += `<span class="badge-w">W</span>`;
+                }
+
+                itemDiv.innerHTML = `
+                    <div class="data-header">
+                        <div>
+                            <div class="data-title">${index + 1}. ${field.label}</div>
+                            <div class="data-badges mt-1">${badgesHtml}</div>
+                        </div>
+                        <button class="btn-update" onclick="openUpdateModal('${field.key}', '${field.label}', '${field.type}', '${sectionKey}')">
+                            <i class="fas fa-edit me-1"></i>Update
+                        </button>
+                    </div>
+                    <div class="data-value ${isMissing ? 'missing' : 'filled'}">
+                        ${isMissing ? '<i class="fas fa-exclamation-circle me-2"></i>Data belum diisi' : value}
+                    </div>
+                `;
+
+                container.appendChild(itemDiv);
+            });
         }
 
-        // Update Progress
         function updateProgress() {
             let totalRequired = 0;
             let filledRequired = 0;
             let totalAll = 0;
             let filledAll = 0;
 
-            dataStructure.forEach(section => {
+            Object.values(dataStructure).forEach(section => {
                 section.fields.forEach(field => {
                     totalAll++;
                     if (field.required) totalRequired++;
@@ -593,49 +826,45 @@
 
             document.getElementById('filledCount').textContent = filledAll;
             document.getElementById('totalCount').textContent = totalAll;
-            document.getElementById('progressBar').style.width = percentage + '%';
-            document.getElementById('progressBar').textContent = percentage + '%';
-        }
 
-        // Show Toast Notification
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toastContainer');
-            const toastId = 'toast-' + Date.now();
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = percentage + '%';
+            progressBar.textContent = percentage + '%';
 
-            const toastHtml = `
-                <div class="toast ${type}" id="${toastId}" role="alert">
-                    <div class="toast-header bg-transparent border-0">
-                        <i class="fas fa-${type === 'success' ? 'check-circle text-success' : 'exclamation-circle text-danger'} me-2"></i>
-                        <strong class="me-auto">${type === 'success' ? 'Sukses' : 'Error'}</strong>
-                        <button type="button" class="btn-close" onclick="removeToast('${toastId}')"></button>
-                    </div>
-                    <div class="toast-body">
-                        ${message}
-                    </div>
-                </div>
-            `;
-
-            container.insertAdjacentHTML('beforeend', toastHtml);
-
-            // Auto remove after 3 seconds
-            setTimeout(() => {
-                removeToast(toastId);
-            }, 3000);
-        }
-
-        // Remove Toast
-        function removeToast(toastId) {
-            const toast = document.getElementById(toastId);
-            if (toast) {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    toast.remove();
-                }, 300);
+            // Color based on percentage
+            progressBar.classList.remove('low', 'medium');
+            if (percentage < 30) {
+                progressBar.classList.add('low');
+            } else if (percentage < 70) {
+                progressBar.classList.add('medium');
             }
         }
 
-        // Handle Enter key in modal
+        function showSuccessMessage(message) {
+            // Create toast
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #6fcb9f;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            toast.innerHTML = `<i class="fas fa-check-circle me-2"></i>${message}`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Handle Enter key
         document.getElementById('fieldValue').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -643,24 +872,16 @@
             }
         });
 
-        // Handle modal hidden event
-        document.getElementById('updateModal').addEventListener('hidden.bs.modal', function() {
-            // Reset form
-            document.getElementById('updateForm').reset();
-
-            // Reset button
-            const saveBtn = document.getElementById('saveBtn');
-            saveBtn.disabled = false;
-            saveBtn.innerHTML = '<i class="fas fa-save me-2"></i>Simpan';
-        });
-
-        // Add CSS animation for update highlight
+        // Add animation styles
         const style = document.createElement('style');
         style.textContent = `
-            @keyframes highlightUpdate {
-                0% { background-color: #fff; }
-                50% { background-color: #d4edda; }
-                100% { background-color: #f0fff4; }
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
             }
         `;
         document.head.appendChild(style);
