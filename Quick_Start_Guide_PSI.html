@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Start Guide - PSI Management System</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 10mm;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 10pt;
+            line-height: 1.4;
+            color: #333;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 10mm;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #6fcb9f;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            color: #666547;
+            font-size: 18pt;
+            margin: 0;
+        }
+
+        .header p {
+            color: #6fcb9f;
+            font-size: 10pt;
+            margin: 5px 0 0 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .section {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            background: #fafafa;
+        }
+
+        .section h3 {
+            color: #666547;
+            font-size: 11pt;
+            margin: 0 0 8px 0;
+            border-bottom: 2px solid #ffe28a;
+            padding-bottom: 3px;
+        }
+
+        .step {
+            margin-bottom: 5px;
+            font-size: 9pt;
+        }
+
+        .step strong {
+            color: #6fcb9f;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 8pt;
+            font-weight: bold;
+            color: white;
+        }
+
+        .badge-critical { background: #fb2e01; }
+        .badge-standard { background: #6fcb9f; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8pt;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 4px;
+            text-align: left;
+        }
+
+        th {
+            background: #666547;
+            color: white;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            border-left: 3px solid #ffe28a;
+            padding: 5px;
+            margin: 5px 0;
+            font-size: 9pt;
+        }
+
+        .icon {
+            font-weight: bold;
+            color: #6fcb9f;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="header">
+        <h1>⚡ QUICK START GUIDE</h1>
+        <p>PSI Management System | Cheat Sheet untuk Pengguna Baru</p>
+    </div>
+
+    <div class="grid">
+        <!-- Login -->
+        <div class="section">
+            <h3>🔐 1. LOGIN</h3>
+            <div class="step">1. Buka URL aplikasi di browser</div>
+            <div class="step">2. Klik <strong>"Login dengan Google"</strong></div>
+            <div class="step">3. Pilih akun email perusahaan</div>
+            <div class="step">4. Selesai! Anda masuk Dashboard</div>
+        </div>
+
+        <!-- Tambah Equipment -->
+        <div class="section">
+            <h3>➕ 2. TAMBAH EQUIPMENT</h3>
+            <div class="step">1. Dashboard → Klik <strong>"Tambah Equipment"</strong></div>
+            <div class="step">2. Isi form (ID, Nama, Area, Unit, Type, dll)</div>
+            <div class="step">3. Pilih Kategori: <span class="badge badge-critical">1 Critical</span> atau <span class="badge badge-standard">2 Standard</span></div>
+            <div class="step">4. Klik <strong>"Simpan"</strong></div>
+        </div>
+
+        <!-- Import Massal -->
+        <div class="section">
+            <h3>📥 3. IMPORT EXCEL (MASSAL)</h3>
+            <div class="step">1. Siapkan file Excel sesuai template</div>
+            <div class="step">2. Dashboard → <strong>"Import Data"</strong></div>
+            <div class="step">3. Drag & drop file Excel</div>
+            <div class="step">4. Periksa mapping kolom → <strong>"Import"</strong></div>
+            <div class="highlight">
+                <strong>Tip:</strong> Jika error "Periods kosong", klik "Import Tetap" untuk melanjutkan.
+            </div>
+        </div>
+
+        <!-- Edit & Update -->
+        <div class="section">
+            <h3>✏️ 4. EDIT & UPDATE</h3>
+            <div class="step">1. Cari equipment di Dashboard</div>
+            <div class="step">2. Klik icon <strong>✏️ Edit</strong></div>
+            <div class="step">3. Ubah data yang diperlukan</div>
+            <div class="step">4. Klik <strong>"Update"</strong></div>
+        </div>
+
+        <!-- Kategori -->
+        <div class="section">
+            <h3>🏷️ 5. KATEGORI EQUIPMENT</h3>
+            <table>
+                <tr>
+                    <th>Kategori</th>
+                    <th>Nilai</th>
+                    <th>Contoh</th>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-critical">EHS Critical</span></td>
+                    <td>1</td>
+                    <td>Flame Detector, Deluge, Relief Valve</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-standard">Standard</span></td>
+                    <td>2</td>
+                    <td>Pressure Vessel, Level Gauge</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Field Wajib -->
+        <div class="section">
+            <h3>📝 6. FIELD WAJIB DIISI</h3>
+            <ul style="margin: 0; padding-left: 15px; font-size: 9pt;">
+                <li>Equipment ID (unik)</li>
+                <li>Nama Equipment</li>
+                <li>Area & Unit</li>
+                <li>Type</li>
+                <li>Tag Number</li>
+                <li>Description</li>
+                <li>Action Plan</li>
+            </ul>
+            <div class="highlight" style="margin-top: 5px;">
+                <strong>Opsional:</strong> Periods, Kustodian, PSI Progress
+            </div>
+        </div>
+
+        <!-- Troubleshooting -->
+        <div class="section full-width">
+            <h3>🛠️ 7. TROUBLESHOOTING CEPAT</h3>
+            <table>
+                <tr>
+                    <th>Masalah</th>
+                    <th>Solusi</th>
+                </tr>
+                <tr>
+                    <td>Tidak bisa login</td>
+                    <td>Pastikan email terdaftar, clear cache browser</td>
+                </tr>
+                <tr>
+                    <td>Import Excel gagal</td>
+                    <td>Periksa format .xlsx, pastikan header sesuai template</td>
+                </tr>
+                <tr>
+                    <td>"ID sudah ada"</td>
+                    <td>Gunakan menu Edit untuk update, bukan Tambah Baru</td>
+                </tr>
+                <tr>
+                    <td>Loading terus</td>
+                    <td>Refresh (F5), periksa koneksi internet</td>
+                </tr>
+                <tr>
+                    <td>Periods kosong</td>
+                    <td>Klik "Import Tetap" - equipment tetap diimport</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Action Plan & Periods -->
+        <div class="section">
+            <h3>⚙️ 8. ACTION PLAN</h3>
+            <ul style="margin: 0; padding-left: 15px; font-size: 9pt;">
+                <li><strong>Calibration:</strong> Kalibrasi instrument</li>
+                <li><strong>Verification:</strong> Verifikasi fungsi</li>
+                <li><strong>Monitoring:</strong> Pemantauan rutin</li>
+                <li><strong>Replace:</strong> Penggantian part</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h3>📅 9. PERIODS (OPSIONAL)</h3>
+            <ul style="margin: 0; padding-left: 15px; font-size: 9pt;">
+                <li>T/A Shut-down</li>
+                <li>Annually / Half-yearly</li>
+                <li>Quarterly / Monthly</li>
+                <li>Weekly / Per-shift</li>
+                <li>Real-time</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="highlight full-width" style="margin-top: 15px; text-align: center;">
+        <strong>💡 Butuh bantuan lebih lanjut?</strong> Lihat User Manual lengkap atau hubungi Admin IT.
+    </div>
+
+    <div style="text-align: center; margin-top: 10px; font-size: 8pt; color: #666;">
+        PSI Management System v1.0 | Print dan simpan panduan ini sebagai referensi cepat
+    </div>
+</body>
+</html>

@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Manual - PSI Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --color-olive: #666547;
+            --color-red: #fb2e01;
+            --color-mint: #6fcb9f;
+            --color-yellow: #ffe28a;
+            --color-cream: #fffeb3;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--color-olive) 0%, var(--color-mint) 100%);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 30px;
+        }
+
+        .toc {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 20px;
+        }
+
+        .toc h5 {
+            color: var(--color-olive);
+            border-bottom: 2px solid var(--color-mint);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .toc li {
+            margin-bottom: 8px;
+        }
+
+        .toc a {
+            color: #555;
+            text-decoration: none;
+            display: block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .toc a:hover {
+            background: var(--color-cream);
+            color: var(--color-olive);
+            padding-left: 15px;
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .content-section h2 {
+            color: var(--color-olive);
+            border-bottom: 3px solid var(--color-mint);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .content-section h3 {
+            color: var(--color-olive);
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        .step {
+            background: #f8f9fa;
+            border-left: 4px solid var(--color-mint);
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .step-number {
+            background: var(--color-mint);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid var(--color-yellow);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .info-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .danger-box {
+            background: #f8d7da;
+            border-left: 4px solid var(--color-red);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .screenshot-placeholder {
+            background: #e9ecef;
+            border: 2px dashed #adb5bd;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            color: #6c757d;
+            margin: 20px 0;
+        }
+
+        .shortcut-key {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            border-top: 4px solid var(--color-mint);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--color-mint);
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        th {
+            background: var(--color-olive);
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .badge-critical {
+            background: var(--color-red);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+        }
+
+        .badge-standard {
+            background: var(--color-mint);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+        }
+
+        .footer {
+            background: var(--color-olive);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+
+        @media print {
+            .toc {
+                position: static;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1><i class="fas fa-book me-3"></i>User Manual</h1>
+                    <h3>PSI Management System</h3>
+                    <p class="mb-0">Panduan Lengkap Penggunaan Aplikasi Manajemen Process Safety Information</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <img src="https://via.placeholder.com/150x150/6fcb9f/ffffff?text=PSI" alt="PSI Logo" class="rounded-circle" style="border: 4px solid white;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- Table of Contents -->
+            <div class="col-lg-3">
+                <div class="toc no-print">
+                    <h5><i class="fas fa-list me-2"></i>Daftar Isi</h5>
+                    <ul>
+                        <li><a href="#pendahuluan">1. Pendahuluan</a></li>
+                        <li><a href="#fitur">2. Fitur Utama</a></li>
+                        <li><a href="#login">3. Login & Logout</a></li>
+                        <li><a href="#dashboard">4. Dashboard</a></li>
+                        <li><a href="#tambah">5. Tambah Equipment</a></li>
+                        <li><a href="#import">6. Import Data Massal</a></li>
+                        <li><a href="#edit">7. Edit Equipment</a></li>
+                        <li><a href="#detail">8. Lihat Detail</a></li>
+                        <li><a href="#kategori">9. Kategori Equipment</a></li>
+                        <li><a href="#troubleshoot">10. Troubleshooting</a></li>
+                        <li><a href="#faq">11. FAQ</a></li>
+                    </ul>
+                    <button class="btn btn-primary w-100 mt-3" onclick="window.print()">
+                        <i class="fas fa-print me-2"></i>Print Manual
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+
+                <!-- Section 1: Pendahuluan -->
+                <div class="content-section" id="pendahuluan">
+                    <h2><i class="fas fa-info-circle me-2"></i>1. Pendahuluan</h2>
+
+                    <p><strong>PSI Management System</strong> adalah aplikasi web untuk mengelola data <em>Process Safety Information</em> (Informasi Keselamatan Proses) di industri petrokimia, kilang, atau pabrik kimia lainnya.</p>
+
+                    <div class="info-box">
+                        <h5><i class="fas fa-lightbulb me-2"></i>Tujuan Aplikasi</h5>
+                        <ul class="mb-0">
+                            <li>Menyimpan dan mengelola data equipment safety secara terpusat</li>
+                            <li>Memantau progress PSI (Process Safety Information) per equipment</li>
+                            <li>Mengidentifikasi equipment yang termasuk kategori EHS Critical</li>
+                            <li>Mempermudah audit dan compliance terhadap regulasi safety</li>
+                        </ul>
+                    </div>
+
+                    <h3>System Requirements</h3>
+                    <ul>
+                        <li>Browser modern (Chrome, Firefox, Safari, Edge) versi terbaru</li>
+                        <li>Koneksi internet stabil</li>
+                        <li>Akun Google untuk login (email perusahaan)</li>
+                    </ul>
+                </div>
+
+                <!-- Section 2: Fitur Utama -->
+                <div class="content-section" id="fitur">
+                    <h2><i class="fas fa-star me-2"></i>2. Fitur Utama</h2>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-plus-circle"></i></div>
+                            <h5>Tambah Equipment</h5>
+                            <p>Input data equipment baru satu per satu dengan form lengkap</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-file-import"></i></div>
+                            <h5>Import Massal</h5>
+                            <p>Upload ratusan equipment sekaligus via file Excel/CSV</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-edit"></i></div>
+                            <h5>Edit & Update</h5>
+                            <p>Ubah data equipment dan update progress PSI kapan saja</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
+                            <h5>Dashboard</h5>
+                            <p>Lihat statistik dan monitoring status equipment real-time</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <h5>EHS Critical</h5>
+                            <p>Penandaan otomatis untuk equipment kategori critical</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-search"></i></div>
+                            <h5>Pencarian</h5>
+                            <p>Cari equipment berdasarkan ID, nama, area, atau tag number</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Login -->
+                <div class="content-section" id="login">
+                    <h2><i class="fas fa-sign-in-alt me-2"></i>3. Login & Logout</h2>
+
+                    <h3>Cara Login</h3>
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Buka aplikasi</strong> di browser dengan mengakses URL aplikasi PSI Management System
+                    </div>
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Klik tombol "Login dengan Google"</strong> di halaman login
+                    </div>
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <strong>Pilih akun Google</strong> perusahaan Anda (email korporat)
+                    </div>
+                    <div class="step">
+                        <span class="step-number">4</span>
+                        <strong>Verifikasi berhasil</strong> - Anda akan diarahkan ke Dashboard
+                    </div>
+
+                    <div class="warning-box">
+                        <h5><i class="fas fa-exclamation-triangle me-2"></i>Penting!</h5>
+                        <p class="mb-0">Gunakan selalu akun email perusahaan yang sudah terdaftar. Jika belum memiliki akses, hubungi Admin IT.</p>
+                    </div>
+
+                    <h3>Cara Logout</h3>
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Klik tombol "Logout"</strong> di pojok kanan atas navbar
+                    </div>
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Konfirmasi logout</strong> - Anda akan kembali ke halaman login
+                    </div>
+                </div>
+
+                <!-- Section 4: Dashboard -->
+                <div class="content-section" id="dashboard">
+                    <h2><i class="fas fa-home me-2"></i>4. Dashboard</h2>
+
+                    <p>Dashboard adalah halaman utama yang menampilkan ringkasan status seluruh equipment.</p>
+
+                    <h3>Komponen Dashboard</h3>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Komponen</th>
+                                <th>Deskripsi</th>
+                                <th>Warna</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Total Equipment</strong></td>
+                                <td>Jumlah seluruh equipment di database</td>
+                                <td><span class="badge bg-primary">Biru</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Equipment Aktif</strong></td>
+                                <td>Equipment dengan PSI Progress > 0%</td>
+                                <td><span class="badge bg-success">Hijau</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Dalam Progres PSI</strong></td>
+                                <td>Equipment dengan PSI Progress 1-99%</td>
+                                <td><span class="badge bg-warning text-dark">Kuning</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>EHS Critical</strong></td>
+                                <td>Equipment dengan kategori EHS Critical</td>
+                                <td><span class="badge bg-danger">Merah</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Daftar Equipment Terbaru</h3>
+                    <p>Bagian bawah dashboard menampilkan 5 equipment terbaru yang ditambahkan. Untuk melihat semua, klik tombol <strong>"Lihat Semua"</strong>.</p>
+
+                    <div class="info-box">
+                        <h5><i class="fas fa-info-circle me-2"></i>Tip</h5>
+                        <p class="mb-0">Klik icon <i class="fas fa-eye"></i> untuk melihat detail, atau <i class="fas fa-edit"></i> untuk edit equipment langsung dari dashboard.</p>
+                    </div>
+                </div>
+
+                <!-- Section 5: Tambah Equipment -->
+                <div class="content-section" id="tambah">
+                    <h2><i class="fas fa-plus-circle me-2"></i>5. Tambah Equipment Baru</h2>
+
+                    <p>Untuk menambahkan equipment satu per satu:</p>
+
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Dari Dashboard</strong>, klik tombol <strong>"Tambah Equipment"</strong> di pojok kanan atas
+                    </div>
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Isi Form</strong> dengan data lengkap equipment:
+                        <ul class="mt-2">
+                            <li><strong>Equipment ID:</strong> Kode unik equipment (contoh: 11PVV014)</li>
+                            <li><strong>Nama Equipment:</strong> Nama lengkap (contoh: V 1101)</li>
+                            <li><strong>Area:</strong> Lokasi area (CP, Utility, dll)</li>
+                            <li><strong>Unit:</strong> Nomor unit (1100, 1200, dll)</li>
+                            <li><strong>Type:</strong> Tipe equipment (Pressure, Level, Temperature, dll)</li>
+                            <li><strong>Tag Number:</strong> Nomor tag instrument</li>
+                            <li><strong>Description:</strong> Deskripsi fungsi equipment</li>
+                            <li><strong>Action Plan:</strong> Rencana tindakan (Calibration, Monitoring, dll)</li>
+                            <li><strong>Periods:</strong> Periode maintenance (T/A Shut-down, Annually, dll)</li>
+                            <li><strong>Kategori:</strong> Pilih EHS Critical atau Standard</li>
+                            <li><strong>Kustodian:</strong> Penanggung jawab equipment (opsional)</li>
+                            <li><strong>PSI Progress:</strong> Persentase progress (0-100%)</li>
+                        </ul>
+                    </div>
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <strong>Klik "Simpan"</strong> untuk menyimpan data
+                    </div>
+
+                    <div class="warning-box">
+                        <h5><i class="fas fa-exclamation-circle me-2"></i>Perhatian</h5>
+                        <p class="mb-0"><strong>Equipment ID harus unik!</strong> Sistem akan menolak jika ID sudah ada di database.</p>
+                    </div>
+                </div>
+
+                <!-- Section 6: Import Data -->
+                <div class="content-section" id="import">
+                    <h2><i class="fas fa-file-import me-2"></i>6. Import Data Massal</h2>
+
+                    <p>Fitur ini digunakan untuk mengimport banyak equipment sekaligus dari file Excel atau CSV.</p>
+
+                    <h3>Persiapan File Excel</h3>
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Download Template</strong> dari halaman Import Data
+                    </div>
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Isi data</strong> sesuai format template. Kolom wajib:
+                        <ul>
+                            <li>equip_id, nama, area, unit, type</li>
+                            <li>tag_number, description, action_plan</li>
+                        </ul>
+                        Kolom opsional: periods, kategori, kustodian, psi_progress
+                    </div>
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <strong>Simpan file</strong> dalam format .xlsx atau .csv
+                    </div>
+
+                    <h3>Proses Import</h3>
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Buka halaman Import</strong> dari Dashboard → klik "Import Data"
+                    </div>
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Upload file</strong> dengan drag & drop atau klik "Pilih File"
+                    </div>
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <strong>Preview data</strong> - Sistem akan menampilkan 10 baris pertama
+                    </div>
+                    <div class="step">
+                        <span class="step-number">4</span>
+                        <strong>Mapping kolom</strong> - Pastikan kolom Excel sesuai dengan field database
+                    </div>
+                    <div class="step">
+                        <span class="step-number">5</span>
+                        <strong>Klik "Import ke Database"</strong> dan tunggu proses selesai
+                    </div>
+
+                    <div class="info-box">
+                        <h5><i class="fas fa-lightbulb me-2"></i>Fitur Cerdas Import</h5>
+                        <ul class="mb-0">
+                            <li><strong>Auto-mapping:</strong> Sistem otomatis mendeteksi kolom jika nama header sesuai</li>
+                            <li><strong>Duplicate handling:</strong> Jika equip_id sudah ada, sistem akan UPDATE data lama</li>
+                            <li><strong>Validasi:</strong> Sistem memeriksa data kosong sebelum import</li>
+                            <li><strong>Progress bar:</strong> Pantau progress import real-time</li>
+                        </ul>
+                    </div>
+
+                    <div class="danger-box">
+                        <h5><i class="fas fa-exclamation-triangle me-2"></i>Penanganan Error</h5>
+                        <p>Jika muncul error <strong>"Periods kosong"</strong> atau field lain:</p>
+                        <ol class="mb-0">
+                            <li>Periksa baris yang disebutkan di error message</li>
+                            <li>Beberapa equipment memang tidak punya period (contoh: Rupture disc)</li>
+                            <li>Klik <strong>"Import Tetap (Lewati Error)"</strong> untuk melanjutkan</li>
+                            <li>Baris dengan data wajib kosong akan di-skip, yang lain tetap diimport</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Section 7: Edit Equipment -->
+                <div class="content-section" id="edit">
+                    <h2><i class="fas fa-edit me-2"></i>7. Edit Equipment</h2>
+
+                    <p>Untuk mengubah data equipment yang sudah ada:</p>
+
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Cari equipment</strong> di Dashboard atau halaman list equipment
+                    </div>
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Klik icon edit</strong> <i class="fas fa-edit text-warning"></i> pada equipment yang ingin diubah
+                    </div>
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <strong>Ubah data</strong> yang diperlukan di form edit
+                    </div>
+                    <div class="step">
+                        <span class="step-number">4</span>
+                        <strong>Klik "Update"</strong> untuk menyimpan perubahan
+                    </div>
+
+                    <div class="warning-box">
+                        <h5><i class="fas fa-info-circle me-2"></i>Catatan</h5>
+                        <p class="mb-0">Equipment ID <strong>tidak bisa diubah</strong> setelah dibuat. Jika perlu ganti ID, hapus equipment lama dan buat baru.</p>
+                    </div>
+                </div>
+
+                <!-- Section 8: Detail Equipment -->
+                <div class="content-section" id="detail">
+                    <h2><i class="fas fa-eye me-2"></i>8. Lihat Detail Equipment</h2>
+
+                    <p>Untuk melihat informasi lengkap equipment:</p>
+
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Klik icon eye</strong> <i class="fas fa-eye text-primary"></i> pada equipment di dashboard
+                    </div>
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Halaman detail</strong> akan menampilkan semua informasi equipment termasuk:
+                        <ul>
+                            <li>Data lengkap equipment</li>
+                            <li>Status PSI Progress</li>
+                            <li>History perubahan (jika ada)</li>
+                            <li>Informasi pembuat dan tanggal dibuat</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Section 9: Kategori -->
+                <div class="content-section" id="kategori">
+                    <h2><i class="fas fa-tags me-2"></i>9. Kategori Equipment</h2>
+
+                    <p>Sistem mengklasifikasikan equipment menjadi 2 kategori:</p>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Kategori</th>
+                                <th>Nilai</th>
+                                <th>Deskripsi</th>
+                                <th>Contoh</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge-critical">EHS Critical</span></td>
+                                <td>1</td>
+                                <td>Equipment yang berkaitan dengan safety kritis (kebakaran, ledakan, toxic)</td>
+                                <td>Flame Detector, Deluge System, Relief Valve</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge-standard">Standard</span></td>
+                                <td>2</td>
+                                <td>Equipment umum yang tidak termasuk kategori critical</td>
+                                <td>Pressure Vessel, Level Gauge, Temperature Sensor</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="info-box">
+                        <h5><i class="fas fa-info-circle me-2"></i>Cara Menentukan Kategori</h5>
+                        <ul class="mb-0">
+                            <li><strong>EHS Critical:</strong> Equipment yang kegagalannya bisa menyebabkan kecelakaan fatal, kebakaran, ledakan, atau pelepasan bahan berbahaya</li>
+                            <li><strong>Standard:</strong> Equipment operasional normal yang kegagalannya tidak berdampak langsung pada safety</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Section 10: Troubleshooting -->
+                <div class="content-section" id="troubleshoot">
+                    <h2><i class="fas fa-tools me-2"></i>10. Troubleshooting</h2>
+
+                    <h3>Masalah Umum dan Solusi</h3>
+
+                    <div class="accordion" id="troubleshootAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#error1">
+                                    <i class="fas fa-times-circle text-danger me-2"></i> Tidak bisa login
+                                </button>
+                            </h2>
+                            <div id="error1" class="accordion-collapse collapse show" data-bs-parent="#troubleshootAccordion">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Pastikan menggunakan email perusahaan yang sudah terdaftar</li>
+                                        <li>Clear cache browser dan coba lagi</li>
+                                        <li>Hubungi admin jika akun belum memiliki akses</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#error2">
+                                    <i class="fas fa-file-excel text-warning me-2"></i> Import Excel gagal
+                                </button>
+                            </h2>
+                            <div id="error2" class="accordion-collapse collapse" data-bs-parent="#troubleshootAccordion">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Pastikan format file .xlsx atau .csv</li>
+                                        <li>Periksa apakah header kolom sesuai template</li>
+                                        <li>Pastikan tidak ada baris kosong di tengah file</li>
+                                        <li>Coba download template baru dan copy-paste data Anda</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#error3">
+                                    <i class="fas fa-exclamation-triangle text-warning me-2"></i> Equipment ID sudah ada
+                                </button>
+                            </h2>
+                            <div id="error3" class="accordion-collapse collapse" data-bs-parent="#troubleshootAccordion">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Equipment ID harus unik (tidak boleh sama)</li>
+                                        <li>Jika ingin update data, gunakan menu Edit bukan Tambah Baru</li>
+                                        <li>Untuk import: sistem akan otomatis update jika ID sudah ada</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#error4">
+                                    <i class="fas fa-spinner text-info me-2"></i> Loading terus/blank page
+                                </button>
+                            </h2>
+                            <div id="error4" class="accordion-collapse collapse" data-bs-parent="#troubleshootAccordion">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Periksa koneksi internet</li>
+                                        <li>Refresh halaman (F5)</li>
+                                        <li>Clear browser cache (Ctrl+Shift+Delete)</li>
+                                        <li>Coba buka di browser lain</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 11: FAQ -->
+                <div class="content-section" id="faq">
+                    <h2><i class="fas fa-question-circle me-2"></i>11. Frequently Asked Questions (FAQ)</h2>
+
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                    Bagaimana cara backup data?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Data tersimpan di Firebase (cloud). Untuk backup manual, hubungi admin untuk export data JSON dari Firebase Console.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                    Apakah bisa mengimport data lama dari Excel?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Ya, asalkan format Excel disesuaikan dengan template. Gunakan fitur Import Data Massal.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                    Bagaimana jika lupa password?
+                                </button>
+                            </h2>
+                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Sistem menggunakan Google Login, jadi password dikelola oleh Google. Gunakan fitur "Lupa Password" di akun Google Anda.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                    Bisa diakses dari HP/mobile?
+                                </button>
+                            </h2>
+                            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Ya, aplikasi responsive dan bisa dibuka via browser mobile. Namun, untuk input data massal disarankan menggunakan laptop/PC.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                    Berapa banyak equipment yang bisa diimport sekaligus?
+                                </button>
+                            </h2>
+                            <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Tidak ada batasan jumlah. Sudah tested untuk 1000+ equipment. Proses import akan lebih lama untuk data besar, tunggu sampai progress bar selesai.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Reference Card -->
+                <div class="content-section">
+                    <h2><i class="fas fa-id-card me-2"></i>Quick Reference Card</h2>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h5 class="card-title">Login</h5>
+                                    <p class="card-text">
+                                        <i class="fas fa-envelope me-2"></i>Email Google<br>
+                                        <i class="fas fa-lock me-2"></i>Password Google
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h5 class="card-title">Kategori</h5>
+                                    <p class="card-text">
+                                        <span class="badge-critical me-2">1</span>EHS Critical<br>
+                                        <span class="badge-standard me-2">2</span>Standard
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h5 class="card-title">Action Plan</h5>
+                                    <p class="card-text">
+                                        Calibration, Verification, Monitoring, Replace
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h5 class="card-title">Periods</h5>
+                                    <p class="card-text">
+                                        T/A Shut-down, Annually, Half-yearly, Quarterly, Monthly, Weekly, Real-time
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="container">
+            <p class="mb-0">
+                <strong>PSI Management System</strong> | User Manual v1.0<br>
+                <small>© 2024 - Dibuat untuk Manajemen Process Safety Information</small>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

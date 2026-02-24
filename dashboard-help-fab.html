@@ -1,0 +1,495 @@
+<!-- Floating Action Button Help - RECOMMENDED -->
+<!-- Paling tidak mengganggu, muncul hanya saat dibutuhkan -->
+
+<style>
+/* Floating Action Button */
+.fab-help {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+}
+
+.fab-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6fcb9f 0%, #666547 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px rgba(111, 203, 159, 0.4);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: all 0.3s;
+}
+
+.fab-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(111, 203, 159, 0.6);
+}
+
+.fab-btn.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(111, 203, 159, 0.7); }
+    70% { box-shadow: 0 0 0 20px rgba(111, 203, 159, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(111, 203, 159, 0); }
+}
+
+/* Help Panel */
+.fab-panel {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 350px;
+    max-height: 500px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    z-index: 999;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.fab-panel.show {
+    display: flex;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fab-panel-header {
+    background: linear-gradient(135deg, #666547 0%, #6fcb9f 100%);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fab-panel-header h5 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.fab-panel-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.fab-panel-body {
+    padding: 15px;
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+.fab-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.fab-menu-item {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.fab-menu-item:hover {
+    background: #f8f9fa;
+}
+
+.fab-menu-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: white;
+}
+
+.fab-menu-icon.login { background: #6c9bcf; }
+.fab-menu-icon.add { background: #6fcb9f; }
+.fab-menu-icon.import { background: #ffe28a; color: #666547; }
+.fab-menu-icon.category { background: #fb2e01; }
+.fab-menu-icon.troubleshoot { background: #666547; }
+
+.fab-menu-text {
+    flex: 1;
+}
+
+.fab-menu-text strong {
+    display: block;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.fab-menu-text small {
+    color: #888;
+    font-size: 0.75rem;
+}
+
+.fab-divider {
+    height: 1px;
+    background: #e9ecef;
+    margin: 10px 0;
+}
+
+.fab-footer {
+    padding: 10px 15px;
+    background: #f8f9fa;
+    text-align: center;
+}
+
+.fab-footer a {
+    color: #6fcb9f;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Tooltip untuk quick info */
+.fab-tooltip {
+    position: fixed;
+    bottom: 100px;
+    right: 100px;
+    background: #333;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+.fab-tooltip.show {
+    opacity: 1;
+}
+
+/* Overlay */
+.fab-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.3);
+    z-index: 998;
+    display: none;
+}
+
+.fab-overlay.show {
+    display: block;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .fab-panel {
+        width: calc(100% - 40px);
+        right: 20px;
+        left: 20px;
+    }
+
+    .fab-help {
+        bottom: 20px;
+        right: 20px;
+    }
+}
+</style>
+
+<!-- Floating Action Button -->
+<div class="fab-help">
+    <div class="fab-tooltip" id="fabTooltip">Butuh bantuan?</div>
+    <button class="fab-btn pulse" id="fabBtn" onclick="toggleFabPanel()">
+        <i class="fas fa-question"></i>
+    </button>
+</div>
+
+<!-- Overlay -->
+<div class="fab-overlay" id="fabOverlay" onclick="toggleFabPanel()"></div>
+
+<!-- Help Panel -->
+<div class="fab-panel" id="fabPanel">
+    <div class="fab-panel-header">
+        <h5><i class="fas fa-life-ring me-2"></i>Pusat Bantuan</h5>
+        <button class="fab-panel-close" onclick="toggleFabPanel()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <div class="fab-panel-body">
+        <ul class="fab-menu">
+            <li class="fab-menu-item" onclick="showHelpDetail('login')">
+                <div class="fab-menu-icon login">
+                    <i class="fas fa-sign-in-alt"></i>
+                </div>
+                <div class="fab-menu-text">
+                    <strong>Cara Login</strong>
+                    <small>Google Sign-In</small>
+                </div>
+                <i class="fas fa-chevron-right text-muted"></i>
+            </li>
+
+            <li class="fab-menu-item" onclick="showHelpDetail('add')">
+                <div class="fab-menu-icon add">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div class="fab-menu-text">
+                    <strong>Tambah Equipment</strong>
+                    <small>Input data baru</small>
+                </div>
+                <i class="fas fa-chevron-right text-muted"></i>
+            </li>
+
+            <li class="fab-menu-item" onclick="showHelpDetail('import')">
+                <div class="fab-menu-icon import">
+                    <i class="fas fa-file-import"></i>
+                </div>
+                <div class="fab-menu-text">
+                    <strong>Import Excel</strong>
+                    <small>Upload data massal</small>
+                </div>
+                <i class="fas fa-chevron-right text-muted"></i>
+            </li>
+
+            <li class="fab-menu-item" onclick="showHelpDetail('category')">
+                <div class="fab-menu-icon category">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <div class="fab-menu-text">
+                    <strong>Kategori Equipment</strong>
+                    <small>Critical vs Standard</small>
+                </div>
+                <i class="fas fa-chevron-right text-muted"></i>
+            </li>
+
+            <li class="fab-menu-item" onclick="showHelpDetail('troubleshoot')">
+                <div class="fab-menu-icon troubleshoot">
+                    <i class="fas fa-wrench"></i>
+                </div>
+                <div class="fab-menu-text">
+                    <strong>Masalah Umum</strong>
+                    <small>Solusi error</small>
+                </div>
+                <i class="fas fa-chevron-right text-muted"></i>
+            </li>
+        </ul>
+
+        <div class="fab-divider"></div>
+
+        <div style="background: #fff3cd; padding: 10px; border-radius: 8px; font-size: 0.8rem;">
+            <strong><i class="fas fa-lightbulb me-1 text-warning"></i>Tip:</strong>
+            Equipment ID harus unik. Import akan update data lama jika ID sudah ada.
+        </div>
+    </div>
+
+    <div class="fab-footer">
+        <a href="User_Manual_PSI_Management_System.html" target="_blank">
+            <i class="fas fa-book me-1"></i>Lihat Manual Lengkap
+        </a>
+    </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal fade" id="helpDetailModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="helpDetailTitle">Detail</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="helpDetailBody">
+                <!-- Content injected by JS -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Toggle FAB Panel
+function toggleFabPanel() {
+    const panel = document.getElementById('fabPanel');
+    const overlay = document.getElementById('fabOverlay');
+    const btn = document.getElementById('fabBtn');
+
+    panel.classList.toggle('show');
+    overlay.classList.toggle('show');
+    btn.classList.toggle('pulse');
+
+    // Hide tooltip when panel is opened
+    if (panel.classList.contains('show')) {
+        document.getElementById('fabTooltip').classList.remove('show');
+    }
+}
+
+// Show tooltip on hover (desktop only)
+if (window.innerWidth > 768) {
+    document.getElementById('fabBtn').addEventListener('mouseenter', function() {
+        if (!document.getElementById('fabPanel').classList.contains('show')) {
+            document.getElementById('fabTooltip').classList.add('show');
+        }
+    });
+
+    document.getElementById('fabBtn').addEventListener('mouseleave', function() {
+        document.getElementById('fabTooltip').classList.remove('show');
+    });
+}
+
+// Show help detail
+function showHelpDetail(type) {
+    const details = {
+        'login': {
+            title: '<i class="fas fa-sign-in-alt me-2 text-primary"></i>Cara Login',
+            body: `
+                <ol>
+                    <li>Klik tombol <strong>"Login dengan Google"</strong> di halaman login</li>
+                    <li>Pilih akun <strong>email perusahaan</strong> Anda</li>
+                    <li>Tunggu verifikasi selesai</li>
+                    <li>Anda akan diarahkan ke Dashboard</li>
+                </ol>
+                <div class="alert alert-warning mt-3">
+                    <strong>Catatan:</strong> Gunakan selalu email perusahaan yang sudah terdaftar.
+                </div>
+            `
+        },
+        'add': {
+            title: '<i class="fas fa-plus-circle me-2 text-success"></i>Tambah Equipment',
+            body: `
+                <p><strong>Langkah-langkah:</strong></p>
+                <ol>
+                    <li>Klik tombol <strong>"Tambah Equipment"</strong> di dashboard</li>
+                    <li>Isi semua field yang wajib:
+                        <ul>
+                            <li>Equipment ID (harus unik)</li>
+                            <li>Nama, Area, Unit, Type</li>
+                            <li>Tag Number, Description</li>
+                            <li>Action Plan</li>
+                        </ul>
+                    </li>
+                    <li>Pilih Kategori: <span class="badge bg-danger">1=Critical</span> atau <span class="badge bg-success">2=Standard</span></li>
+                    <li>Klik <strong>"Simpan"</strong></li>
+                </ol>
+            `
+        },
+        'import': {
+            title: '<i class="fas fa-file-import me-2 text-warning"></i>Import Excel',
+            body: `
+                <p><strong>Proses Import:</strong></p>
+                <ol>
+                    <li>Klik <strong>"Import Data"</strong> di dashboard</li>
+                    <li>Siapkan file Excel sesuai template</li>
+                    <li>Drag & drop file atau klik "Pilih File"</li>
+                    <li>Periksa mapping kolom (auto-detect)</li>
+                    <li>Klik <strong>"Import ke Database"</strong></li>
+                </ol>
+                <div class="alert alert-info mt-3">
+                    <strong>Tip:</strong> Jika muncul error "Periods kosong", klik "Import Tetap" untuk melanjutkan.
+                </div>
+            `
+        },
+        'category': {
+            title: '<i class="fas fa-tags me-2 text-danger"></i>Kategori Equipment',
+            body: `
+                <table class="table table-sm">
+                    <tr>
+                        <td><span class="badge bg-danger">1</span></td>
+                        <td><strong>EHS Critical</strong></td>
+                        <td>Equipment safety kritis</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="small text-muted">Contoh: Flame detector, deluge system, relief valve, fire water system</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge bg-success">2</span></td>
+                        <td><strong>Standard</strong></td>
+                        <td>Equipment operasional</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="small text-muted">Contoh: Pressure vessel, level gauge, temperature sensor, flow meter</td>
+                    </tr>
+                </table>
+            `
+        },
+        'troubleshoot': {
+            title: '<i class="fas fa-wrench me-2 text-secondary"></i>Masalah Umum',
+            body: `
+                <div class="accordion" id="troubleshootAccordion">
+                    <div class="accordion-item">
+                        <h6 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#t1">
+                                "Equipment ID sudah ada"
+                            </button>
+                        </h6>
+                        <div id="t1" class="accordion-collapse collapse" data-bs-parent="#troubleshootAccordion">
+                            <div class="accordion-body small">
+                                Gunakan menu <strong>Edit</strong> untuk mengubah data yang sudah ada, bukan Tambah Baru.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h6 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#t2">
+                                "Periods kosong" saat import
+                            </button>
+                        </h6>
+                        <div id="t2" class="accordion-collapse collapse" data-bs-parent="#troubleshootAccordion">
+                            <div class="accordion-body small">
+                                Beberapa equipment memang tidak punya period (contoh: Rupture disc). Klik <strong>"Import Tetap"</strong> untuk melanjutkan.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h6 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#t3">
+                                Tidak bisa login
+                            </button>
+                        </h6>
+                        <div id="t3" class="accordion-collapse collapse" data-bs-parent="#troubleshootAccordion">
+                            <div class="accordion-body small">
+                                Pastikan menggunakan <strong>email perusahaan</strong> yang terdaftar. Clear cache browser dan coba lagi.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `
+        }
+    };
+
+    const detail = details[type];
+    document.getElementById('helpDetailTitle').innerHTML = detail.title;
+    document.getElementById('helpDetailBody').innerHTML = detail.body;
+
+    var modal = new bootstrap.Modal(document.getElementById('helpDetailModal'));
+    modal.show();
+}
+
+// Hide pulse animation after first click
+let firstClick = true;
+document.getElementById('fabBtn').addEventListener('click', function() {
+    if (firstClick) {
+        this.classList.remove('pulse');
+        firstClick = false;
+    }
+});
+</script>

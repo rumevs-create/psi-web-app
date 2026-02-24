@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dokumentasi PSI Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --color-olive: #666547;
+            --color-red: #fb2e01;
+            --color-mint: #6fcb9f;
+            --color-yellow: #ffe28a;
+            --color-cream: #fffeb3;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--color-cream) 0%, #f8f9fa 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--color-olive);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 40px;
+        }
+
+        .doc-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            border-top: 5px solid var(--color-mint);
+        }
+
+        .doc-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .doc-card.cheat-sheet {
+            border-top-color: var(--color-yellow);
+        }
+
+        .doc-card.technical {
+            border-top-color: var(--color-olive);
+        }
+
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            background: var(--color-mint);
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .doc-card.cheat-sheet .icon-box {
+            background: var(--color-yellow);
+            color: var(--color-olive);
+        }
+
+        .doc-card.technical .icon-box {
+            background: var(--color-olive);
+        }
+
+        .btn-mint {
+            background: var(--color-mint);
+            border: none;
+            color: white;
+            font-weight: 500;
+        }
+
+        .btn-mint:hover {
+            background: #5db88d;
+            color: white;
+        }
+
+        .btn-olive {
+            background: var(--color-olive);
+            border: none;
+            color: white;
+            font-weight: 500;
+        }
+
+        .btn-olive:hover {
+            background: #555544;
+            color: white;
+        }
+
+        .btn-yellow {
+            background: var(--color-yellow);
+            border: none;
+            color: var(--color-olive);
+            font-weight: 500;
+        }
+
+        .btn-yellow:hover {
+            background: #ffd700;
+            color: var(--color-olive);
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-list i {
+            color: var(--color-mint);
+            margin-right: 10px;
+        }
+
+        .footer {
+            background: var(--color-olive);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="container text-center">
+            <h1><i class="fas fa-book-open me-3"></i>Dokumentasi Lengkap</h1>
+            <h3>PSI Management System</h3>
+            <p class="mb-0 mt-3">Pilih panduan sesuai kebutuhan Anda</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- User Manual -->
+            <div class="col-md-4">
+                <div class="doc-card">
+                    <div class="icon-box">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h4>User Manual</h4>
+                    <p class="text-muted">Panduan lengkap untuk pengguna aplikasi. Cocok untuk pemula yang ingin memahami semua fitur.</p>
+
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Pendahuluan & Fitur</li>
+                        <li><i class="fas fa-check"></i> Login & Dashboard</li>
+                        <li><i class="fas fa-check"></i> Tambah & Edit Equipment</li>
+                        <li><i class="fas fa-check"></i> Import Data Massal</li>
+                        <li><i class="fas fa-check"></i> Troubleshooting</li>
+                        <li><i class="fas fa-check"></i> FAQ</li>
+                    </ul>
+
+                    <a href="User_Manual_PSI_Management_System.html" class="btn btn-mint w-100 mt-3">
+                        <i class="fas fa-book-reader me-2"></i>Baca Manual
+                    </a>
+                </div>
+            </div>
+
+            <!-- Quick Start Guide -->
+            <div class="col-md-4">
+                <div class="doc-card cheat-sheet">
+                    <div class="icon-box">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h4>Quick Start Guide</h4>
+                    <p class="text-muted">Cheat sheet 1 halaman untuk pengguna yang sudah familiar. Cetak dan tempel di meja kerja!</p>
+
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check" style="color: var(--color-yellow);"></i> Langkah cepat login</li>
+                        <li><i class="fas fa-check" style="color: var(--color-yellow);"></i> Tambah equipment</li>
+                        <li><i class="fas fa-check" style="color: var(--color-yellow);"></i> Import Excel</li>
+                        <li><i class="fas fa-check" style="color: var(--color-yellow);"></i> Field wajib & opsional</li>
+                        <li><i class="fas fa-check" style="color: var(--color-yellow);"></i> Troubleshooting cepat</li>
+                        <li><i class="fas fa-check" style="color: var(--color-yellow);"></i> Print-friendly</li>
+                    </ul>
+
+                    <a href="Quick_Start_Guide_PSI.html" class="btn btn-yellow w-100 mt-3">
+                        <i class="fas fa-print me-2"></i>Cetak Guide
+                    </a>
+                </div>
+            </div>
+
+            <!-- Admin/Developer Doc -->
+            <div class="col-md-4">
+                <div class="doc-card technical">
+                    <div class="icon-box">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h4>Admin/Developer</h4>
+                    <p class="text-muted">Dokumentasi teknis untuk admin IT dan developer. Konfigurasi, deployment, dan maintenance.</p>
+
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check" style="color: var(--color-olive);"></i> Arsitektur Sistem</li>
+                        <li><i class="fas fa-check" style="color: var(--color-olive);"></i> Konfigurasi Firebase</li>
+                        <li><i class="fas fa-check" style="color: var(--color-olive);"></i> Struktur Database</li>
+                        <li><i class="fas fa-check" style="color: var(--color-olive);"></i> Deployment Guide</li>
+                        <li><i class="fas fa-check" style="color: var(--color-olive);"></i> Backup & Restore</li>
+                        <li><i class="fas fa-check" style="color: var(--color-olive);"></i> Debugging</li>
+                    </ul>
+
+                    <a href="README_Admin_Developer.md" class="btn btn-olive w-100 mt-3">
+                        <i class="fas fa-file-code me-2"></i>Lihat Dokumentasi
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Getting Started Section -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="doc-card" style="border-top-color: var(--color-red);">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h4><i class="fas fa-rocket me-2 text-danger"></i>Baru Pertama Kali Menggunakan?</h4>
+                            <p class="mb-0">Ikuti urutan berikut untuk memulai:</p>
+                            <ol class="mt-3">
+                                <li>Baca <strong>Quick Start Guide</strong> (5 menit) untuk gambaran cepat</li>
+                                <li>Ikuti langkah di <strong>User Manual</strong> untuk praktik detail</li>
+                                <li>Jika ada masalah, cek bagian <strong>Troubleshooting</strong></li>
+                            </ol>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <a href="Quick_Start_Guide_PSI.html" class="btn btn-danger btn-lg">
+                                <i class="fas fa-play me-2"></i>Mulai Sekarang
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- File List -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h4 class="mb-4"><i class="fas fa-folder-open me-2"></i>Daftar File Dokumentasi</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>File</th>
+                                <th>Deskripsi</th>
+                                <th>Format</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>User Manual</strong></td>
+                                <td>Panduan lengkap penggunaan aplikasi</td>
+                                <td><span class="badge bg-primary">HTML</span></td>
+                                <td><a href="User_Manual_PSI_Management_System.html" class="btn btn-sm btn-primary">Buka</a></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Quick Start Guide</strong></td>
+                                <td>Cheat sheet 1 halaman (printable)</td>
+                                <td><span class="badge bg-primary">HTML</span></td>
+                                <td><a href="Quick_Start_Guide_PSI.html" class="btn btn-sm btn-primary">Buka</a></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Admin/Developer Doc</strong></td>
+                                <td>Dokumentasi teknis dan konfigurasi</td>
+                                <td><span class="badge bg-secondary">Markdown</span></td>
+                                <td><a href="README_Admin_Developer.md" class="btn btn-sm btn-secondary">Buka</a></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Import Template</strong></td>
+                                <td>Template Excel untuk import data</td>
+                                <td><span class="badge bg-success">Excel</span></td>
+                                <td><a href="PSI_Equipment_Import_Ready.xlsx" class="btn btn-sm btn-success">Download</a></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Updated Import Page</strong></td>
+                                <td>Halaman import dengan fix validasi</td>
+                                <td><span class="badge bg-warning text-dark">HTML</span></td>
+                                <td><a href="import-data-updated.html" class="btn btn-sm btn-warning">Download</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Support -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="doc-card text-center" style="background: linear-gradient(135deg, #f8f9fa 0%, var(--color-cream) 100%);">
+                    <h4><i class="fas fa-life-ring me-2"></i>Butuh Bantuan?</h4>
+                    <p>Jika Anda mengalami masalah atau memiliki pertanyaan:</p>
+                    <div class="row mt-4">
+                        <div class="col-md-4">
+                            <i class="fas fa-envelope fa-2x text-primary mb-2"></i>
+                            <h6>Email Support</h6>
+                            <p class="small">it-support@company.com</p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="fas fa-phone fa-2x text-success mb-2"></i>
+                            <h6>Telepon</h6>
+                            <p class="small">Ext. 1234 (Admin IT)</p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="fas fa-comments fa-2x text-warning mb-2"></i>
+                            <h6>Live Chat</h6>
+                            <p class="small">Sen-Jum, 08:00-17:00</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="container">
+            <p class="mb-0">
+                <strong>PSI Management System</strong> v1.0 | Dokumentasi lengkap tersedia<br>
+                <small>© 2024 - Process Safety Information Management</small>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
