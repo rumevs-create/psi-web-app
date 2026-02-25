@@ -1,243 +1,605 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Detail Equipment - PSI System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Equipment - PSI System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --color-olive: #666547;
+            --color-red: #fb2e01;
+            --color-mint: #6fcb9f;
+            --color-yellow: #ffe28a;
+            --color-cream: #fffeb3;
+        }
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        body {
+            background: #fffeb3;
+        }
 
-<style>
-body{background:#fffeb3;}
-.navbar{background:#666547!important;}
-.card{border:none;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,.1);}
-.card-header{background:#666547!important;color:white;}
-.item-card{border-left:5px solid #6fcb9f;}
-.item-card.missing{border-left-color:#fb2e01;}
-.item-card.update{border-left-color:#ffe28a;}
-.doc-meta{background:#f8f9fa;border-radius:8px;padding:10px;margin-top:10px;}
-.small-label{font-size:12px;color:#666547;}
-</style>
+        .navbar {
+            background-color: #666547 !important;
+            box-shadow: 0 2px 10px rgba(102, 101, 71, 0.3);
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .status-ada { background: #6fcb9f; color: #fff; }
+        .status-missing { background: #fb2e01; color: #fff; }
+        .status-update { background: #ffe28a; color: #666547; }
+        .status-na { background: #666547; color: #fffeb3; }
+        
+        .progress {
+            height: 25px;
+            margin-bottom: 20px;
+            background-color: #fffeb3;
+        }
+        
+        .item-row {
+            border-bottom: 1px solid #ffe28a;
+            padding: 12px 0;
+            transition: background-color 0.2s;
+        }
+        
+        .item-row:hover {
+            background-color: #fffeb3;
+        }
+        
+        .kategori-badge {
+            font-size: 10px;
+            padding: 2px 5px;
+            border-radius: 3px;
+            background: #ffe28a;
+            color: #666547;
+            margin-left: 5px;
+        }
+        
+        .file-link {
+            color: #666547;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .file-link:hover {
+            color: #fb2e01;
+            text-decoration: underline;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(102, 101, 71, 0.15);
+        }
+
+        .card-header.bg-primary {
+            background-color: #666547 !important;
+        }
+
+        .btn-warning {
+            background-color: #ffe28a;
+            border: none;
+            color: #666547;
+        }
+
+        .btn-warning:hover {
+            background-color: #fb2e01;
+            color: #fff;
+        }
+
+        .btn-info {
+            background-color: #6fcb9f;
+            border: none;
+            color: #fff;
+        }
+
+        .btn-info:hover {
+            background-color: #5db88d;
+            color: #fff;
+        }
+
+        .btn-outline-primary {
+            color: #666547;
+            border-color: #666547;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #666547;
+            border-color: #666547;
+            color: #fffeb3;
+        }
+
+        .modal-header.bg-primary {
+            background-color: #666547 !important;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #6fcb9f;
+            box-shadow: 0 0 0 0.2rem rgba(111, 203, 159, 0.25);
+        }
+
+        .alert-info {
+            background-color: #ffe28a;
+            color: #666547;
+            border: none;
+        }
+
+        .text-primary {
+            color: #666547 !important;
+        }
+
+        .text-muted {
+            color: #666547 !important;
+            opacity: 0.7;
+        }
+
+        .bg-light {
+            background-color: #fffeb3 !important;
+        }
+
+        .table-danger {
+            background-color: rgba(251, 46, 1, 0.1) !important;
+        }
+
+        .font-monospace {
+            color: #666547;
+        }
+
+        .spinner-border.text-primary {
+            color: #666547 !important;
+        }
+
+        .badge.bg-secondary {
+            background-color: #ffe28a !important;
+            color: #666547;
+        }
+
+        .badge.bg-danger {
+            background-color: #fb2e01 !important;
+        }
+
+        .badge.bg-info {
+            background-color: #6fcb9f !important;
+        }
+
+        .badge.bg-success {
+            background-color: #6fcb9f !important;
+        }
+
+        .badge.bg-light {
+            background-color: #fffeb3 !important;
+            color: #666547;
+        }
+
+        .btn-close-white {
+            filter: none;
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
+    <nav class="navbar navbar-dark">
+        <div class="container-fluid">
+            <span class="navbar-brand">
+                <i class="fas fa-shield-alt"></i> PSI Management - Detail Equipment
+            </span>
+            <div>
+                <button class="btn btn-light me-2" onclick="window.location.href='dashboard.html'">
+                    <i class="fas fa-arrow-left"></i> Kembali
+                </button>
+                <button class="btn btn-light" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </nav>
 
-<nav class="navbar navbar-dark">
-<div class="container-fluid">
-<span class="navbar-brand">
-<i class="fas fa-shield-alt"></i> PSI Detail
-</span>
-<button class="btn btn-light" onclick="logout()">Logout</button>
-</div>
-</nav>
+    <div class="container mt-4">
+        <!-- Loading Spinner -->
+        <div id="loadingDiv" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 text-muted">Memuat data equipment...</p>
+        </div>
 
-<div class="container mt-4">
+        <!-- Main Content -->
+        <div id="contentDiv" style="display: none;">
+            <!-- Header Equipment -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 id="equipTitle" class="mb-0"></h4>
+                    <span id="formBadge" class="badge bg-light"></span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <table class="table table-sm">
+                                <tr><th style="width: 200px; color: #666547;">Equipment ID</th><td id="detailEquipId"></td></tr>
+                                <tr><th style="color: #666547;">Area</th><td id="detailArea"></td></tr>
+                                <tr><th style="color: #666547;">Kategori</th><td id="detailKategori"></td></tr>
+                                <tr><th style="color: #666547;">Kustodian</th><td id="detailKustodian"></td></tr>
+                                <tr><th style="color: #666547;">Lokasi Fisik</th><td id="detailLokasi"></td></tr>
+                                <tr><th style="color: #666547;">Tipe Equipment</th><td id="detailTipe"></td></tr>
+                            </table>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 style="color: #666547;">Progress Kelengkapan PSI</h6>
+                                    <div class="progress">
+                                        <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%; background-color: #6fcb9f;">0%</div>
+                                    </div>
+                                    <p id="progressText" class="mb-0 small" style="color: #666547;">0 dari 0 item</p>
+                                </div>
+                            </div>
+                            <div class="mt-2 d-grid gap-2">
+                                <button class="btn btn-warning btn-sm" onclick="editEquipment()">
+                                    <i class="fas fa-edit"></i> Edit Equipment
+                                </button>
+                                <button class="btn btn-info btn-sm" onclick="window.location.href='dashboard.html'">
+                                    <i class="fas fa-list"></i> Lihat Daftar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-<div id="loadingDiv" class="text-center py-5">
-<div class="spinner-border text-primary"></div>
-<p>Memuat data...</p>
-</div>
+            <!-- PSI Sections -->
+            <div id="psiSections"></div>
+        </div>
+    </div>
 
-<div id="contentDiv" style="display:none;">
+    <!-- Modal Update Status -->
+    <div class="modal fade" id="statusModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fas fa-edit"></i> Update Status PSI</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <strong id="statusItemInfo"></strong>
+                        <div id="itemKategori" class="small mt-1"></div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" style="color: #666547;">Status <span class="text-danger">*</span></label>
+                            <select class="form-select" id="statusSelect" required>
+                                <option value="Ada">✅ Ada (Lengkap)</option>
+                                <option value="Missing">❌ Missing (Tidak Ada)</option>
+                                <option value="Update Needed">⚠️ Update Needed (Perlu Update)</option>
+                                <option value="Not Applicable">➖ N/A (Tidak Berlaku)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" style="color: #666547;">Input Type</label>
+                            <input type="text" class="form-control" id="inputTypeDisplay" readonly style="background-color: #fffeb3;">
+                        </div>
+                    </div>
 
-<div class="card mb-4">
-<div class="card-header">
-<h5 id="equipTitle" class="mb-0"></h5>
-</div>
-<div class="card-body">
-<table class="table table-sm">
-<tr><th>ID</th><td id="detailEquipId"></td></tr>
-<tr><th>Area</th><td id="detailArea"></td></tr>
-<tr><th>Kustodian</th><td id="detailKustodian"></td></tr>
-<tr><th>Tipe</th><td id="detailTipe"></td></tr>
-</table>
-</div>
-</div>
+                    <!-- Dynamic Input Container -->
+                    <div id="valueInputContainer" class="mb-3">
+                        <label class="form-label" id="valueLabel" style="color: #666547;">Nilai/Spesifikasi</label>
+                    </div>
 
-<div id="psiSections"></div>
+                    <div class="mb-3">
+                        <label class="form-label" style="color: #666547;">Catatan / Keterangan</label>
+                        <textarea class="form-control" id="statusCatatan" rows="2" 
+                                  placeholder="Contoh: Revisi 5, 2025, Halaman 3 rusak"></textarea>
+                    </div>
 
-</div>
-</div>
+                    <div class="mb-3">
+                        <label class="form-label" style="color: #666547;">File Referensi</label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="statusFileInput">
+                            <button class="btn btn-outline-secondary" type="button" onclick="clearFileInput()" style="border-color: #ffe28a; color: #666547;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="form-text" style="color: #666547;">Upload file baru atau biarkan kosong</div>
+                        <div id="currentFileDisplay" class="small mt-1"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: #666547; border: none;">Batal</button>
+                    <button type="button" class="btn btn-primary" id="saveStatusBtn" onclick="saveStatus()" style="background-color: #6fcb9f; border: none;">
+                        <i class="fas fa-save"></i> Simpan Perubahan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-const firebaseConfig={
-apiKey:"AIzaSyA1_SggH_uh1ZVbtoLD3u5-w6pqKgrgITk",
-authDomain:"psi-management-system.firebaseapp.com",
-databaseURL:"https://psi-management-system-default-rtdb.asia-southeast1.firebasedatabase.app",
-projectId:"psi-management-system"
+/* ================= FIREBASE CONFIG ================= */
+
+const firebaseConfig = {
+    apiKey: "AIzaSyA1_SggH_uh1ZVbtoLD3u5-w6pqKgrgITk",
+    authDomain: "psi-management-system.firebaseapp.com",
+    databaseURL: "https://psi-management-system-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "psi-management-system",
+    storageBucket: "psi-management-system.firebasestorage.app",
+    messagingSenderId: "1053490628908",
+    appId: "1:1053490628908:web:6b272409217851f8ebc489"
 };
 
 firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth();
-const db=firebase.database();
+const auth = firebase.auth();
+const database = firebase.database();
 
-let psiMaster=null;
-let psiData={};
-let currentEquip=null;
+/* ================= GLOBAL VARIABLES ================= */
 
-const equipId=new URLSearchParams(window.location.search).get("id");
+let currentEquipment = null;
+let currentEquipmentKey = null;
+let psiMaster = null;
+let psiData = {};
+let currentItemKey = null;
+let currentSectionKey = null;
+let currentItemData = null;
 
-auth.onAuthStateChanged(async user=>{
-if(!user){window.location.href='index.html';return;}
-await loadData();
+const urlParams = new URLSearchParams(window.location.search);
+const equipId = urlParams.get('id');
+
+/* ================= AUTH ================= */
+
+auth.onAuthStateChanged((user) => {
+    if (!user) {
+        window.location.href = 'index.html';
+    } else if (equipId) {
+        loadEquipmentData();
+    } else {
+        alert('ID equipment tidak ditemukan');
+        window.location.href = 'dashboard.html';
+    }
 });
 
-async function loadData(){
+/* ================= LOAD EQUIPMENT ================= */
 
-const snap=await db.ref("equipment")
-.orderByChild("equip_id").equalTo(equipId).once("value");
+async function loadEquipmentData() {
 
-snap.forEach(child=>{currentEquip=child.val();});
+    const snapshot = await database
+        .ref('equipment')
+        .orderByChild('equip_id')
+        .equalTo(equipId)
+        .once('value');
 
-psiMaster=(await db.ref(currentEquip.tipe).once("value")).val();
-psiData=(await db.ref("psi_data/"+equipId).once("value")).val()||{};
+    if (!snapshot.exists()) {
+        alert('Equipment tidak ditemukan');
+        window.location.href = 'dashboard.html';
+        return;
+    }
 
-document.getElementById("equipTitle").innerText=
-currentEquip.equip_id+" - "+currentEquip.nama;
+    snapshot.forEach(child => {
+        currentEquipmentKey = child.key;
+        currentEquipment = child.val();
+    });
 
-document.getElementById("detailEquipId").innerText=currentEquip.equip_id;
-document.getElementById("detailArea").innerText=currentEquip.area||"-";
-document.getElementById("detailKustodian").innerText=currentEquip.kustodian||"-";
-document.getElementById("detailTipe").innerText=currentEquip.tipe||"-";
-
-renderSections();
-
-loadingDiv.style.display="none";
-contentDiv.style.display="block";
+    await loadMasterAndPsiData();
 }
 
-function renderSections(){
+/* ================= LOAD MASTER & PSI ================= */
 
-const container=document.getElementById("psiSections");
-container.innerHTML="";
+async function loadMasterAndPsiData() {
 
-Object.keys(psiMaster.sections||{}).forEach(sectionKey=>{
+    const tipe = currentEquipment.tipe || 'pressure_vessel';
 
-let html="";
+    const masterSnapshot = await database.ref(tipe).once('value');
+    psiMaster = masterSnapshot.exists() ? masterSnapshot.val() : null;
 
-Object.keys(psiMaster.sections[sectionKey].items||{}).forEach(itemKey=>{
+    const psiSnapshot = await database
+        .ref('psi_data/' + equipId)
+        .once('value');
 
-const item=psiMaster.sections[sectionKey].items[itemKey];
-const data=psiData[sectionKey]?.[itemKey]||{};
-const meta=data.metadata||{};
+    psiData = psiSnapshot.val() || {};
 
-let cardClass="item-card";
-if(data.status==="Missing") cardClass+=" missing";
-if(data.status==="Update Needed") cardClass+=" update";
+    displayEquipment();
+    displayPsiSections();
 
-html+=`
-<div class="card mb-3 ${cardClass}">
-<div class="card-body">
-
-<h6>${item.nama}</h6>
-
-<div class="row mt-2">
-<div class="col-md-3">
-<label class="small-label">Status</label>
-<select class="form-select form-select-sm"
-onchange="updateField('${sectionKey}','${itemKey}','status',this.value)">
-<option ${data.status==="Ada"?"selected":""}>Ada</option>
-<option ${data.status==="Missing"?"selected":""}>Missing</option>
-<option ${data.status==="Update Needed"?"selected":""}>Update Needed</option>
-<option ${data.status==="Not Applicable"?"selected":""}>Not Applicable</option>
-</select>
-</div>
-
-<div class="col-md-3">
-<label class="small-label">Nilai</label>
-<input class="form-control form-control-sm"
-value="${data.value||""}"
-onblur="updateField('${sectionKey}','${itemKey}','value',this.value)">
-</div>
-
-<div class="col-md-3">
-<label class="small-label">Catatan</label>
-<input class="form-control form-control-sm"
-value="${data.catatan||""}"
-onblur="updateField('${sectionKey}','${itemKey}','catatan',this.value)">
-</div>
-</div>
-
-<div class="doc-meta mt-3">
-<div class="row">
-<div class="col-md-2">
-<label class="small-label">Version</label>
-<input class="form-control form-control-sm"
-value="${meta.version||""}"
-onblur="updateMetadata('${sectionKey}','${itemKey}','version',this.value)">
-</div>
-
-<div class="col-md-2">
-<label class="small-label">Approved</label>
-<input class="form-control form-control-sm"
-value="${meta.approved_by||""}"
-onblur="updateMetadata('${sectionKey}','${itemKey}','approved_by',this.value)">
-</div>
-
-<div class="col-md-2">
-<label class="small-label">Revision</label>
-<input type="date" class="form-control form-control-sm"
-value="${meta.revision_date||""}"
-onblur="updateMetadata('${sectionKey}','${itemKey}','revision_date',this.value)">
-</div>
-
-<div class="col-md-2">
-<label class="small-label">Review Due</label>
-<input type="date" class="form-control form-control-sm"
-value="${meta.review_due||""}"
-onblur="updateMetadata('${sectionKey}','${itemKey}','review_due',this.value)">
-</div>
-
-<div class="col-md-2">
-<label class="small-label">MOC</label>
-<input class="form-control form-control-sm"
-value="${meta.moc_ref||""}"
-onblur="updateMetadata('${sectionKey}','${itemKey}','moc_ref',this.value)">
-</div>
-</div>
-</div>
-
-</div>
-</div>
-`;
-});
-
-container.innerHTML+=`
-<div class="card mb-4">
-<div class="card-header">${psiMaster.sections[sectionKey].judul}</div>
-<div class="card-body">${html}</div>
-</div>
-`;
-});
+    document.getElementById('loadingDiv').style.display = 'none';
+    document.getElementById('contentDiv').style.display = 'block';
 }
 
-function updateField(section,item,field,value){
-db.ref(`psi_data/${equipId}/${section}/${item}`)
-.update({
-[field]:value,
-updated_at:new Date().toISOString(),
-updated_by:auth.currentUser.email
-});
+/* ================= DISPLAY EQUIPMENT ================= */
+
+function displayEquipment() {
+
+    const data = currentEquipment;
+
+    document.getElementById('equipTitle').textContent =
+        `${data.equip_id} - ${data.nama}`;
+
+    document.getElementById('detailEquipId').textContent = data.equip_id;
+    document.getElementById('detailArea').textContent = data.area || '-';
+    document.getElementById('detailKustodian').textContent = data.kustodian || '-';
+    document.getElementById('detailLokasi').textContent = data.lokasi_fisik || '-';
+    document.getElementById('detailTipe').textContent = data.tipe || '-';
 }
 
-function updateMetadata(section,item,field,value){
-db.ref(`psi_data/${equipId}/${section}/${item}/metadata`)
-.update({
-[field]:value,
-updated_at:new Date().toISOString(),
-updated_by:auth.currentUser.email
-});
+/* ================= DISPLAY PSI ================= */
+
+function displayPsiSections() {
+
+    const container = document.getElementById('psiSections');
+    container.innerHTML = '';
+
+    if (!psiMaster || !psiMaster.sections) {
+        container.innerHTML = `<div class="alert alert-warning">Master data belum tersedia</div>`;
+        return;
+    }
+
+    const sectionKeys = Object.keys(psiMaster.sections).sort();
+
+    sectionKeys.forEach(sectionKey => {
+
+        const section = psiMaster.sections[sectionKey];
+        const sectionDiv = document.createElement('div');
+        sectionDiv.className = 'card mb-4';
+
+        let itemsHtml = '';
+
+        Object.keys(section.items || {}).forEach(itemKey => {
+
+            const item = section.items[itemKey];
+            const psiItem = psiData[sectionKey]?.[itemKey] || {};
+            const status = psiItem.status || 'Missing';
+
+            let statusClass = 'status-missing';
+            let statusText = '❌ Missing';
+
+            if (status === 'Ada') {
+                statusClass = 'status-ada';
+                statusText = '✅ Ada';
+            }
+            if (status === 'Update Needed') {
+                statusClass = 'status-update';
+                statusText = '⚠️ Update';
+            }
+            if (status === 'Not Applicable') {
+                statusClass = 'status-na';
+                statusText = '➖ N/A';
+            }
+
+            itemsHtml += `
+                <div class="item-row">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <strong>${item.nama}</strong>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <span class="status-badge ${statusClass}"
+                                onclick="showStatusModal('${sectionKey}','${itemKey}','${item.nama}')">
+                                ${statusText}
+                            </span>
+                        </div>
+                        <div class="col-md-3 text-end">
+                            <button class="btn btn-sm btn-outline-primary"
+                                onclick="showStatusModal('${sectionKey}','${itemKey}','${item.nama}')">
+                                Update
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        sectionDiv.innerHTML = `
+            <div class="card-header bg-primary text-white">
+                ${section.judul}
+            </div>
+            <div class="card-body">
+                ${itemsHtml}
+            </div>
+        `;
+
+        container.appendChild(sectionDiv);
+    });
 }
 
-function logout(){
-auth.signOut().then(()=>window.location.href="index.html");
-}
-</script>
+/* ================= SHOW MODAL ================= */
 
+function showStatusModal(sectionKey, itemKey, itemNama) {
+
+    currentSectionKey = sectionKey;
+    currentItemKey = itemKey;
+    currentItemData = psiMaster.sections[sectionKey].items[itemKey];
+
+    const psiItem = psiData[sectionKey]?.[itemKey] || {};
+
+    document.getElementById('statusItemInfo').textContent = itemNama;
+    document.getElementById('statusSelect').value = psiItem.status || 'Missing';
+    document.getElementById('statusCatatan').value = psiItem.catatan || '';
+
+    generateValueInput(currentItemData.input_type, psiItem.value || '');
+
+    const modal = bootstrap.Modal.getOrCreateInstance(
+        document.getElementById('statusModal')
+    );
+
+    modal.show();
+}
+
+/* ================= GENERATE INPUT ================= */
+
+function generateValueInput(type, value) {
+
+    const container = document.getElementById('valueInputContainer');
+    container.innerHTML = '';
+
+    const input = document.createElement('input');
+    input.className = 'form-control';
+    input.id = 'statusValue';
+    input.value = value;
+
+    input.type = (type === 'number') ? 'number'
+        : (type === 'date') ? 'date'
+        : 'text';
+
+    container.appendChild(input);
+}
+
+/* ================= SAVE STATUS ================= */
+
+function saveStatus() {
+
+    const newStatus = document.getElementById('statusSelect').value;
+    const newValue = document.getElementById('statusValue')?.value || '';
+    const newCatatan = document.getElementById('statusCatatan').value || '';
+
+    const updatePath =
+        `psi_data/${equipId}/${currentSectionKey}/${currentItemKey}`;
+
+    const updateData = {
+        status: newStatus,
+        value: newValue,
+        catatan: newCatatan,
+        updated_at: new Date().toISOString(),
+        updated_by: auth.currentUser.email
+    };
+
+    database.ref(updatePath).update(updateData)
+        .then(() => {
+
+            if (!psiData[currentSectionKey])
+                psiData[currentSectionKey] = {};
+
+            psiData[currentSectionKey][currentItemKey] = updateData;
+
+            displayPsiSections();
+
+            const modal = bootstrap.Modal.getInstance(
+                document.getElementById('statusModal')
+            );
+
+            if (modal) modal.hide();
+        })
+        .catch(err => alert(err.message));
+}
+
+/* ================= LOGOUT ================= */
+
+function logout() {
+    auth.signOut().then(() => {
+        window.location.href = 'index.html';
+    });
+}
+ </script>
 </body>
 </html>
