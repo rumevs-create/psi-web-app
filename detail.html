@@ -232,33 +232,69 @@ const psiItem=psiData[sectionKey]?.[itemKey]||{};
 const metadata=psiItem.metadata||{};
 const status=psiItem.status||'Missing';
 
-let badge='status-missing';
-if(status==='Ada') badge='status-ada';
+let statusClass='status-missing';
+let statusText='❌ Missing';
+
+if(status==='Ada'){
+    statusClass='status-ada';
+    statusText='✅ Ada';
+}
+if(status==='Update Needed'){
+    statusClass='status-update';
+    statusText='⚠️ Update Needed';
+}
+if(status==='Not Applicable'){
+    statusClass='status-na';
+    statusText='➖ N/A';
+}
 
 let overdue='';
 if(metadata.review_due){
-if(new Date(metadata.review_due)<new Date()) overdue='overdue';
+    if(new Date(metadata.review_due)<new Date()){
+        overdue='overdue';
+    }
 }
 
 html+=`
-<div class="card mb-2">
+<div class="card mb-3">
 <div class="card-body">
 
-<div class="d-flex justify-content-between">
+<div class="row align-items-center">
+<div class="col-md-6">
 <strong>${item.nama}</strong>
+</div>
+
+<div class="col-md-3 text-center">
+<span class="status-badge ${statusClass}">
+${statusText}
+</span>
+</div>
+
+<div class="col-md-3 text-end">
 <button class="btn btn-sm btn-outline-primary"
 onclick="openMetadataModal('${sectionKey}','${itemKey}')">
 Metadata
 </button>
 </div>
+</div>
+
+${psiItem.value ? `
+<div class="mt-2 small">
+<strong>Nilai:</strong> ${psiItem.value}
+</div>` : ''}
+
+${psiItem.catatan ? `
+<div class="mt-1 small text-muted">
+<strong>Catatan:</strong> ${psiItem.catatan}
+</div>` : ''}
 
 <div class="doc-metadata ${overdue}">
-<div><strong>Status:</strong> ${status}</div>
 <div><strong>Version:</strong> ${metadata.version||'-'}</div>
-<div><strong>Approved:</strong> ${metadata.approved_by||'-'}</div>
-<div><strong>Revision:</strong> ${metadata.revision_date||'-'}</div>
+<div><strong>Approved By:</strong> ${metadata.approved_by||'-'}</div>
+<div><strong>Revision Date:</strong> ${metadata.revision_date||'-'}</div>
+<div><strong>Custodian:</strong> ${metadata.custodian||'-'}</div>
 <div><strong>Review Due:</strong> ${metadata.review_due||'-'}</div>
-<div><strong>MOC:</strong> ${metadata.moc_ref||'-'}</div>
+<div><strong>MOC Ref:</strong> ${metadata.moc_ref||'-'}</div>
 </div>
 
 </div>
@@ -271,9 +307,12 @@ container.innerHTML+=`
 <div class="card-header bg-primary text-white">
 ${psiMaster.sections[sectionKey].judul}
 </div>
-<div class="card-body">${html}</div>
+<div class="card-body">
+${html}
+</div>
 </div>
 `;
+
 });
 }
 
