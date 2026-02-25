@@ -379,13 +379,21 @@
                             <label class="form-label">Tipe Equipment</label>
                             <select class="form-select" id="tipe">
                                 <option value="">Pilih Tipe</option>
-                                <option value="pressure_vessel">Pressure Vessel</option>
-                                <option value="rotating">Rotating Equipment</option>
-                                <option value="tank">Tank</option>
-                                <option value="piping">Piping</option>
-                                <option value="instrument">Instrument</option>
-                                <option value="electrical">Electrical</option>
-                                <option value="safety">Safety Device</option>
+                                <option value="pressure_vessels">Pressure Vessels (EHSF-402-02)</option>
+                                <option value="heat_exchangers">Heat Exchangers (EHSF-402-03)</option>
+                                <option value="piping_systems">Piping Systems (EHSF-402-04)</option>
+                                <option value="rotating_equipment">Rotating Equipment (EHSF-402-05)</option>
+                                <option value="relief_vent_systems">Relief and Vent Systems (EHSF-402-06)</option>
+                                <option value="storage_tanks">Storage Tanks (EHSF-402-07)</option>
+                                <option value="fired_heaters">Fired Heaters/Boilers (EHSF-402-08)</option>
+                                <option value="electrical_systems">Electrical Systems (EHSF-402-09)</option>
+                                <option value="instrumentation">Instrumentation and Control (EHSF-402-10)</option>
+                                <option value="reactors">Reactors (EHSF-402-11)</option>
+                                <option value="columns_towers">Columns/Towers (EHSF-402-12)</option>
+                                <option value="compressors">Compressors/Blowers (EHSF-402-13)</option>
+                                <option value="cooling_towers">Cooling Towers (EHSF-402-14)</option>
+                                <option value="utility_systems">Utility Systems (EHSF-402-15)</option>
+                                <option value="safety_systems">Safety Systems (EHSF-402-16)</option>
                             </select>
                         </div>
                         
@@ -435,6 +443,17 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
+
+        // 🔥 MAPPING TIPE LAMA KE BARU
+        const tipeMapping = {
+            'pressure_vessel': 'pressure_vessels',
+            'rotating': 'rotating_equipment',
+            'tank': 'storage_tanks',
+            'instrument': 'instrumentation',
+            'safety': 'safety_systems',
+            'piping': 'piping_systems',
+            'electrical': 'electrical_systems'
+        };
 
         // Ambil equipment key dari URL (bukan equip_id)
         const urlParams = new URLSearchParams(window.location.search);
@@ -501,7 +520,14 @@
                     kustodianSelect.value = data.kustodian || '';
                 }
                 
-                document.getElementById('tipe').value = data.tipe || '';
+                // 🔥 HANDLE TIPE EQUIPMENT DENGAN MAPPING
+                let tipeValue = data.tipe || '';
+                if (tipeMapping[tipeValue]) {
+                    tipeValue = tipeMapping[tipeValue]; // Konversi value lama ke baru
+                    console.log('Mapped tipe:', data.tipe, '->', tipeValue);
+                }
+                document.getElementById('tipe').value = tipeValue;
+                
                 document.getElementById('lokasi_fisik').value = data.lokasi_fisik || '';
                 
                 // Sembunyikan loading, tampilkan form
