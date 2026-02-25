@@ -259,12 +259,12 @@
     </div>
 
     <!-- Modal Update Status -->
-    <div class="modal fade" id="statusModal" tabindex="-1">
+    <div class="modal fade" id="statusModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title"><i class="fas fa-edit"></i> Update Status PSI</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-info">
@@ -304,7 +304,7 @@
                         <label class="form-label" style="color: #666547;">File Referensi</label>
                         <div class="input-group">
                             <input type="file" class="form-control" id="statusFileInput">
-                            <button class="btn btn-outline-secondary" type="button" onclick="document.getElementById('statusFileInput').value=''" style="border-color: #ffe28a; color: #666547;">
+                            <button class="btn btn-outline-secondary" type="button" onclick="clearFileInput()" style="border-color: #ffe28a; color: #666547;">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
@@ -314,7 +314,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: #666547; border: none;">Batal</button>
-                    <button type="button" class="btn btn-primary" onclick="saveStatus()" style="background-color: #6fcb9f; border: none;">
+                    <button type="button" class="btn btn-primary" id="saveStatusBtn" onclick="saveStatus()" style="background-color: #6fcb9f; border: none;">
                         <i class="fas fa-save"></i> Simpan Perubahan
                     </button>
                 </div>
@@ -352,6 +352,7 @@
     let currentItemKey = null;
     let currentSectionKey = null;
     let currentItemData = null;
+    let statusModalInstance = null;
 
     // Ambil equip_id dari URL (misal: ?id=V-1101)
     const urlParams = new URLSearchParams(window.location.search);
@@ -477,7 +478,7 @@
         let wajibItems = 0;
         let wajibAdaItems = 0;
 
-        // 🔥 PERBAIKAN: Loop melalui SEMUA sections yang ada di Firebase
+        // Loop melalui SEMUA sections yang ada di Firebase
         const sectionKeys = Object.keys(psiMaster.sections).sort();
         console.log('Processing sections:', sectionKeys);
 
@@ -579,8 +580,10 @@
                                     ${updatedAt ? `<div class="small text-muted mt-1"><i class="fas fa-clock"></i> ${updatedAt}</div>` : ''}
                                 </div>
                                 <div class="col-md-2 text-end">
-                                    <button class="btn btn-sm btn-outline-primary" 
-                                            onclick="showStatusModal('${sectionKey}', '${itemKey}', '${escapeHtml(item.nama || itemKey)}')"
+                                    <button class="btn btn-sm btn-outline-primary update-btn" 
+                                            data-section="${sectionKey}"
+                                            data-item="${itemKey}"
+                                            data-nama="${escapeHtml(item.nama || itemKey)}"
                                             title="Update status">
                                         <i class="fas fa-edit"></i> Update
                                     </button>
@@ -617,6 +620,9 @@
             
             container.appendChild(sectionDiv);
         });
+
+        // Attach event listeners ke semua tombol update setelah render
+        attachUpdateButtonListeners();
 
         // Update progress bar utama
         const percentage = totalItems > 0 ? Math.round((adaItems / totalItems) * 100) : 0;
@@ -655,8 +661,24 @@
         }
     }
 
+    // Attach event listeners ke tombol update
+    function attachUpdateButtonListeners() {
+        document.querySelectorAll('.update-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const sectionKey = this.getAttribute('data-section');
+                const itemKey = this.getAttribute('data-item');
+                const itemNama = this.getAttribute('data-nama');
+                showStatusModal(sectionKey, itemKey, itemNama);
+            });
+        });
+    }
+
     // ========== FUNGSI SHOW STATUS MODAL ==========
     function showStatusModal(sectionKey, itemKey, itemNama) {
+        console.log('Opening modal for:', sectionKey, itemKey, itemNama);
+        
         currentSectionKey = sectionKey;
         currentItemKey = itemKey;
         
@@ -674,6 +696,7 @@
         
         const psiItem = psiData[sectionKey]?.[itemKey] || {};
         
+        // Isi data ke modal
         document.getElementById('statusItemInfo').textContent = `${itemNama} (${sectionKey})`;
         document.getElementById('itemKategori').innerHTML = `
             Kategori: <span class="badge bg-secondary">${currentItemData.kategori || '-'}</span>
@@ -694,8 +717,22 @@
             fileDisplay.innerHTML = '<span class="text-muted">Belum ada file</span>';
         }
         
-        const modal = new bootstrap.Modal(document.getElementById('statusModal'));
-        modal.show();
+        // Bersihkan file input
+        document.getElementById('statusFileInput').value = '';
+        
+        // Dispose modal instance lama jika ada
+        if (statusModalInstance) {
+            statusModalInstance.dispose();
+        }
+        
+        // Buat modal instance baru
+        const modalElement = document.getElementById('statusModal');
+        statusModalInstance = new bootstrap.Modal(modalElement, {
+            backdrop: 'static',
+            keyboard: false
+        });
+        
+        statusModalInstance.show();
     }
 
     // ========== FUNGSI GENERATE DYNAMIC INPUT ==========
@@ -743,8 +780,15 @@
         }
     }
 
+    // ========== FUNGSI CLEAR FILE INPUT ==========
+    function clearFileInput() {
+        document.getElementById('statusFileInput').value = '';
+    }
+
     // ========== FUNGSI SAVE STATUS ==========
     function saveStatus() {
+        console.log('Save status clicked');
+        
         const newStatus = document.getElementById('statusSelect').value;
         const newValue = document.getElementById('statusValue')?.value.trim() || '';
         const newCatatan = document.getElementById('statusCatatan').value.trim();
@@ -769,20 +813,37 @@
         console.log('Saving to path:', updatePath);
         console.log('Data:', updateData);
         
+        // Disable tombol saat saving untuk mencegah double click
+        const saveBtn = document.getElementById('saveStatusBtn');
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+        
         database.ref(updatePath).update(updateData)
             .then(() => {
+                console.log('Save successful');
+                
+                // Update local data
                 if (!psiData[currentSectionKey]) psiData[currentSectionKey] = {};
                 psiData[currentSectionKey][currentItemKey] = updateData;
                 
+                // Re-render sections
                 displayPsiSections();
                 
-                bootstrap.Modal.getInstance(document.getElementById('statusModal')).hide();
+                // Hide modal
+                if (statusModalInstance) {
+                    statusModalInstance.hide();
+                }
                 
                 showAlert('Status berhasil diupdate!', 'success');
             })
             .catch(error => {
                 console.error('Error saving:', error);
                 showAlert('Gagal menyimpan: ' + error.message, 'danger');
+            })
+            .finally(() => {
+                // Re-enable tombol setelah selesai (sukses atau gagal)
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Simpan Perubahan';
             });
     }
 
@@ -861,6 +922,20 @@
         };
         return labels[tipe] || tipe || '-';
     }
+
+    // Event listener untuk modal hidden - bersihkan backdrop
+    document.getElementById('statusModal').addEventListener('hidden.bs.modal', function () {
+        console.log('Modal hidden, cleaning up...');
+        // Bersihkan backdrop jika masih ada
+        const backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) {
+            backdrop.remove();
+        }
+        // Remove class dari body
+        document.body.classList.remove('modal-open');
+        document.body.style.removeProperty('padding-right');
+        document.body.style.removeProperty('overflow');
+    });
     </script>
 </body>
 </html>
