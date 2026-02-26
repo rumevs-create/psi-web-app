@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Equipment - PSI System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
             --color-olive: #666547;
@@ -16,236 +19,301 @@
         }
 
         body {
-            background: #fffeb3;
+            background-color: var(--color-cream);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--color-olive);
         }
 
+        /* Navbar Styling */
         .navbar {
-            background-color: #666547 !important;
-            box-shadow: 0 2px 10px rgba(102, 101, 71, 0.3);
+            background-color: var(--color-olive) !important;
+            box-shadow: 0 4px 12px rgba(102, 101, 71, 0.3);
+            padding: 1rem 0;
         }
 
-        .status-badge {
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-            font-weight: bold;
-            display: inline-block;
-            cursor: pointer;
-        }
-        .status-ada { background: #6fcb9f; color: #fff; }
-        .status-missing { background: #fb2e01; color: #fff; }
-        .status-update { background: #ffe28a; color: #666547; }
-        .status-na { background: #666547; color: #fffeb3; }
-        
-        .progress {
-            height: 25px;
-            margin-bottom: 20px;
-            background-color: #fffeb3;
-        }
-        
-        .item-row {
-            border-bottom: 1px solid #ffe28a;
-            padding: 12px 0;
-            transition: background-color 0.2s;
-        }
-        
-        .item-row:hover {
-            background-color: #fffeb3;
-        }
-        
-        .kategori-badge {
-            font-size: 10px;
-            padding: 2px 5px;
-            border-radius: 3px;
-            background: #ffe28a;
-            color: #666547;
-            margin-left: 5px;
-        }
-        
-        .file-link {
-            color: #666547;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        
-        .file-link:hover {
-            color: #fb2e01;
-            text-decoration: underline;
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
+        /* Card Styling */
         .card {
             border: none;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(102, 101, 71, 0.1);
+            background: white;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            background-color: var(--color-olive);
+            color: white;
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+            border-bottom: 4px solid var(--color-yellow);
+        }
+
+        /* Table Styling */
+        .table th {
+            color: var(--color-olive);
+            font-weight: 600;
+            width: 30%;
+            border-bottom: 2px solid var(--color-yellow);
+        }
+        
+        .table td {
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        /* Progress Bar */
+        .progress {
+            height: 30px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(102, 101, 71, 0.15);
+            background-color: #e9ecef;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        .card-header.bg-primary {
-            background-color: #666547 !important;
+        .progress-bar {
+            background-color: var(--color-mint);
+            font-weight: bold;
+            line-height: 30px;
+            transition: width 1s ease-in-out;
         }
 
-        .btn-warning {
-            background-color: #ffe28a;
+        /* Status Badges */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .status-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .status-ada { 
+            background-color: var(--color-mint); 
+            color: white; 
+        }
+        .status-missing { 
+            background-color: var(--color-red); 
+            color: white; 
+        }
+        .status-update { 
+            background-color: var(--color-yellow); 
+            color: var(--color-olive); 
+        }
+        .status-na { 
+            background-color: #adb5bd; 
+            color: white; 
+        }
+
+        /* Item Rows in PSI Sections */
+        .item-row {
+            padding: 1.25rem;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .item-row:last-child {
+            border-bottom: none;
+        }
+
+        .item-row:hover {
+            background-color: #fffdf0;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: var(--color-olive);
+            flex: 2;
+        }
+
+        .item-status-area {
+            flex: 1;
+            text-align: center;
+        }
+
+        .item-action-area {
+            flex: 1;
+            text-align: right;
+        }
+
+        /* Buttons */
+        .btn-custom-warning {
+            background-color: var(--color-yellow);
+            color: var(--color-olive);
             border: none;
-            color: #666547;
+            font-weight: 600;
+        }
+        .btn-custom-warning:hover {
+            background-color: #f5d675;
+            color: var(--color-olive);
         }
 
-        .btn-warning:hover {
-            background-color: #fb2e01;
-            color: #fff;
-        }
-
-        .btn-info {
-            background-color: #6fcb9f;
+        .btn-custom-info {
+            background-color: var(--color-mint);
+            color: white;
             border: none;
-            color: #fff;
+            font-weight: 600;
+        }
+        .btn-custom-info:hover {
+            background-color: #5cb88a;
+            color: white;
         }
 
-        .btn-info:hover {
-            background-color: #5db88d;
-            color: #fff;
+        .btn-outline-custom {
+            color: var(--color-olive);
+            border: 2px solid var(--color-olive);
+            font-weight: 500;
+        }
+        .btn-outline-custom:hover {
+            background-color: var(--color-olive);
+            color: var(--color-cream);
         }
 
-        .btn-outline-primary {
-            color: #666547;
-            border-color: #666547;
+        /* Modal Styling */
+        .modal-header {
+            background-color: var(--color-olive);
+            color: white;
+            border-bottom: 4px solid var(--color-yellow);
         }
-
-        .btn-outline-primary:hover {
-            background-color: #666547;
-            border-color: #666547;
-            color: #fffeb3;
-        }
-
-        .modal-header.bg-primary {
-            background-color: #666547 !important;
+        
+        .modal-content {
+            border-radius: 16px;
+            border: none;
         }
 
         .form-control:focus, .form-select:focus {
-            border-color: #6fcb9f;
-            box-shadow: 0 0 0 0.2rem rgba(111, 203, 159, 0.25);
+            border-color: var(--color-mint);
+            box-shadow: 0 0 0 0.25rem rgba(111, 203, 159, 0.25);
         }
 
-        .alert-info {
-            background-color: #ffe28a;
-            color: #666547;
+        .alert-custom {
+            background-color: var(--color-yellow);
+            color: var(--color-olive);
             border: none;
+            font-weight: 500;
         }
 
-        .text-primary {
-            color: #666547 !important;
+        /* Loading Animation */
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 60vh;
         }
-
-        .text-muted {
-            color: #666547 !important;
-            opacity: 0.7;
-        }
-
-        .bg-light {
-            background-color: #fffeb3 !important;
-        }
-
-        .table-danger {
-            background-color: rgba(251, 46, 1, 0.1) !important;
-        }
-
-        .font-monospace {
-            color: #666547;
-        }
-
-        .spinner-border.text-primary {
-            color: #666547 !important;
-        }
-
-        .badge.bg-secondary {
-            background-color: #ffe28a !important;
-            color: #666547;
-        }
-
-        .badge.bg-danger {
-            background-color: #fb2e01 !important;
-        }
-
-        .badge.bg-info {
-            background-color: #6fcb9f !important;
-        }
-
-        .badge.bg-success {
-            background-color: #6fcb9f !important;
-        }
-
-        .badge.bg-light {
-            background-color: #fffeb3 !important;
-            color: #666547;
-        }
-
-        .btn-close-white {
-            filter: none;
-            opacity: 1;
+        
+        .spinner-custom {
+            width: 3rem;
+            height: 3rem;
+            color: var(--color-olive);
         }
     </style>
 </head>
 <body>
+
+    <!-- Navigation -->
     <nav class="navbar navbar-dark">
-        <div class="container-fluid">
-            <span class="navbar-brand">
-                <i class="fas fa-shield-alt"></i> PSI Management - Detail Equipment
+        <div class="container">
+            <span class="navbar-brand mb-0 h1">
+                <i class="fas fa-shield-alt me-2"></i> PSI Management System
             </span>
             <div>
-                <button class="btn btn-light me-2" onclick="window.location.href='dashboard.html'">
-                    <i class="fas fa-arrow-left"></i> Kembali
+                <button class="btn btn-light btn-sm me-2" onclick="window.history.back()">
+                    <i class="fas fa-arrow-left me-1"></i> Kembali
                 </button>
-                <button class="btn btn-light" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+                <button class="btn btn-outline-light btn-sm" onclick="alert('Logout functionality would trigger here')">
+                    <i class="fas fa-sign-out-alt me-1"></i> Logout
                 </button>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <!-- Loading Spinner -->
-        <div id="loadingDiv" class="text-center py-5">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-            <p class="mt-2 text-muted">Memuat data equipment...</p>
+    <div class="container mt-4 mb-5">
+        
+        <!-- Loading State -->
+        <div id="loadingDiv" class="loader-container">
+            <div class="spinner-border spinner-custom" role="status"></div>
+            <p class="mt-3 text-muted fw-bold">Memuat data equipment...</p>
         </div>
 
         <!-- Main Content -->
         <div id="contentDiv" style="display: none;">
-            <!-- Header Equipment -->
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h4 id="equipTitle" class="mb-0"></h4>
-                    <span id="formBadge" class="badge bg-light"></span>
+            
+            <!-- Header Equipment Card -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0" id="equipTitle">Equipment Name</h4>
+                    <span class="badge bg-light text-dark fs-6">Form A-101</span>
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-8">
-                            <table class="table table-sm">
-                                <tr><th style="width: 200px; color: #666547;">Equipment ID</th><td id="detailEquipId"></td></tr>
-                                <tr><th style="color: #666547;">Area</th><td id="detailArea"></td></tr>
-                                <tr><th style="color: #666547;">Kategori</th><td id="detailKategori"></td></tr>
-                                <tr><th style="color: #666547;">Kustodian</th><td id="detailKustodian"></td></tr>
-                                <tr><th style="color: #666547;">Lokasi Fisik</th><td id="detailLokasi"></td></tr>
-                                <tr><th style="color: #666547;">Tipe Equipment</th><td id="detailTipe"></td></tr>
+                        <!-- Left: Details Table -->
+                        <div class="col-lg-8 col-md-7">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <th>Equipment ID</th>
+                                        <td id="detailEquipId">-</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Area / Plant</th>
+                                        <td id="detailArea">-</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Kategori</th>
+                                        <td><span class="badge bg-secondary" id="detailKategori">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Kustodian</th>
+                                        <td id="detailKustodian">-</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Lokasi Fisik</th>
+                                        <td id="detailLokasi">-</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Tipe Equipment</th>
+                                        <td id="detailTipe">-</td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    <h6 style="color: #666547;">Progress Kelengkapan PSI</h6>
-                                    <div class="progress">
-                                        <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%; background-color: #6fcb9f;">0%</div>
-                                    </div>
-                                    <p id="progressText" class="mb-0 small" style="color: #666547;">0 dari 0 item</p>
+
+                        <!-- Right: Progress & Actions -->
+                        <div class="col-lg-4 col-md-5">
+                            <div class="p-3 rounded" style="background-color: #f8f9fa; border: 2px solid var(--color-yellow);">
+                                <h6 class="fw-bold mb-3" style="color: var(--color-olive);">
+                                    <i class="fas fa-chart-pie me-2"></i>Progress Kelengkapan
+                                </h6>
+                                <div class="progress mb-2">
+                                    <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%">0%</div>
                                 </div>
+                                <p id="progressText" class="text-center small text-muted mb-0">0 dari 0 item lengkap</p>
                             </div>
-                            <div class="mt-2 d-grid gap-2">
-                                <button class="btn btn-warning btn-sm" onclick="editEquipment()">
-                                    <i class="fas fa-edit"></i> Edit Equipment
+
+                            <div class="d-grid gap-2 mt-3">
+                                <button class="btn btn-custom-warning" onclick="editEquipment()">
+                                    <i class="fas fa-edit me-2"></i>Edit Equipment
                                 </button>
-                                <button class="btn btn-info btn-sm" onclick="window.location.href='dashboard.html'">
-                                    <i class="fas fa-list"></i> Lihat Daftar
+                                <button class="btn btn-custom-info" onclick="window.print()">
+                                    <i class="fas fa-print me-2"></i>Cetak Laporan
                                 </button>
                             </div>
                         </div>
@@ -253,353 +321,338 @@
                 </div>
             </div>
 
-            <!-- PSI Sections -->
-            <div id="psiSections"></div>
+            <!-- PSI Sections Container -->
+            <div id="psiSections">
+                <!-- Sections will be injected here via JS -->
+            </div>
+
         </div>
     </div>
 
     <!-- Modal Update Status -->
     <div class="modal fade" id="statusModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title"><i class="fas fa-edit"></i> Update Status PSI</h5>
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Update Status PSI</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="alert alert-info">
-                        <strong id="statusItemInfo"></strong>
-                        <div id="itemKategori" class="small mt-1"></div>
+                    <div class="alert alert-custom mb-3">
+                        <div class="fw-bold" id="statusItemInfo">Item Name</div>
+                        <div class="small mt-1" id="itemKategori">Kategori: Dokumen</div>
                     </div>
                     
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label" style="color: #666547;">Status <span class="text-danger">*</span></label>
-                            <select class="form-select" id="statusSelect" required>
-                                <option value="Ada">✅ Ada (Lengkap)</option>
-                                <option value="Missing">❌ Missing (Tidak Ada)</option>
-                                <option value="Update Needed">⚠️ Update Needed (Perlu Update)</option>
-                                <option value="Not Applicable">➖ N/A (Tidak Berlaku)</option>
-                            </select>
+                    <form id="updateForm">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-secondary">Status Saat Ini</label>
+                                <select class="form-select" id="statusSelect">
+                                    <option value="Ada">✅ Ada (Lengkap)</option>
+                                    <option value="Missing">❌ Missing (Tidak Ada)</option>
+                                    <option value="Update Needed">⚠️ Update Needed</option>
+                                    <option value="Not Applicable">➖ N/A (Tidak Berlaku)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-secondary">Input Type</label>
+                                <input type="text" class="form-control bg-light" id="inputTypeDisplay" readonly>
+                            </div>
                         </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label" style="color: #666547;">Input Type</label>
-                            <input type="text" class="form-control" id="inputTypeDisplay" readonly style="background-color: #fffeb3;">
+
+                        <div class="mb-3" id="valueInputGroup">
+                            <label class="form-label fw-bold text-secondary" id="valueLabel">Nilai / Spesifikasi</label>
+                            <input type="text" class="form-control" id="statusValue" placeholder="Masukkan nilai...">
                         </div>
-                    </div>
 
-                    <!-- Dynamic Input Container -->
-                    <div id="valueInputContainer" class="mb-3">
-                        <label class="form-label" id="valueLabel" style="color: #666547;">Nilai/Spesifikasi</label>
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary">Catatan / Keterangan</label>
+                            <textarea class="form-control" id="statusCatatan" rows="2" placeholder="Contoh: Revisi 5, 2025, Halaman 3 rusak"></textarea>
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label" style="color: #666547;">Catatan / Keterangan</label>
-                        <textarea class="form-control" id="statusCatatan" rows="2" 
-                                  placeholder="Contoh: Revisi 5, 2025, Halaman 3 rusak"></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label" style="color: #666547;">File Referensi</label>
-                        <div class="input-group">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary">File Referensi</label>
                             <input type="file" class="form-control" id="statusFileInput">
-                            <button class="btn btn-outline-secondary" type="button" onclick="clearFileInput()" style="border-color: #ffe28a; color: #666547;">
-                                <i class="fas fa-times"></i>
-                            </button>
+                            <div class="form-text text-muted">Upload file baru atau biarkan kosong</div>
                         </div>
-                        <div class="form-text" style="color: #666547;">Upload file baru atau biarkan kosong</div>
-                        <div id="currentFileDisplay" class="small mt-1"></div>
-                    </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: #666547; border: none;">Batal</button>
-                    <button type="button" class="btn btn-primary" id="saveStatusBtn" onclick="saveStatus()" style="background-color: #6fcb9f; border: none;">
-                        <i class="fas fa-save"></i> Simpan Perubahan
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-custom-info" onclick="saveStatus()">
+                        <i class="fas fa-save me-2"></i>Simpan Perubahan
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
-/* ================= FIREBASE CONFIG ================= */
+    <script>
+        // --- MOCK DATA & STATE MANAGEMENT ---
+        
+        // Simulating the Equipment Data (Firebase Object)
+        const currentEquipment = {
+            equip_id: "PV-2023-001",
+            nama: "Pressure Vessel Reaktor A",
+            area: "Plant 1 - Utility",
+            kategori: "Pressure Vessel",
+            kustodian: "Bapak John Doe",
+            lokasi_fisik: "Lantai 2, Ruang Boiler",
+            tipe: "pressure_vessel"
+        };
 
-const firebaseConfig = {
-    apiKey: "AIzaSyA1_SggH_uh1ZVbtoLD3u5-w6pqKgrgITk",
-    authDomain: "psi-management-system.firebaseapp.com",
-    databaseURL: "https://psi-management-system-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "psi-management-system",
-    storageBucket: "psi-management-system.firebasestorage.app",
-    messagingSenderId: "1053490628908",
-    appId: "1:1053490628908:web:6b272409217851f8ebc489"
-};
-
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const database = firebase.database();
-
-/* ================= GLOBAL VARIABLES ================= */
-
-let currentEquipment = null;
-let currentEquipmentKey = null;
-let psiMaster = null;
-let psiData = {};
-let currentItemKey = null;
-let currentSectionKey = null;
-let currentItemData = null;
-
-const urlParams = new URLSearchParams(window.location.search);
-const equipId = urlParams.get('id');
-
-/* ================= AUTH ================= */
-
-auth.onAuthStateChanged((user) => {
-    if (!user) {
-        window.location.href = 'index.html';
-    } else if (equipId) {
-        loadEquipmentData();
-    } else {
-        alert('ID equipment tidak ditemukan');
-        window.location.href = 'dashboard.html';
-    }
-});
-
-/* ================= LOAD EQUIPMENT ================= */
-
-async function loadEquipmentData() {
-
-    const snapshot = await database
-        .ref('equipment')
-        .orderByChild('equip_id')
-        .equalTo(equipId)
-        .once('value');
-
-    if (!snapshot.exists()) {
-        alert('Equipment tidak ditemukan');
-        window.location.href = 'dashboard.html';
-        return;
-    }
-
-    snapshot.forEach(child => {
-        currentEquipmentKey = child.key;
-        currentEquipment = child.val();
-    });
-
-    await loadMasterAndPsiData();
-}
-
-/* ================= LOAD MASTER & PSI ================= */
-
-async function loadMasterAndPsiData() {
-
-    const tipe = currentEquipment.tipe || 'pressure_vessel';
-
-    const masterSnapshot = await database.ref(tipe).once('value');
-    psiMaster = masterSnapshot.exists() ? masterSnapshot.val() : null;
-
-    const psiSnapshot = await database
-        .ref('psi_data/' + equipId)
-        .once('value');
-
-    psiData = psiSnapshot.val() || {};
-
-    displayEquipment();
-    displayPsiSections();
-
-    document.getElementById('loadingDiv').style.display = 'none';
-    document.getElementById('contentDiv').style.display = 'block';
-}
-
-/* ================= DISPLAY EQUIPMENT ================= */
-
-function displayEquipment() {
-
-    const data = currentEquipment;
-
-    document.getElementById('equipTitle').textContent =
-        `${data.equip_id} - ${data.nama}`;
-
-    document.getElementById('detailEquipId').textContent = data.equip_id;
-    document.getElementById('detailArea').textContent = data.area || '-';
-    document.getElementById('detailKustodian').textContent = data.kustodian || '-';
-    document.getElementById('detailLokasi').textContent = data.lokasi_fisik || '-';
-    document.getElementById('detailTipe').textContent = data.tipe || '-';
-}
-
-/* ================= DISPLAY PSI ================= */
-
-function displayPsiSections() {
-
-    const container = document.getElementById('psiSections');
-    container.innerHTML = '';
-
-    if (!psiMaster || !psiMaster.sections) {
-        container.innerHTML = `<div class="alert alert-warning">Master data belum tersedia</div>`;
-        return;
-    }
-
-    const sectionKeys = Object.keys(psiMaster.sections).sort();
-
-    sectionKeys.forEach(sectionKey => {
-
-        const section = psiMaster.sections[sectionKey];
-        const sectionDiv = document.createElement('div');
-        sectionDiv.className = 'card mb-4';
-
-        let itemsHtml = '';
-
-        Object.keys(section.items || {}).forEach(itemKey => {
-
-            const item = section.items[itemKey];
-            const psiItem = psiData[sectionKey]?.[itemKey] || {};
-            const status = psiItem.status || 'Missing';
-
-            let statusClass = 'status-missing';
-            let statusText = '❌ Missing';
-
-            if (status === 'Ada') {
-                statusClass = 'status-ada';
-                statusText = '✅ Ada';
+        // Simulating the Master Checklist Structure (Firebase Object)
+        const psiMaster = {
+            sections: {
+                "section_1": {
+                    judul: "1. Dokumen Desain & Fabrikasi",
+                    items: {
+                        "item_1_1": { nama: "Drawing Assembly", input_type: "text", kategori: "Dokumen" },
+                        "item_1_2": { nama: "Material Certificate", input_type: "file", kategori: "Sertifikat" },
+                        "item_1_3": { nama: "NDT Report (RT/UT)", input_type: "text", kategori: "Laporan" },
+                        "item_1_4": { nama: "Heat Treatment Chart", input_type: "text", kategori: "Grafik" }
+                    }
+                },
+                "section_2": {
+                    judul: "2. Data Operasional",
+                    items: {
+                        "item_2_1": { nama: "Operating Pressure (Design)", input_type: "number", kategori: "Data" },
+                        "item_2_2": { nama: "Operating Temperature", input_type: "number", kategori: "Data" },
+                        "item_2_3": { nama: "Fluid Contents", input_type: "text", kategori: "Data" },
+                        "item_2_4": { nama: "Corrosion Allowance", input_type: "number", kategori: "Data" }
+                    }
+                },
+                "section_3": {
+                    judul: "3. Inspeksi & Maintenance",
+                    items: {
+                        "item_3_1": { nama: "Last Inspection Date", input_type: "date", kategori: "Jadwal" },
+                        "item_3_2": { nama: "Next Inspection Date", input_type: "date", kategori: "Jadwal" },
+                        "item_3_3": { nama: "Thickness Monitoring Record", input_type: "file", kategori: "Laporan" },
+                        "item_3_4": { nama: "Repair History", input_type: "text", kategori: "Log" }
+                    }
+                }
             }
-            if (status === 'Update Needed') {
-                statusClass = 'status-update';
-                statusText = '⚠️ Update';
-            }
-            if (status === 'Not Applicable') {
-                statusClass = 'status-na';
-                statusText = '➖ N/A';
-            }
+        };
 
-            itemsHtml += `
-                <div class="item-row">
-                    <div class="row align-items-center">
-                        <div class="col-md-6">
-                            <strong>${item.nama}</strong>
-                        </div>
-                        <div class="col-md-3 text-center">
-                            <span class="status-badge ${statusClass}"
-                                onclick="showStatusModal('${sectionKey}','${itemKey}','${item.nama}')">
-                                ${statusText}
-                            </span>
-                        </div>
-                        <div class="col-md-3 text-end">
-                            <button class="btn btn-sm btn-outline-primary"
-                                onclick="showStatusModal('${sectionKey}','${itemKey}','${item.nama}')">
-                                Update
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
+        // Simulating the User Input Data (Firebase Object)
+        // Initially mostly empty or missing to demonstrate the UI
+        let psiData = {
+            "section_1": {
+                "item_1_1": { status: "Ada", value: "REV-05", catatan: "Softcopy tersedia" },
+                "item_1_2": { status: "Missing", value: "", catatan: "" },
+                "item_1_3": { status: "Ada", value: "Report No. 992", catatan: "" },
+                "item_1_4": { status: "Not Applicable", value: "", catatan: "Material tidak memerlukan HT" }
+            },
+            "section_2": {
+                "item_2_1": { status: "Ada", value: "10 Bar", catatan: "" },
+                "item_2_2": { status: "Ada", value: "150 C", catatan: "" },
+                "item_2_3": { status: "Update Needed", value: "Steam", catatan: "Perlu verifikasi ulang jenis fluida" },
+                "item_2_4": { status: "Missing", value: "", catatan: "" }
+            },
+            "section_3": {
+                // All missing initially
+            }
+        };
+
+        // Global Variables for Modal Context
+        let currentSectionKey = null;
+        let currentItemKey = null;
+        let statusModalInstance = null;
+
+        // --- CORE FUNCTIONS ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simulate network delay
+            setTimeout(() => {
+                document.getElementById('loadingDiv').style.display = 'none';
+                document.getElementById('contentDiv').style.display = 'block';
+                
+                initDashboard();
+            }, 800);
         });
 
-        sectionDiv.innerHTML = `
-            <div class="card-header bg-primary text-white">
-                ${section.judul}
-            </div>
-            <div class="card-body">
-                ${itemsHtml}
-            </div>
-        `;
+        function initDashboard() {
+            displayEquipmentInfo();
+            renderPSISections();
+            updateProgressBar();
+            
+            // Initialize Modal
+            statusModalInstance = new bootstrap.Modal(document.getElementById('statusModal'));
+        }
 
-        container.appendChild(sectionDiv);
-    });
-}
+        function displayEquipmentInfo() {
+            document.getElementById('equipTitle').textContent = `${currentEquipment.equip_id} - ${currentEquipment.nama}`;
+            document.getElementById('detailEquipId').textContent = currentEquipment.equip_id;
+            document.getElementById('detailArea').textContent = currentEquipment.area;
+            document.getElementById('detailKategori').textContent = currentEquipment.kategori;
+            document.getElementById('detailKustodian').textContent = currentEquipment.kustodian;
+            document.getElementById('detailLokasi').textContent = currentEquipment.lokasi_fisik;
+            document.getElementById('detailTipe').textContent = currentEquipment.tipe;
+        }
 
-/* ================= SHOW MODAL ================= */
+        function renderPSISections() {
+            const container = document.getElementById('psiSections');
+            container.innerHTML = '';
 
-function showStatusModal(sectionKey, itemKey, itemNama) {
+            const sections = psiMaster.sections;
+            
+            for (const [sectionKey, sectionData] of Object.entries(sections)) {
+                const sectionCard = document.createElement('div');
+                sectionCard.className = 'card';
+                
+                let itemsHtml = '';
+                
+                for (const [itemKey, itemData] of Object.entries(sectionData.items)) {
+                    // Get current status from data
+                    const itemState = psiData[sectionKey]?.[itemKey] || { status: 'Missing', value: '', catatan: '' };
+                    const statusConfig = getStatusConfig(itemState.status);
+                    
+                    itemsHtml += `
+                        <div class="item-row">
+                            <div class="item-name">
+                                ${itemData.nama}
+                                <div class="small text-muted mt-1">
+                                    <span class="badge bg-light text-secondary border">${itemData.kategori}</span>
+                                    ${itemState.value ? `<span class="ms-2 font-monospace text-dark">Data: ${itemState.value}</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="item-status-area">
+                                <span class="status-badge ${statusConfig.class}" onclick="openStatusModal('${sectionKey}', '${itemKey}')">
+                                    ${statusConfig.icon} ${statusConfig.label}
+                                </span>
+                            </div>
+                            <div class="item-action-area">
+                                <button class="btn btn-sm btn-outline-custom" onclick="openStatusModal('${sectionKey}', '${itemKey}')">
+                                    <i class="fas fa-pen"></i> Update
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
 
-    currentSectionKey = sectionKey;
-    currentItemKey = itemKey;
-    currentItemData = psiMaster.sections[sectionKey].items[itemKey];
+                sectionCard.innerHTML = `
+                    <div class="card-header">
+                        <i class="fas fa-folder-open me-2"></i>${sectionData.judul}
+                    </div>
+                    <div class="card-body p-0">
+                        ${itemsHtml}
+                    </div>
+                `;
+                
+                container.appendChild(sectionCard);
+            }
+        }
 
-    const psiItem = psiData[sectionKey]?.[itemKey] || {};
+        function getStatusConfig(status) {
+            switch(status) {
+                case 'Ada': return { class: 'status-ada', label: 'Ada', icon: '<i class="fas fa-check"></i>' };
+                case 'Missing': return { class: 'status-missing', label: 'Missing', icon: '<i class="fas fa-times"></i>' };
+                case 'Update Needed': return { class: 'status-update', label: 'Update', icon: '<i class="fas fa-exclamation"></i>' };
+                case 'Not Applicable': return { class: 'status-na', label: 'N/A', icon: '<i class="fas fa-minus"></i>' };
+                default: return { class: 'status-missing', label: 'Missing', icon: '<i class="fas fa-times"></i>' };
+            }
+        }
 
-    document.getElementById('statusItemInfo').textContent = itemNama;
-    document.getElementById('statusSelect').value = psiItem.status || 'Missing';
-    document.getElementById('statusCatatan').value = psiItem.catatan || '';
+        function updateProgressBar() {
+            let totalItems = 0;
+            let completedItems = 0;
 
-    generateValueInput(currentItemData.input_type, psiItem.value || '');
+            // Iterate through master to count totals
+            for (const [sectionKey, sectionData] of Object.entries(psiMaster.sections)) {
+                for (const [itemKey, itemData] of Object.entries(sectionData.items)) {
+                    totalItems++;
+                    const status = psiData[sectionKey]?.[itemKey]?.status;
+                    if (status === 'Ada' || status === 'Not Applicable') {
+                        completedItems++;
+                    }
+                }
+            }
 
-    const modal = bootstrap.Modal.getOrCreateInstance(
-        document.getElementById('statusModal')
-    );
+            const percentage = totalItems === 0 ? 0 : Math.round((completedItems / totalItems) * 100);
+            
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = `${percentage}%`;
+            progressBar.textContent = `${percentage}%`;
+            
+            // Change color based on percentage
+            if(percentage < 50) progressBar.className = 'progress-bar bg-danger';
+            else if(percentage < 80) progressBar.className = 'progress-bar bg-warning text-dark';
+            else progressBar.className = 'progress-bar';
 
-    modal.show();
-}
+            document.getElementById('progressText').textContent = `${completedItems} dari ${totalItems} item lengkap`;
+        }
 
-/* ================= GENERATE INPUT ================= */
+        // --- MODAL LOGIC ---
 
-function generateValueInput(type, value) {
+        function openStatusModal(sectionKey, itemKey) {
+            currentSectionKey = sectionKey;
+            currentItemKey = itemKey;
 
-    const container = document.getElementById('valueInputContainer');
-    container.innerHTML = '';
+            const masterItem = psiMaster.sections[sectionKey].items[itemKey];
+            const currentItemData = psiData[sectionKey]?.[itemKey] || { status: 'Missing', value: '', catatan: '' };
 
-    const input = document.createElement('input');
-    input.className = 'form-control';
-    input.id = 'statusValue';
-    input.value = value;
+            // Populate Modal
+            document.getElementById('statusItemInfo').textContent = masterItem.nama;
+            document.getElementById('itemKategori').textContent = `Kategori: ${masterItem.kategori} | Tipe: ${masterItem.input_type}`;
+            document.getElementById('statusSelect').value = currentItemData.status;
+            document.getElementById('inputTypeDisplay').value = masterItem.input_type.toUpperCase();
+            document.getElementById('statusCatatan').value = currentItemData.catatan || '';
+            
+            // Handle Input Type
+            const valueInput = document.getElementById('statusValue');
+            const valueGroup = document.getElementById('valueInputGroup');
+            
+            if (masterItem.input_type === 'file') {
+                valueGroup.style.display = 'none'; // Hide text input for file types, use file upload
+            } else {
+                valueGroup.style.display = 'block';
+                valueInput.value = currentItemData.value || '';
+                
+                // Set input type attribute
+                if(masterItem.input_type === 'date') valueInput.type = 'date';
+                else if(masterItem.input_type === 'number') valueInput.type = 'number';
+                else valueInput.type = 'text';
+            }
 
-    input.type = (type === 'number') ? 'number'
-        : (type === 'date') ? 'date'
-        : 'text';
+            statusModalInstance.show();
+        }
 
-    container.appendChild(input);
-}
+        function saveStatus() {
+            const newStatus = document.getElementById('statusSelect').value;
+            const newValue = document.getElementById('statusValue').value;
+            const newCatatan = document.getElementById('statusCatatan').value;
 
-/* ================= SAVE STATUS ================= */
-
-function saveStatus() {
-
-    const newStatus = document.getElementById('statusSelect').value;
-    const newValue = document.getElementById('statusValue')?.value || '';
-    const newCatatan = document.getElementById('statusCatatan').value || '';
-
-    const updatePath =
-        `psi_data/${equipId}/${currentSectionKey}/${currentItemKey}`;
-
-    const updateData = {
-        status: newStatus,
-        value: newValue,
-        catatan: newCatatan,
-        updated_at: new Date().toISOString(),
-        updated_by: auth.currentUser.email
-    };
-
-    database.ref(updatePath).update(updateData)
-        .then(() => {
-
-            if (!psiData[currentSectionKey])
+            // Update Data Object
+            if (!psiData[currentSectionKey]) {
                 psiData[currentSectionKey] = {};
+            }
+            
+            if (!psiData[currentSectionKey][currentItemKey]) {
+                psiData[currentSectionKey][currentItemKey] = {};
+            }
 
-            psiData[currentSectionKey][currentItemKey] = updateData;
+            psiData[currentSectionKey][currentItemKey].status = newStatus;
+            psiData[currentSectionKey][currentItemKey].value = newValue;
+            psiData[currentSectionKey][currentItemKey].catatan = newCatatan;
+            psiData[currentSectionKey][currentItemKey].updated_at = new Date().toISOString();
 
-            displayPsiSections();
+            // Re-render UI
+            renderPSISections();
+            updateProgressBar();
+            
+            statusModalInstance.hide();
+            
+            // Optional: Show toast notification
+            // alert('Status berhasil diperbarui!');
+        }
 
-            const modal = bootstrap.Modal.getInstance(
-                document.getElementById('statusModal')
-            );
+        function editEquipment() {
+            alert("Fitur Edit Equipment akan membuka form baru.");
+        }
 
-            if (modal) modal.hide();
-        })
-        .catch(err => alert(err.message));
-}
-
-/* ================= LOGOUT ================= */
-
-function logout() {
-    auth.signOut().then(() => {
-        window.location.href = 'index.html';
-    });
-}
- </script>
+    </script>
 </body>
 </html>
